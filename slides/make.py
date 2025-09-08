@@ -16,7 +16,9 @@ from datetime import datetime
 
 import sh
 
-PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(t="beamer", natbib=True, verbose=True)
+PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
+    t="beamer", filter="pandoc-citeproc", verbose=True
+)
 
 
 REPLACES = {

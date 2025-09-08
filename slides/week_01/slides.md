@@ -6,7 +6,7 @@ fontsize: 10pt
 theme: "Boadilla"
 colortheme: "dolphin"
 aspectratio: 169
-bibliography: /home/juanbc/proyectos/xai/src/slides/week_01/references.bib
+bibliography: references.bib
 header-includes:
   - \definecolor{primarygreen}{HTML}{2E7D32}
   - \definecolor{lightgreen}{HTML}{558B2F}
@@ -377,7 +377,7 @@ Little consensus on what interpretability is and how to evaluate it.
 ## Incompleteness in problem formalization
 
 - Hinders optimization and evaluation
-- **Incompleteness ≠ Uncertainty**
+- **Incompleteness $\neq$ Uncertainty**
 - Uncertainty can be quantified
 - E.g., trying to learn from a small dataset (uncertainty)
 
