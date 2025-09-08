@@ -12,10 +12,12 @@ import time
 import hashlib
 import argparse
 import tempfile
+from datetime import datetime
 
 import sh
 
-PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(t="beamer")
+PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(t="beamer", natbib=True, verbose=True)
+
 
 REPLACES = {
     "≠": r"$\neq$",
@@ -79,7 +81,9 @@ def get_parser():
         type=float,
         default=1.5,
     )
-    parser.add_argument("-w", "--watch", help="watch mode", action="store_true", default=False)
+    parser.add_argument(
+        "-w", "--watch", help="watch mode", action="store_true", default=False
+    )
     parser.add_argument("-i", "--ignore_error", action="store_false", default=True)
     parser.add_argument(
         "--cd",
@@ -87,6 +91,7 @@ def get_parser():
         action="store_true",
         default=True,
     )
+    parser.add_argument("-v", "--verbose", action="store_true", default=False)
     return parser
 
 
@@ -179,10 +184,11 @@ def process_unicode(src, fname, tempdir):
 
     with open(output, "w", encoding="utf-8") as f:
         f.write(src)
+
     return output
 
 
-def run_pandoc(path, output_path, ignore_error):
+def run_pandoc(path, output_path, ignore_error, bibliography):
     """
     Execute Pandoc command to convert Markdown to PDF.
 
@@ -209,9 +215,12 @@ def run_pandoc(path, output_path, ignore_error):
     --------
     >>> run_pandoc("input.md", "output.pdf", ignore_error=True)
     """
-    pandoc = PANDOC_CMD_TEMPLATE.bake(path, output=output_path)
+    pandoc = PANDOC_CMD_TEMPLATE.bake(
+        path, output=output_path
+    )
     try:
-        return pandoc()
+        output = pandoc()
+        return output
     except sh.ErrorReturnCode as err:
         if ignore_error:
             print("=======================")
@@ -249,14 +258,16 @@ def main():
     watch = args.watch
     ignore_error = args.ignore_error
     cd = args.cd
+    verbose = args.verbose
 
-    wd = sh.pwd()
+    wd = sh.pwd().strip()
     filepath = original_path
     if cd:
         wd = os.path.dirname(filepath)
         filepath = os.path.basename(filepath)
 
     output_path = filepath.replace(".md", ".pdf")
+    bibliography_path = os.path.join(wd, "references.bib")
 
     with chdir(wd), tempfile.TemporaryDirectory() as tempdir:
 
@@ -271,8 +282,19 @@ def main():
         processed_path = process_unicode(src, filepath, tempdir)
 
         print("Proccesed file:", processed_path)
-        print("Compiling", original_path, "-> ", os.path.join(wd, output_path))
-        run_pandoc(processed_path, output_path, ignore_error)
+
+        now = datetime.now().strftime("%H:%M:%S")
+        print(
+            f"[{now}] Compiling",
+            original_path,
+            "->",
+            os.path.join(wd, output_path),
+        )
+        output = run_pandoc(
+            processed_path, output_path, ignore_error, bibliography=bibliography_path
+        )
+        if verbose:
+            print(output)
 
         while watch:
             time.sleep(sleep)
@@ -281,14 +303,22 @@ def main():
             new_md5 = calculate_md5(src)
 
             if md5 != new_md5:
+                now = datetime.now().strftime("%H:%M:%S")
                 print(
-                    "Compiling",
+                    f"[{now}] Compiling",
                     original_path,
-                    "-> ",
+                    "->",
                     os.path.join(wd, output_path),
                 )
                 processed_path = process_unicode(src, filepath, tempdir)
-                run_pandoc(processed_path, output_path, ignore_error)
+                output = run_pandoc(
+                    processed_path,
+                    output_path,
+                    ignore_error,
+                    bibliography=bibliography_path,
+                )
+                if verbose:
+                    print(output)
                 md5 = new_md5
 
 
