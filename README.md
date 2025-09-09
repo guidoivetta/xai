@@ -40,7 +40,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_1.pptx) | [Slides 2](slides/Lecture_2.pptx) \]
+\[ [Slides 1](slides/week_01a/slides.pdf) | [Slides 2]() \]
 
 ---
 
@@ -257,7 +257,19 @@ Cho et. al., 2022, [DALL-EVAL: Probing the Reasoning Skills and Social Biases of
 
 
 
+# Slides compilation
 
+- [Python](https://www.python.org/)
+- [Python sh](https://pypi.org/project/sh/) (Linux/MacOS only)
+- [Pandoc](https://pandoc.org/)
+- [pandoc-citeproc](https://github.com/jgm/citeproc) (only if you pandoc is old)
+
+Then go to `slides` and run
+
+```bash
+$ python make.py week_x/slides.md
+
+```
 
 # Based on: 🛐
 

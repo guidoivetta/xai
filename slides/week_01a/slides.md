@@ -2,7 +2,7 @@
 title: "\\emoji{wtf} XAI: Understanding Course Foundations and Motivations"
 author: "FAMAF - UNC"
 date: \today
-fontsize: 10pt
+fontsize: 13pt
 theme: "Boadilla"
 colortheme: "dolphin"
 aspectratio: 169
@@ -18,11 +18,19 @@ header-includes:
   - \setbeamercolor{item}{fg=darkgreen}
   - \setbeamercolor{block title}{bg=lightgreen,fg=white}
   - \setbeamercolor{block body}{bg=lightgreen!20}
+  - \setbeamerfont{bibliography item}{size=\footnotesize}
+  - \setbeamerfont{bibliography entry author}{size=\footnotesize}
+  - \setbeamerfont{bibliography entry title}{size=\footnotesize}
+  - \setbeamerfont{bibliography entry location}{size=\footnotesize}
+  - \setbeamerfont{bibliography entry note}{size=\footnotesize}
   - \usepackage{graphicx}
   - \titlegraphic{\includegraphics[width=4cm]{../../assets/logo.jpeg}}
   - \newcommand{\emoji}[1]{\raisebox{-0.1ex}{\includegraphics[height=0.8em]{../emojis/#1}}}
   - \newcommand{\here}{\textbf{\textcolor{red}{\Huge HASTA ACÁ LLEGUE!}}}
   - \newcommand{\wtf}[1]{"\textbf{#1} \emoji{wtf}"}
+  - \renewcommand{\textbf}[1]{\textcolor{darkgreen}{\bf#1}}
+  - \let\oldframetitle\frametitle
+  - \renewcommand{\frametitle}[1]{\oldframetitle{\emoji{mate}~\texttt{#1~------}}}
 ---
 
 # Disclaimer
@@ -96,26 +104,6 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 ---
 
-# Course Components
-
-**Research project (60%)**
-
-- 3 checkpoints (10% each) – Proposal + Baseline Implementation + Midterm Progress
-- Final Report (20%)
-- Final Presentation (10%)
-- Teams of 2 to 3
-
-**Research Paper Presentation (30%)**
-
-- Teams of 2; Each team presents two papers in the class
-
-**Class Participation (10%)**
-
-- Being active in discussions in class
-- Attending classes
-
----
-
 # Research Projects - AKA Final Exam
 
 ## Requirements
@@ -153,7 +141,7 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 **Machine Learning is EVERYWHERE!!**
 
 \begin{center}
-\includegraphics[width=.80\columnwidth]{imgs/motivation.png}
+\includegraphics[width=.75\columnwidth]{imgs/motivation.png}
 \end{center}
 
 
@@ -166,7 +154,7 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 \begin{center}
 \textbf{Example:} Image classification model
-\includegraphics[width=.90\columnwidth]{imgs/husky0.png}
+\includegraphics[width=.85\columnwidth]{imgs/husky0.png}
 \end{center}
 
 ---
@@ -176,7 +164,7 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 \begin{center}
 \textbf{Example:} Image classification model
-\includegraphics[width=.90\columnwidth]{imgs/husky1.png} \\
+\includegraphics[width=.85\columnwidth]{imgs/husky1.png} \\
 \textbf{\large Model understanding facilitates debugging}
 \end{center}
 
@@ -211,7 +199,7 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 \begin{center}
 \textbf{Example:} Loan application system
-\includegraphics[width=.75\columnwidth]{imgs/loan0.png}
+\includegraphics[width=.70\columnwidth]{imgs/loan0.png}
 \end{center}
 
 ---
@@ -220,8 +208,8 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 \begin{center}
 \textbf{Example:} Loan application system
-\includegraphics[width=.75\columnwidth]{imgs/loan1.png} \\
-\textbf{\large Model understanding helps provide recourse to individuals who are adversely affected by model predictions}
+\includegraphics[width=.70\columnwidth]{imgs/loan1.png} \\
+\textbf{Model understanding helps provide recourse to individuals who are adversely affected by model predictions}
 \end{center}
 
 
@@ -242,7 +230,7 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 \begin{center}
 \textbf{Example:} Medical diagnosis system
 \includegraphics[width=.75\columnwidth]{imgs/trust1.png} \\
-\textbf{\large Model understanding helps assess when to trust predictions}
+\textbf{Model understanding helps assess when to trust predictions}
 \end{center}
 
 ---
@@ -267,50 +255,64 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 # Achieving Model Understanding
 
-## Take 1: Build inherently interpretable predictive models
+\begin{center}
+\textbf{Take 1:} Build inherently interpretable predictive models\\
+\includegraphics[width=.95\columnwidth]{imgs/inherent.png}
+\end{center}
 
-Examples:
-
-- Linear regression
-- Decision trees
-- Rule-based models
-
-_[Letham and Rudin 2015; Lakkaraju et. al. 2016]_
+[@letham2015interpretable; @lakkaraju2016interpretable]
 
 ---
 
 # Achieving Model Understanding
 
-## Take 2: Explain pre-built models in a post-hoc manner
+\begin{center}
+\textbf{Take 2:} Explain pre-built models in a post-hoc manner\\
+\includegraphics[width=.90\columnwidth]{imgs/bbox.png}
+\end{center}
 
-Black Box Model → **Explainer** → Human-interpretable explanation
-
-_[Ribeiro et. al. 2016, 2018; Lakkaraju et. al. 2019]_
-
----
-
-# Inherently Interpretable Models vs. Post hoc Explanations
-
-## Accuracy-Interpretability Trade-offs
-
-In certain settings, accuracy-interpretability trade offs may exist.
-
-**Example scenarios:**
-
-- Simple boundary: Can build interpretable + accurate models
-- Complex boundary: Complex models might achieve higher accuracy
-
-_[Cireşan et. al. 2012, Caruana et. al. 2006, Frosst et. al. 2017, Stewart 2020]_
+[@ribeiro2016should; @lakkaraju2019interpretability; @ribeiro2018anchors]
 
 ---
 
 # Inherently Interpretable Models vs. Post hoc Explanations
 
-**Sometimes, you don't have enough data to build your model from scratch.**
 
-**And, all you have is a (proprietary) black box!**
+\begin{center}
+\textbf{Accuracy-Interpretability Trade-offs}\\
+\includegraphics[width=.90\columnwidth]{imgs/intvsacc.png}\\
+\vspace{0.5cm}
+{\large In certain settings, accuracy-interpretability trade offs may exist.}
+\end{center}
 
-_[Ribeiro et. al. 2016]_
+(Cireşan et. al. 2012, Caruana et. al. 2006, Frosst et. al.  2017, Stewart 2020)
+
+---
+
+# Inherently Interpretable Models vs. Post hoc Explanations
+
+\begin{center}
+\textbf{Example scenarios:} Simple vs complex boundaries\\
+\includegraphics[width=.85\columnwidth]{imgs/boundaries.png}\\
+\vspace{0.5cm}
+{\Large In certain settings, accuracy-interpretability trade offs may exist.}
+\end{center}
+
+
+
+---
+
+# Inherently Interpretable Models vs. Post hoc Explanations
+
+\begin{center}
+\Large
+\textbf{Sometimes, you don't have enough data to build your model from scratch.}
+\vspace{0.5cm}
+\textbf{And, all you have is a (proprietary) black box!}
+\end{center}
+\vspace{1cm}
+
+[@ribeiro2016should]
 
 ---
 
@@ -318,20 +320,47 @@ _[Ribeiro et. al. 2016]_
 
 ## Recommendation
 
-**If you can build an interpretable model which is also adequately accurate for your setting, DO IT!**
-
-**Otherwise, post hoc explanations come to the rescue!**
+\begin{center}
+\textit{If you can build an interpretable model which is also adequately accurate for your setting,} \\
+\vspace{0.5cm}
+\textbf{\Large DO IT!} \\
+\vspace{0.5cm}
+\textit{Otherwise, \textbf{post hoc explanations} come to the rescue!}
+\vspace{1cm}
+\end{center}
 
 ---
 
-# Defining and Understanding Interpretability
+# Inherently Interpretable Models vs. Post hoc Explanations
 
-## Motivation for Interpretability
+## Recommendation
 
-ML systems are being deployed in complex high-stakes settings:
+\begin{center}
+\textit{If you can build an interpretable model which is also adequately accurate for your setting,} \\
+\vspace{0.5cm}
+\textbf{\Large DO IT!} \\
+\vspace{0.5cm}
+\textit{Otherwise, \textbf{post hoc explanations} come to the rescue!} \\
+\vspace{1cm}
+{\Huge \textcolor{primarygreen}{Let’s get into some details!}}
+\end{center}
 
+---
+
+# Next Up!
+
+- Define and evaluate interpretability somewhat! \emoji{wtf}
+- Taxonomy of interpretability evaluation
+- Taxonomy of interpretability based on applications/tasks
+- Taxonomy of interpretability based on methods
+
+---
+
+# Defining and Understanding Interpretability: Motivation for Interpretability
+
+- ML systems are being deployed in complex **high-stakes settings**
 - Accuracy alone is no longer enough
-- Auxiliary criteria are important:
+- **Auxiliary criteria are important:**
   - Safety
   - Nondiscrimination
   - Right to explanation
@@ -340,19 +369,24 @@ ML systems are being deployed in complex high-stakes settings:
 
 # Motivation for Interpretability (cont.)
 
-Auxiliary criteria are often hard to quantify (completely):
+- Auxiliary criteria are often **hard to quantify** (completely):
+  - E.g.: Impossible to enumerate all scenarios violating safety of an autonomous car
 
-- E.g.: Impossible to enumerate all scenarios violating safety of an autonomous car
+\vspace{1cm}
 
-**Fallback option: interpretability**
+## Fallback option: *Interpretability*
 
-- If the system can explain its reasoning, we can verify if that reasoning is sound w.r.t. auxiliary criteria
+\begin{center}
+If the system can explain its reasoning, we can verify if that reasoning is sound w.r.t. auxiliary criteria
+\end{center}
 
 ---
 
 # Prior Work: Defining and Measuring Interpretability
 
+\begin{alertblock}{Bad News}
 Little consensus on what interpretability is and how to evaluate it.
+\end{alertblock}
 
 **Interpretability evaluation typically falls into:**
 
@@ -364,28 +398,39 @@ Little consensus on what interpretability is and how to evaluate it.
    - Claim some model class is interpretable and present algorithms to optimize within that class
    - E.g. rule lists
 
-**"You will know it when you see it!"**
+\begin{center}
+\Large
+\textbf{"You will know it when you see it!"}
+\end{center}
 
 ---
 
 # Lack of Rigor?
 
-**Yes and No**
+\begin{block}{Yes and No}
+Previous notions are reasonable
+\end{block}
 
-- Previous notions are reasonable
 - **However:**
   - Are all models in all "interpretable" model classes equally interpretable?
-  - Model sparsity allows for comparison
+    - Model sparsity allows for comparison
   - How to compare a linear model with a decision tree?
   - Do all applications have same interpretability needs?
 
-**Important to formalize these notions!!!**
+\begin{center}
+\Large
+\textbf{Important to formalize these notions!!!}
+\end{center}
 
 ---
 
 # What is Interpretability?
 
-**Definition:** Ability to explain or to present in understandable terms to a human
+\begin{definition}{} 
+\begin{center}
+\Large Ability to explain or to present in understandable terms to a human
+\end{center}
+\end{definition}
 
 **No clear answers in psychology to:**
 
@@ -397,7 +442,9 @@ Little consensus on what interpretability is and how to evaluate it.
 
 # When and Why Interpretability?
 
-**Not all ML systems require interpretability**
+\begin{center}
+\Large \textbf{Not all ML systems require interpretability}
+\end{center}
 
 - E.g., ad servers, postal code sorting
 - No human intervention
@@ -405,18 +452,22 @@ Little consensus on what interpretability is and how to evaluate it.
   - No consequences for unacceptable results
   - Problem is well studied and validated well in real-world applications → trust system's decision
 
-**When do we need explanation then?**
+\begin{center}
+\Large \textbf{When do we need explanation then?}
+\end{center}
 
 ---
 
 # When and Why Interpretability?
 
-## Incompleteness in problem formalization
+- **Incompleteness in problem formalization**
+  - Hinders optimization and evaluation
 
-- Hinders optimization and evaluation
+\vspace{1cm}
+
 - **Incompleteness $\neq$ Uncertainty**
-- Uncertainty can be quantified
-- E.g., trying to learn from a small dataset (uncertainty)
+  - Uncertainty can be quantified
+  - E.g., trying to learn from a small dataset (uncertainty)
 
 ---
 
@@ -441,25 +492,23 @@ Little consensus on what interpretability is and how to evaluate it.
 
 # Taxonomy of Interpretability Evaluation
 
-|                                      | **Humans**     | **Tasks**    |
-| ------------------------------------ | -------------- | ------------ |
-| **Application-grounded Evaluation**  | Real Humans    | Real Tasks   |
-| **Human-grounded Evaluation**        | Real Humans    | Simple Tasks |
-| **Functionally-grounded Evaluation** | No Real Humans | Proxy Tasks  |
+\begin{center}
+\includegraphics[width=.90\columnwidth]{imgs/taxonomy.png}\\
+\vspace{0.5cm}
+{\large \textbf{Claim of the research should match the type of the evaluation!}}
+\end{center}
 
-**Claim of the research should match the type of the evaluation!**
 
 ---
 
 # Application-grounded evaluation
 
-**Real humans (domain experts), real tasks**
-
-- Domain experts experiment with exact application task
-- Domain experts experiment with a simpler or partial task
+- Real humans (domain experts), real tasks
+- Domain experts experiment with **exact application task**
+- Domain experts experiment with a **simpler or partial task**
   - Shorten experiment time
   - Increases number of potential subjects
-- Typical in HCI and visualization communities
+- Typical in *Human-Computer Interaction* (HCI) and visualization communities
 
 ---
 
@@ -482,25 +531,25 @@ Little consensus on what interpretability is and how to evaluate it.
 
 **No humans, just proxies**
 
-**Appropriate for:**
-
-- A class of models already validated (E.g., decision trees)
+- Appropriate for a class of models already validated (E.g., decision trees)
 - A method is not yet mature
 - Human subject experiments are unethical
-
-**What proxies to use?**
+- What proxies to use?
 
 **Potential experiments:**
 
 - Complexity (of a decision tree) compared to other models of the same (similar) class
-- How many levels? How many rules?
+  - How many levels? How many rules?
 
 ---
 
 # Open Problems: Design Issues
 
-- What proxies are best for what real world applications?
-- What factors to consider when designing simpler tasks in place of real world tasks?
+- What proxies are best for what real world applications? \emoji{wtf}
+
+\vspace{1cm}
+
+- What factors to consider when designing simpler tasks in place of real world tasks? \emoji{wtf}
 
 ---
 
@@ -529,7 +578,11 @@ Little consensus on what interpretability is and how to evaluate it.
 - Experience affects how users process information
 - E.g., domain experts can handle detailed, complex explanations compared to opaque, smaller ones
 
-**Note:** These taxonomies are constructed based on intuition and are not data or evidence driven. They must be treated as hypotheses.
+\vfill
+
+## Note:
+
+These taxonomies are constructed based on intuition and are not data or evidence driven. They must be treated as hypotheses.
 
 ---
 
@@ -582,14 +635,14 @@ Little consensus on what interpretability is and how to evaluate it.
 
 ---
 
-# Breakout Groups
+# Closing
 
-**Say hi to your neighbors! Introduce yourselves!**
-
-- What topics are you most excited about learning as part of this course?
-- Are you convinced that model interpretability/explainability is important?
+- Say hi to your neighbors! Introduce yourselves!
+- What topics are you most excited about learning as part of this course? 
+- Are you convinced that model interpretability/explainability is important? 
 - Do you think we can really interpret/explain models (correctly)?
 - What is your take on inherently interpretable models vs. post hoc explanations? Would you favor one over the other? Why?
 
-
 # References {.allowframebreaks}
+
+\footnotesize

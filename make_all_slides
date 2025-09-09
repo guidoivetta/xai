@@ -1,0 +1,6 @@
+#!/bin/bash
+
+original_dir=$(pwd)
+cd slides
+trap "cd '$original_dir'" EXIT
+python make.py week_01a/slides.md
