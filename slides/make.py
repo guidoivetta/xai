@@ -17,7 +17,7 @@ from datetime import datetime
 import sh
 
 PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
-    t="beamer", filter="pandoc-citeproc", verbose=True
+    t="beamer", d="../defaults.yaml", filter="pandoc-citeproc", verbose=True
 )
 
 
@@ -86,7 +86,9 @@ def get_parser():
     parser.add_argument(
         "-w", "--watch", help="watch mode", action="store_true", default=False
     )
-    parser.add_argument("-i", "--ignore_error", action="store_false", default=True)
+    parser.add_argument(
+        "-i", "--ignore_error", action="store_false", default=True
+    )
     parser.add_argument(
         "--cd",
         help="cambiar al directorio del archivo",
@@ -217,9 +219,7 @@ def run_pandoc(path, output_path, ignore_error, bibliography):
     --------
     >>> run_pandoc("input.md", "output.pdf", ignore_error=True)
     """
-    pandoc = PANDOC_CMD_TEMPLATE.bake(
-        path, output=output_path
-    )
+    pandoc = PANDOC_CMD_TEMPLATE.bake(path, output=output_path)
     try:
         output = pandoc()
         return output
@@ -294,7 +294,10 @@ def main():
             os.path.join(wd, output_path),
         )
         output = run_pandoc(
-            processed_path, output_path, ignore_error, bibliography=bibliography_path
+            processed_path,
+            output_path,
+            ignore_error,
+            bibliography=bibliography_path,
         )
         if verbose:
             print(output)

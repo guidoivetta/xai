@@ -1,36 +1,5 @@
 ---
 title: "\\emoji{wtf} XAI: Understanding Course Foundations and Motivations"
-author: "FAMAF - UNC"
-date: \today
-fontsize: 13pt
-theme: "Boadilla"
-colortheme: "dolphin"
-aspectratio: 169
-bibliography: references.bib
-header-includes:
-  - \definecolor{primarygreen}{HTML}{2E7D32}
-  - \definecolor{lightgreen}{HTML}{558B2F}
-  - \definecolor{darkgreen}{HTML}{1B5E20}
-  - \setbeamercolor{frametitle}{fg=primarygreen}
-  - \setbeamercolor{framesubtitle}{fg=primarygreen}
-  - \setbeamercolor{title}{fg=primarygreen}
-  - \setbeamercolor{structure}{fg=primarygreen}
-  - \setbeamercolor{item}{fg=darkgreen}
-  - \setbeamercolor{block title}{bg=lightgreen,fg=white}
-  - \setbeamercolor{block body}{bg=lightgreen!20}
-  - \setbeamerfont{bibliography item}{size=\footnotesize}
-  - \setbeamerfont{bibliography entry author}{size=\footnotesize}
-  - \setbeamerfont{bibliography entry title}{size=\footnotesize}
-  - \setbeamerfont{bibliography entry location}{size=\footnotesize}
-  - \setbeamerfont{bibliography entry note}{size=\footnotesize}
-  - \usepackage{graphicx}
-  - \titlegraphic{\includegraphics[width=4cm]{../../assets/logo.jpeg}}
-  - \newcommand{\emoji}[1]{\raisebox{-0.1ex}{\includegraphics[height=0.8em]{../emojis/#1}}}
-  - \newcommand{\here}{\textbf{\textcolor{red}{\Huge HASTA ACÁ LLEGUE!}}}
-  - \newcommand{\wtf}[1]{"\textbf{#1} \emoji{wtf}"}
-  - \renewcommand{\textbf}[1]{\textcolor{darkgreen}{\bf#1}}
-  - \let\oldframetitle\frametitle
-  - \renewcommand{\frametitle}[1]{\oldframetitle{\emoji{mate}~\texttt{#1~------}}}
 ---
 
 # Disclaimer
