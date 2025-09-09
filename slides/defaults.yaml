@@ -4,7 +4,6 @@ variables:
   colortheme: "dolphin"
   date: \today
   fontsize: 13pt
-  bibliography: references.bib
   theme: "Boadilla"
   header-includes:
     - \definecolor{primarygreen}{HTML}{2E7D32}

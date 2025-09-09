@@ -1,17 +1,12 @@
 ---
 title: "\\emoji{wtf} XAI: Understanding Course Foundations and Motivations"
+bibliography: references.bib
+
 ---
 
 # Disclaimer
 
-## This course is based on
-
-**Explainable Artificial Intelligence **
-
-From Simple Predictors to Complex Generative Models
-Spring 2023, Harvard University
-
-https://interpretable-ml-class.github.io/
+\input{../disclaimer.tex}
 
 ---
 
