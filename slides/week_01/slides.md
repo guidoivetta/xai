@@ -12,6 +12,7 @@ header-includes:
   - \definecolor{lightgreen}{HTML}{558B2F}
   - \definecolor{darkgreen}{HTML}{1B5E20}
   - \setbeamercolor{frametitle}{fg=primarygreen}
+  - \setbeamercolor{framesubtitle}{fg=primarygreen}
   - \setbeamercolor{title}{fg=primarygreen}
   - \setbeamercolor{structure}{fg=primarygreen}
   - \setbeamercolor{item}{fg=darkgreen}
@@ -149,11 +150,45 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 # Motivation
 
+**Machine Learning is EVERYWHERE!!**
+
+\begin{center}
+\includegraphics[width=.80\columnwidth]{imgs/motivation.png}
+\end{center}
+
+
 [@lipton2016mythos]
 
-## Machine Learning is EVERYWHERE!!
+---
 
-\includegraphics[width=4cm]{imgs/motivation.png}
+# Motivation: Why Model Understanding?
+
+
+\begin{center}
+\textbf{Example:} Image classification model
+\includegraphics[width=.90\columnwidth]{imgs/husky0.png}
+\end{center}
+
+---
+
+# Motivation: Why Model Understanding?
+
+
+\begin{center}
+\textbf{Example:} Image classification model
+\includegraphics[width=.90\columnwidth]{imgs/husky1.png} \\
+\textbf{\large Model understanding facilitates debugging}
+\end{center}
+
+---
+
+# Motivation: Why Model Understanding?
+
+
+\begin{center}
+\textbf{Example:} Criminal justice risk assessment
+\includegraphics[width=.90\columnwidth]{imgs/judge0.png}
+\end{center}
 
 [@lipton2016mythos]
 
@@ -161,70 +196,72 @@ Learn and improve upon the state-of-the-art literature on ML interpretability an
 
 # Motivation: Why Model Understanding?
 
-## Model understanding facilitates debugging
 
-**Example:** Image classification model
+\begin{center}
+\textbf{Example:} Criminal justice risk assessment
+\includegraphics[width=.90\columnwidth]{imgs/judge1.png} \\
+\textbf{\large Model understanding facilitates bias detection}
+\end{center}
 
-- Input: Dog in snow
-- Prediction: Siberian Husky
-- **Problem:** Model relies on snow background, not dog features
-- **Solution:** Model understanding reveals incorrect feature usage
-
----
-
-# Motivation: Why Model Understanding?
-
-## Model understanding facilitates bias detection
-
-**Example:** Criminal justice risk assessment
-
-- Input: Defendant details
-- Prediction: High risk to release
-- **Problem:** Model uses race and gender inappropriately
-- **Solution:** Model understanding reveals biased features
-
-_[Larson et. al. 2016]_
+[@lipton2016mythos]
 
 ---
 
 # Motivation: Why Model Understanding?
 
-## Model understanding helps provide recourse
-
-**Example:** Loan application system
-
-- Input: Applicant financial data
-- Prediction: Loan denied
-- **Solution:** Model explains actionable steps:
-  - "Increase salary by $50K"
-  - "Pay credit card bills on time for next 3 months"
+\begin{center}
+\textbf{Example:} Loan application system
+\includegraphics[width=.75\columnwidth]{imgs/loan0.png}
+\end{center}
 
 ---
 
 # Motivation: Why Model Understanding?
 
-## Model understanding helps assess when to trust predictions
+\begin{center}
+\textbf{Example:} Loan application system
+\includegraphics[width=.75\columnwidth]{imgs/loan1.png} \\
+\textbf{\large Model understanding helps provide recourse to individuals who are adversely affected by model predictions}
+\end{center}
 
-**Example:** Medical diagnosis system
 
-- Different logic for male vs. female patients
-- For females: Uses irrelevant ID number
-- For males: Uses relevant symptoms
-- **Decision:** Don't trust predictions for female subpopulation
+---
+
+
+# Motivation: Why Model Understanding?
+
+\begin{center}
+\textbf{Example:} Medical diagnosis system
+\includegraphics[width=.75\columnwidth]{imgs/trust0.png}
+\end{center}
 
 ---
 
 # Motivation: Why Model Understanding?
 
-## Summary of Use Cases
+\begin{center}
+\textbf{Example:} Medical diagnosis system
+\includegraphics[width=.75\columnwidth]{imgs/trust1.png} \\
+\textbf{\large Model understanding helps assess when to trust predictions}
+\end{center}
 
-| **Utility**        | **Stakeholders**                               |
-| ------------------ | ---------------------------------------------- |
-| Debugging          | Researchers and engineers                      |
-| Bias Detection     | Regulatory agencies (FDA, European commission) |
-| Recourse           | End users (loan applicants)                    |
-| Trust Assessment   | Decision makers (doctors, judges)              |
-| Deployment Vetting | Regulatory agencies                            |
+---
+
+# Motivation: Why Model Understanding?
+
+\begin{center}
+\textbf{Summary of Use Cases}\\
+\includegraphics[width=.75\columnwidth]{imgs/sumarywhy0.png}
+\end{center}
+
+---
+
+# Motivation: Why Model Understanding?
+
+\begin{center}
+\textbf{Summary of Use Cases}\\
+\includegraphics[width=.75\columnwidth]{imgs/sumarywhy1.png}
+\end{center}
 
 ---
 

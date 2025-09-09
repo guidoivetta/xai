@@ -284,7 +284,8 @@ def main():
         processed_path = process_unicode(src, filepath, tempdir)
 
         print("Proccesed file:", processed_path)
-
+        print("Command:", PANDOC_CMD_TEMPLATE)
+        print("")
         now = datetime.now().strftime("%H:%M:%S")
         print(
             f"[{now}] Compiling",
