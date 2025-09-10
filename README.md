@@ -40,7 +40,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Slides 1](slides/week_01a/slides.pdf) | [Slides 2]() \]
+\[ [Slides 1](slides/lecture01/slides.pdf) | [Slides 2](slides/lecture02/slides.pdf) \]
 
 ---
 
