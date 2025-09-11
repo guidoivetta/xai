@@ -58,6 +58,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 \[ [Slides 1](slides/Lecture_3.pdf) | [Slides 2](slides/Lecture_4.pptx) \]
 
 
+---
 
 **Week 3**
 
