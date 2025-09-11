@@ -46,12 +46,14 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ## Week 2: Human Factors in Explainability
 
+### Readings
 
-Hong et. al., 2020, [Human Factors in Model Interpretability: Industry Practices, Challenges](https://arxiv.org/abs/2004.11440)
-Kaur et. al., 2020, [Interpreting Interpretability: Understanding Data Scientists’ Use of Interpretability Tools for Machine Learning](http://www-personal.umich.edu/~harmank/Papers/CHI2020_Interpretability.pdf)
+- Hong et. al., 2020, [Human Factors in Model Interpretability: Industry Practices, Challenges](https://arxiv.org/abs/2004.11440)
+- Kaur et. al., 2020, [Interpreting Interpretability: Understanding Data Scientists’ Use of Interpretability Tools for Machine Learning](http://www-personal.umich.edu/~harmank/Papers/CHI2020_Interpretability.pdf)
+- Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132)
+- Poursabzi-Sangdeh et. al., 2021, [Measuring and Manipulating Model Interpretability](https://arxiv.org/abs/1802.07810)
 
-Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132)
-Poursabzi-Sangdeh et. al., 2021, [Measuring and Manipulating Model Interpretability](https://arxiv.org/abs/1802.07810)
+### Slides
 
 \[ [Slides 1](slides/Lecture_3.pdf) | [Slides 2](slides/Lecture_4.pptx) \]
 
