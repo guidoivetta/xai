@@ -76,7 +76,7 @@ Li et. al., 2017, [Deep Learning for Case Based Reasoning Through Prototypes](ht
 Additional Readings:
 Ustun and Rudin, 2019, [Learning Optimized Risk Scores](https://arxiv.org/abs/1610.00168)
 
-
+---
 
 **Week 4**
 
