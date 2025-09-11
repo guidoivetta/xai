@@ -1,4 +1,4 @@
-# TÍTULO: Inteligencia Artificial Explicable 
+# TÍTULO: Interpretabilidad y Explicabilidad en Inteligencia Artificial
 
 **AÑO:** 2025 **CUATRIMESTRE:** 1° **N° DE CRÉDITOS:** 3 **VIGENCIA:** 3 años  
 **CARGA HORARIA:** 60 horas de teoría y 60 horas de práctica  

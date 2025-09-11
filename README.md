@@ -55,7 +55,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 - Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132)
 
-- Poursabzi-Sangdeh et. al., 2021, [Measuring and Manipulating Model Interpretability](https://arxiv.org/abs/1802.07810)
+- Poursabzi-Sangdeh et. al., 2021, [Manipulating and Measuring Model Interpretability](https://arxiv.org/abs/1802.07810)
 
 ### Slides
 
