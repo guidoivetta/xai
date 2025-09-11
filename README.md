@@ -64,205 +64,215 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ---
 
-**Week 3**
+## Week 3: Inherently Interpretable Models
 
+### Readings
 
-Inherently Interpretable Models
+- Letham and Rudin, 2015, [Interpretable Classifiers Using Rules and Bayesian Analysis](https://arxiv.org/abs/1511.01644)
+- Lakkaraju et. al., 2016, [Interpretable Decision Sets](https://www-cs-faculty.stanford.edu/people/jure/pubs/interpretable-kdd16.pdf)
+- Caruana et. al., 2015, [Intelligible Models for Healthcare](http://people.dbmi.columbia.edu/noemie/papers/15kdd.pdf)
+- Li et. al., 2017, [Deep Learning for Case Based Reasoning Through Prototypes](https://arxiv.org/abs/1710.04806)
 
+#### Additional Readings:
 
-Letham and Rudin, 2015, [Interpretable Classifiers Using Rules and Bayesian Analysis](https://arxiv.org/abs/1511.01644)
-Lakkaraju et. al., 2016, [Interpretable Decision Sets](https://www-cs-faculty.stanford.edu/people/jure/pubs/interpretable-kdd16.pdf)
+- Ustun and Rudin, 2019, [Learning Optimized Risk Scores](https://arxiv.org/abs/1610.00168)
 
-Caruana et. al., 2015, [Intelligible Models for Healthcare](http://people.dbmi.columbia.edu/noemie/papers/15kdd.pdf)
-Li et. al., 2017, [Deep Learning for Case Based Reasoning Through Prototypes](https://arxiv.org/abs/1710.04806)
+### Slides
 
 \[ [Slides 1](slides/Lecture_5.pptx) | [Slides 2](slides/Lecture_6.pptx) \]
 
-Additional Readings:
-Ustun and Rudin, 2019, [Learning Optimized Risk Scores](https://arxiv.org/abs/1610.00168)
-
 ---
 
-**Week 4**
+## Week 4: Post hoc Explanations: Feature Attributions
 
+### Readings
 
-Post hoc Explanations: Feature Attributions
+- Ribeiro et. al., 2016, [Why should I trust you? Explaining the Predictions of Any Classifier](https://arxiv.org/abs/1602.04938)
+- Lundberg and Lee, 2017, [A Unified Approach to Interpreting Models](https://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions.pdf)
+- Smilkov et. al., 2017, [Smoothgrad: Removing noise by adding noise](https://arxiv.org/abs/1706.03825)
+- Sundararajan et. al., 2017, [Axiomatic Attribution for Deep Networks](https://arxiv.org/abs/1703.01365)
 
+### Additional Readings:
 
-Ribeiro et. al., 2016, [Why should I trust you? Explaining the Predictions of Any Classifier](https://arxiv.org/abs/1602.04938)
-Lundberg and Lee, 2017, [A Unified Approach to Interpreting Models](https://papers.nips.cc/paper/7062-a-unified-approach-to-interpreting-model-predictions.pdf)
+- Shrikumar et. al., 2019, [Learning Important Features through Propagating Activation Differences](https://arxiv.org/abs/1704.02685)
 
-Smilkov et. al., 2017, [Smoothgrad: Removing noise by adding noise](https://arxiv.org/abs/1706.03825)
-Sundararajan et. al., 2017, [Axiomatic Attribution for Deep Networks](https://arxiv.org/abs/1703.01365)
+### Slides
 
 \[ [Slides 1](slides/Lecture_7_LIME.pptx) | [Slides 2](slides/Lecture_7_SHAP.pptx) | [Slides 3](slides/Lecture_8_SmoothGrad.pptx) | [Slides 4](slides/Lecture_8_IntegratedGradients.pptx) \]
 
-Additional Readings:
-Shrikumar et. al., 2019, [Learning Important Features through Propagating Activation Differences](https://arxiv.org/abs/1704.02685)
 
+---
 
+## Week 5: Pitfalls, Challenges, and Evaluation of Feature Attributions
 
-**Week 5**
+### Readings
 
+- Slack and Hilgard et. al., 2020, [Fooling LIME and SHAP](https://arxiv.org/abs/1911.02508)
+- Dombrowski et. al., 2019, [Explanations can be manipulated and geometry is to blame](https://arxiv.org/abs/1906.07983)
+- Adebayo et. al., 2018, [Sanity Checks for Saliency Maps](https://arxiv.org/abs/1810.03292)
+- Agarwal et. al., 2023, [OpenXAI: Towards a Transparent Evaluation of Model Explanations](https://arxiv.org/abs/2206.11104)
 
-Pitfalls, Challenges, and Evaluation of Feature Attributions
+#### Additional Readings:
 
+- Krishna and Han et. al., 2023, [The Disagreement Problem in Explainable Machine Learning](https://arxiv.org/abs/2202.01602)
+- Rudin, 2019, [Stop Explaining Black Box Models](https://arxiv.org/abs/1811.10154)
+- Chen and Subhas et. al., 2022, [What Makes a Good Explanation? A Harmonized View of Properties of Explanations](https://arxiv.org/abs/2211.05667)
+- Chen et. al., 2022, [Use-Case-Grounded Simulations for Explanation Evaluation](https://arxiv.org/abs/2206.02256)
 
-Slack and Hilgard et. al., 2020, [Fooling LIME and SHAP](https://arxiv.org/abs/1911.02508)
-Dombrowski et. al., 2019, [Explanations can be manipulated and geometry is to blame](https://arxiv.org/abs/1906.07983)
-
-Adebayo et. al., 2018, [Sanity Checks for Saliency Maps](https://arxiv.org/abs/1810.03292)
-Agarwal et. al., 2023, [OpenXAI: Towards a Transparent Evaluation of Model Explanations](https://arxiv.org/abs/2206.11104)
+### Slides
 
 \[ [Slides 1](slides/Lecture_9_Fooling_LIME_SHAP.pptx) | [Slides 2](slides/Lecture_9_Explanations_Manipulated.pptx) | [Slides 3](slides/Lecture_10_Adebayo_Sanity_Checks.pptx) | [Slides 4](slides/Lecture_10_Agarwal_OpenXAI.pptx) \]
 
-Additional Readings:
-Krishna and Han et. al., 2023, [The Disagreement Problem in Explainable Machine Learning](https://arxiv.org/abs/2202.01602)
-Rudin, 2019, [Stop Explaining Black Box Models](https://arxiv.org/abs/1811.10154)
-Chen and Subhas et. al., 2022, [What Makes a Good Explanation? A Harmonized View of Properties of Explanations](https://arxiv.org/abs/2211.05667)
-Chen et. al., 2022, [Use-Case-Grounded Simulations for Explanation Evaluation](https://arxiv.org/abs/2206.02256)
+---
 
+## Week 6: Counterfactual Explanations (or) Algorithmic Recourse
 
+### Readings
 
-**Week 6**
+- Wachter et. al., 2018, [Counterfactual Explanations Without Opening the Black Box](https://arxiv.org/abs/1711.00399)
+- Karimi et. al., 2020, [Algorithmic Recourse: From Counterfactual Explanations to Interventions](https://arxiv.org/abs/2002.06278)
+- Upadhyay et. al., 2021, [Towards Robust and Reliable Algorithmic Recourse](https://arxiv.org/abs/2102.13620)
+- Pawelczyk et. al., 2022, [Probabilistically Robust Recourse: Navigating the Trade-offs between Costs and Robustness in Algorithmic Recourse](https://arxiv.org/abs/2203.06768)
 
+#### Additional Readings:
 
-Counterfactual Explanations (or) Algorithmic Recourse
+- Pawelczyk et. al., 2020, [Learning Model-Agnostic Counterfactual Explanations for Tabular Data](https://arxiv.org/abs/1910.09398)
+- Rawal et. al., 2020, [Beyond Individualized Recourse: Interpretable and Interactive Summaries of Actionable Recourses](https://arxiv.org/abs/2009.07165)
+- Ustun et. al., 2019, [Actionable Recourse in Linear Classification](https://arxiv.org/abs/1809.06514)
 
-
-Wachter et. al., 2018, [Counterfactual Explanations Without Opening the Black Box](https://arxiv.org/abs/1711.00399)
-Karimi et. al., 2020, [Algorithmic Recourse: From Counterfactual Explanations to Interventions](https://arxiv.org/abs/2002.06278)
-
-Upadhyay et. al., 2021, [Towards Robust and Reliable Algorithmic Recourse](https://arxiv.org/abs/2102.13620)
-Pawelczyk et. al., 2022, [Probabilistically Robust Recourse: Navigating the Trade-offs between Costs and Robustness in Algorithmic Recourse](https://arxiv.org/abs/2203.06768)
+### Slides
 
 \[ [Slides 1](slides/Lecture_11_Wachter_Algorithmic_Recourse.pptx) | [Slides 2](slides/Lecture_11_Karimi_Causal_Recourse.pptx) | [Slides 3](slides/Lecture_12_ROAR.pptx) | [Slides 4](slides/Lecture_12_PROBE.pptx) \]
 
-Additional Readings:
-Pawelczyk et. al., 2020, [Learning Model-Agnostic Counterfactual Explanations for Tabular Data](https://arxiv.org/abs/1910.09398)
-Rawal et. al., 2020, [Beyond Individualized Recourse: Interpretable and Interactive Summaries of Actionable Recourses](https://arxiv.org/abs/2009.07165)
-Ustun et. al., 2019, [Actionable Recourse in Linear Classification](https://arxiv.org/abs/1809.06514)
 
+---
 
+## Week 7: Attention and Concept Based Explanations
 
-**Week 7**
+### Readings
 
-
-Attention and Concept Based Explanations
-
-
-Mullenbach et. al., 2018, [Explainable Prediction of Medical Codes from Clinical Text](https://www.aclweb.org/anthology/N18-1100.pdf)
+- Mullenbach et. al., 2018, [Explainable Prediction of Medical Codes from Clinical Text](https://www.aclweb.org/anthology/N18-1100.pdf)
 Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/1902.10186)
+- Bau and Zhou et. al., 2017, [Network Dissection: Quantifying Interpretability of Deep Visual Representations](http://netdissect.csail.mit.edu/final-network-dissection.pdf)
+- Kim et. al., 2018, [Interpretability Beyond Feature Attribution: Quantitative Testing with Concept Activation Vectors](https://arxiv.org/abs/1711.11279)
 
-Bau and Zhou et. al., 2017, [Network Dissection: Quantifying Interpretability of Deep Visual Representations](http://netdissect.csail.mit.edu/final-network-dissection.pdf)
-Kim et. al., 2018, [Interpretability Beyond Feature Attribution: Quantitative Testing with Concept Activation Vectors](https://arxiv.org/abs/1711.11279)
+
+### Slides
 
 \[ [Slides 1](slides/Lecture_13_Convolutional_Attention.pptx) | [Slides 2](slides/Lecture_13_Attention_Not_Explanation.pptx) | [Slides 3](slides/Lecture_14_Network_Dissection.pdf) | [Slides 4](slides/Lecture_14_TCAV.pptx) \]
 
+---
+
+## Week 8: Data Attribution and Interactive Explanations
+
+### Readings
+
+- Koh et. al., 2017, [Understanding Black Box Predictions via Influence Functions](https://arxiv.org/abs/1703.04730)
+- Ghorbani et. al., 2019, [What is your data worth? Equitable Valuation of Data](https://arxiv.org/abs/1904.02868)
+- Ghai et. al. 2020, [Explainable Active Learning (XAL): Toward AI Explanations as Interfaces for Machine Teachers](https://arxiv.org/abs/2001.09219)
+- Slack et. al., 2022, [TalkToModel: Explaining Machine Learning Models with Interactive Natural Language Conversations](https://arxiv.org/abs/2207.04154)
 
 
-**Week 8**
-
-
-Data Attribution and Interactive Explanations
-
-
-Koh et. al., 2017, [Understanding Black Box Predictions via Influence Functions](https://arxiv.org/abs/1703.04730)
-Ghorbani et. al., 2019, [What is your data worth? Equitable Valuation of Data](https://arxiv.org/abs/1904.02868)
-
-Ghai et. al. 2020, [Explainable Active Learning (XAL): Toward AI Explanations as Interfaces for Machine Teachers](https://arxiv.org/abs/2001.09219)
-Slack et. al., 2022, [TalkToModel: Explaining Machine Learning Models with Interactive Natural Language Conversations](https://arxiv.org/abs/2207.04154)
+### Slides
 
 \[ [Slides 1](slides/Lecture_15_Influence_Function.pptx) | [Slides 2](slides/Lecture_15_DataShapley.pdf) | [Slides 3](slides/Lecture_16_XAL.pptx) | [Slides 4](slides/Lecture_16_Talk_to_Model.pptx) \]
 
+---
 
+## Week 9: Theory of Explainability and Interpreting Generative Models
 
-**Week 9**
+### Readings
 
-
-Theory of Explainability and Interpreting Generative Models
-
-
-Covert et. al., 2021, [Explaining by Removing: A Unified Framework for Model Explanation](https://www.jmlr.org/papers/volume22/20-1316/20-1316.pdf)
-Han et. al., 2022, [Which Explanation Should I Choose? A Function Approximation Perspective to Characterizing Post hoc Explanations](https://arxiv.org/abs/2206.01254)
-
-Shen et. al., 2020, [Interpreting the Latent Space of GANs for Semantic Face Editing](https://arxiv.org/abs/1907.10786)
+- Covert et. al., 2021, [Explaining by Removing: A Unified Framework for Model Explanation](https://www.jmlr.org/papers/volume22/20-1316/20-1316.pdf)
+- Han et. al., 2022, [Which Explanation Should I Choose? A Function Approximation Perspective to Characterizing Post hoc Explanations](https://arxiv.org/abs/2206.01254)
+- Shen et. al., 2020, [Interpreting the Latent Space of GANs for Semantic Face Editing](https://arxiv.org/abs/1907.10786)
 Harkonen et. al., 2020, [GANSpace: Discovering Interpretable GAN Controls](https://arxiv.org/abs/2004.02546)
+
+#### Additional Readings:
+
+- Li et. al., 2021, [A Learning Theoretic Perspective on Local Explainability](https://arxiv.org/abs/2011.01205)
+
+### Slides
 
 \[ [Slides 1](slides/Lecture_17_Explaining_by_Removing.pptx) | [Slides 2](slides/Lecture_17_LFA.pdf) | [Slides 3](slides/Lecture_18_GANSpace.pdf) | [Slides 4](slides/Lecture_18_Latent_Space_GAN.pdf) \]
 
-Additional Readings:
-Li et. al., 2021, [A Learning Theoretic Perspective on Local Explainability](https://arxiv.org/abs/2011.01205)
+---
+
+## Week 10: Connections with Robustness, Privacy, Fairness, and Unlearning
+
+### Readings
+
+- Shah et. al., 2021, [Do Input Gradients Highlight Discriminative Features?](https://arxiv.org/abs/2102.12781)
+- Pawelczyk et. al., 2023, [On the Privacy Risks of Algorithmic Recourse](https://arxiv.org/abs/2211.05427)
+- Begley et. al., 2020, [Explainability for Fair Machine Learning](https://arxiv.org/abs/2010.07389)
+- Krishna et. al., 2023, [Towards Bridging the Gaps between the Right to Explanation and the Right to be Forgotten](https://arxiv.org/abs/2302.04288)
+
+#### Additional Readings:
+
+- Dai et. al., 2022, [Fairness via Explanation Quality: Evaluating Disparities in the Quality of Post hoc Explanations](https://arxiv.org/abs/2011.01205)
 
 
-
-**Week 10**
-
-
-Connections with Robustness, Privacy, Fairness, and Unlearning
-
-
-Shah et. al., 2021, [Do Input Gradients Highlight Discriminative Features?](https://arxiv.org/abs/2102.12781)
-Pawelczyk et. al., 2023, [On the Privacy Risks of Algorithmic Recourse](https://arxiv.org/abs/2211.05427)
-
-Begley et. al., 2020, [Explainability for Fair Machine Learning](https://arxiv.org/abs/2010.07389)
-Krishna et. al., 2023, [Towards Bridging the Gaps between the Right to Explanation and the Right to be Forgotten](https://arxiv.org/abs/2302.04288)
+### Slides
 
 \[ [Slides 1](slides/Lecture_19_DiffROAR.pptx) | [Slides 2](slides/Lecture_19_Privacy_Risk.pdf) | [Slides 3](slides/Lecture_20_Explainability_Fair_ML.pdf) | [Slides 4](slides/Lecture_20_ROCERF.pdf) \]
 
-Additional Readings:
-Dai et. al., 2022, [Fairness via Explanation Quality: Evaluating Disparities in the Quality of Post hoc Explanations](https://arxiv.org/abs/2011.01205)
+---
 
+## Week 11: Mechanistic Interpretability and Compiled Transformers
 
+### Readings
 
-**Week 11**
+- Olah, 2020, [An Introduction to Circuits](https://distill.pub/2020/circuits/zoom-in/)
+- Olah, 2022, [Mechanistic Interpretability, Variables, and the Importance of Interpretable Bases](https://transformer-circuits.pub/2022/mech-interp-essay/index.html)
+- Lindner et. al., 2023, [Tracr: Compiled Transformers as a Laboratory for Interpretability](https://arxiv.org/abs/2301.05062)
 
-
-Mechanistic Interpretability and Compiled Transformers
-
-
-Olah, 2020, [An Introduction to Circuits](https://distill.pub/2020/circuits/zoom-in/)
-Olah, 2022, [Mechanistic Interpretability, Variables, and the Importance of Interpretable Bases](https://transformer-circuits.pub/2022/mech-interp-essay/index.html)
-
-Lindner et. al., 2023, [Tracr: Compiled Transformers as a Laboratory for Interpretability](https://arxiv.org/abs/2301.05062)
+### Slides
 
 \[ [Slides 1](slides/Lecture_21_Mechanistic_Interpretability.pptx) | [Slides 2](slides/Lecture_22_Tracr.pdf) \]
 
+---
 
+## Week 12: Understanding and Reasoning in Large Language Models
 
-**Week 12**
+### Readings
 
+- Wei et. al., 2022, [Chain of Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
+- Lampinen et. al., 2022, [Can language models learn from explanations in context?](https://arxiv.org/abs/2204.02329)
+- Rajani et. al., 2019, [Explain Yourself! Leveraging Language Models for Common Sense Reasoning](https://arxiv.org/abs/1906.02361)
+- Yin et. al., 2022, [Interpreting Language Models with Contrastive Explanations](https://arxiv.org/abs/2202.10419)
 
-Understanding and Reasoning in Large Language Models
+#### Additional Readings:
 
+-   Bills et. al., 2023, [Language Models can Explain Neurons in Language Models](https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html)
 
-Wei et. al., 2022, [Chain of Thought Prompting Elicits Reasoning in Large Language Models](https://arxiv.org/abs/2201.11903)
-Lampinen et. al., 2022, [Can language models learn from explanations in context?](https://arxiv.org/abs/2204.02329)
-
-Rajani et. al., 2019, [Explain Yourself! Leveraging Language Models for Common Sense Reasoning](https://arxiv.org/abs/1906.02361)
-Yin et. al., 2022, [Interpreting Language Models with Contrastive Explanations](https://arxiv.org/abs/2202.10419)
+### Slides
 
 \[ [Slides 1](slides/Lecture_23_CoT.pdf) | [Slides 2](slides/Lecture_23_Explanations_In_Context.pptx) | [Slides 3](slides/Lecture_24_Explain_Yourself.pptx) | [Slides 4](slides/Lecture_24_Contrastive_Explanation.pdf) \]
 
-Additional Readings:
-Bills et. al., 2023, [Language Models can Explain Neurons in Language Models](https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html)
+---
 
+## Week 13: Understanding and Reasoning in Other Large Models
 
+### Readings
 
-**Week 13**
+- McGrath et. al., 2022, [Acquisition of Chess Knowledge in Alpha Zero](https://arxiv.org/abs/2111.09259)
+- Tang et. al., 2022, [What the DAAM: Interpreting Stable Diffusion Using Cross Attention](https://arxiv.org/abs/2210.04885)
+- Cho et. al., 2022, [DALL-EVAL: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Models](https://arxiv.org/abs/2202.04053)
 
-
-Understanding and Reasoning in Other Large Models
-
-
-McGrath et. al., 2022, [Acquisition of Chess Knowledge in Alpha Zero](https://arxiv.org/abs/2111.09259)
-
-Tang et. al., 2022, [What the DAAM: Interpreting Stable Diffusion Using Cross Attention](https://arxiv.org/abs/2210.04885)
-Cho et. al., 2022, [DALL-EVAL: Probing the Reasoning Skills and Social Biases of Text-to-Image Generative Models](https://arxiv.org/abs/2202.04053)
+### Slides
 
 \[ [Slides 1](slides/Lecture_25_AlphaZero.pptx) | [Slides 2](slides/Lecture_25_DAAM.pptx) | [Slides 3](slides/Lecture_26_DALL_EVAL.pptx) \]
 
+---
 
+## Week 14
+
+---
+
+## Week 15
+
+---
+---
 
 # Slides compilation
 
