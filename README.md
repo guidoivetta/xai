@@ -34,9 +34,9 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Readings
 
-- Doshi-Velez and Kim, 2017, [Towards a Rigorous Science of Interpretable Machine Learning](https://arxiv.org/abs/1702.08608)
-- Weller, 2019, [Transparency: Motivation and Challenges](https://arxiv.org/abs/1708.01870)
-- Lipton, 2017, [The Mythos of Model Interpretability](https://arxiv.org/abs/1606.03490)
+- Doshi-Velez and Kim, 2017, [Towards a Rigorous Science of Interpretable Machine Learning](https://arxiv.org/abs/1702.08608) !
+- Weller, 2019, [Transparency: Motivation and Challenges](https://arxiv.org/abs/1708.01870) !
+- Lipton, 2017, [The Mythos of Model Interpretability](https://arxiv.org/abs/1606.03490) !
 
 ### Slides
 
@@ -48,12 +48,12 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Readings
 
-- Hong et. al., 2020, [Human Factors in Model Interpretability: Industry Practices, Challenges](https://arxiv.org/abs/2004.11440)
+- Hong et. al., 2020, [Human Factors in Model Interpretability: Industry Practices, Challenges](https://arxiv.org/abs/2004.11440) !
 
 - Kaur et. al., 2020, [Interpreting Interpretability: Understanding Data Scientists’ Use of Interpretability Tools for Machine Learning](https://harmanpk.github.io/Papers/CHI2020_Interpretability.pdf)
-  [![youtube](https://img.shields.io/badge/-Video-red?logo=youtube)](https://dl.acm.org/doi/abs/10.1145/3313831.3376219?casa_token=zh16fc1Kqf8AAAAA%3ACoVbx9RFaU7e-xGWs_9tMY8llZGp5ohKnSrJbOG7VzZD12vQBVcbbKPhNwGWvg3HT9A9Fuxvs8jLtg)
+  [![youtube](https://img.shields.io/badge/-Video-red?logo=youtube)](https://dl.acm.org/doi/abs/10.1145/3313831.3376219?casa_token=zh16fc1Kqf8AAAAA%3ACoVbx9RFaU7e-xGWs_9tMY8llZGp5ohKnSrJbOG7VzZD12vQBVcbbKPhNwGWvg3HT9A9Fuxvs8jLtg) !
 
-- Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132)
+- Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132) !
 
 - Poursabzi-Sangdeh et. al., 2021, [Manipulating and Measuring Model Interpretability](https://arxiv.org/abs/1802.07810)
 
