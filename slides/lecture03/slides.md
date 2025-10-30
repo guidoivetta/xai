@@ -1,622 +1,572 @@
 ---
-title: "\\emoji{wtf} XAI: Inherently Interpretable Models"
+title: "\\emoji{wtf} XAI: Practitioner Interpretability Needs"
 bibliography: references.bib
----
-
-# Agenda
-
-- Recap: Interpretability Overview
-- Inherently Interpretable Models
-  - Linear Models
-  - Decision Trees
-  - Rule-Based Models
-  - Generalized Additive Models (GAMs)
-- Trade-offs: Accuracy vs. Interpretability
-- Discussion
 
 ---
 
-# Recap: What is Interpretability?
+# Disclaimer
 
-\\begin{definition}{}
-\\begin{center}
-\\Large Ability to explain or to present in understandable terms to a human
-\\end{center}
-\\end{definition}
-
-**Key Points:**
-
-- Not all ML systems require interpretability
-- Needed when problem formalization is incomplete
-- Multiple desiderata: Trust, Causality, Transferability, Fairness
+\input{../disclaimer.tex}
 
 ---
 
-# Recap: Two Approaches to Model Understanding
+# Overview
 
-**Approach 1: Inherently Interpretable Models**
+## The Gap in Interpretable ML Research
 
-- Build models that are interpretable by design
-- E.g., linear models, decision trees, rule lists
-
-**Approach 2: Post-hoc Explanations**
-
-- Explain complex black-box models after training
-- E.g., LIME, SHAP, saliency maps
-
-\\begin{center}
-\\textbf{Today: Focus on Inherently Interpretable Models}
-\\end{center}
+- **Current Focus: (of 2023)** 
+   - Developing new interpretable models and explanation methods
+- **Much Less Explored:**
+   - How useful are these tools actually to users?
+   - Do practitioners effectively use interpretability tools?
 
 ---
 
-# Why Inherently Interpretable Models?
+# Papers
 
-**Advantages:**
+1. **Human Factors in Model Interpretability** by Hong et al.
+   - Industry practitioners' needs and uses for interpretability
 
-- Transparency at every step
-- Easier to debug and validate
-- Natural explanations from model structure
-- Often satisfy regulatory requirements
+2. **Interpreting Interpretability: Understanding Data Scientists' Use of Interpretability Tools for Machine Learning** by Kaur et al.
+   - How practitioners actually use interpretability tools
 
-**Challenges:**
+## These papers explore:
 
-- May have lower predictive accuracy
-- Limited expressiveness for complex patterns
-- Scalability concerns for high-dimensional data
-
----
-
-# Linear Models
-
-\\begin{center}
-\\textbf{The Simplest Interpretable Model}
-\\end{center}
-
-**Linear Regression:**
-
-$$y = \\beta_0 + \\beta_1 x_1 + \\beta_2 x_2 + \\ldots + \\beta_p x_p + \\epsilon$$
-
-**Logistic Regression:**
-
-$$P(y=1|x) = \\frac{1}{1 + e^{-(\\beta_0 + \\beta_1 x_1 + \\ldots + \\beta_p x_p)}}$$
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/linear_model.png} -->
+- How do ML practitioners use interpretability tools?
+- What are their unmet needs?
+- Do interpretability tools actually help practitioners understand models?
 
 ---
 
-# Linear Models: Interpretability
+# Paper 1
 
-**Why are they interpretable?**
+\begin{center}
+\includegraphics[width=.8\columnwidth]{imgs/paper1.png}
+\end{center}
 
-- **Coefficients** $\\beta_i$ show feature importance
-- **Sign** indicates direction of effect (positive/negative)
-- **Magnitude** indicates strength of effect
-- **Additivity** makes reasoning straightforward
+## Key Contributions:
 
-**Example:** Credit scoring
+1. Conducts interview study to understand industry practitioners' existing needs and uses for interpretability
+2. Presents findings on roles, stages, and goals related to interpretability
+3. Identifies aspects of interpretability under-supported by existing technical solutions
 
-- $\\beta_{\\text{income}} = +0.5$: Higher income increases approval probability
-- $\\beta_{\\text{debt}} = -0.3$: Higher debt decreases approval probability
-
----
-
-# Linear Models: Limitations
-
-**When do linear models struggle?**
-
-- **Non-linear relationships**
-  - E.g., U-shaped or threshold effects
-
-- **Feature interactions**
-  - Effect of age depends on income
-
-- **Complex decision boundaries**
-  - XOR-like patterns
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/linear_limits.png} -->
 
 ---
 
-# Making Linear Models More Expressive
 
-**Techniques:**
 
-1. **Polynomial features**: $x_1, x_1^2, x_1^3, \\ldots$
-2. **Interaction terms**: $x_1 \\times x_2$
-3. **Basis expansion**: Splines, wavelets
+## Research Motivation
 
-**Trade-off:**
+\includegraphics[width=1.0\columnwidth]{imgs/researcher_practitioner_gap.png}
 
-- Increased expressiveness
-- Decreased interpretability (more coefficients)
-- Risk of overfitting
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\textbf{Interpretability Researchers}
+\begin{itemize}
+\item Fancy models
+\item Not always practical
+\end{itemize}
+\end{column}
 
----
+\begin{column}{0.1\textwidth}
+\begin{center}
+\Large $\leftrightarrow$
+\end{center}
+\end{column}
 
-# Regularization for Interpretability
+\begin{column}{0.45\textwidth}
+\textbf{ML Practitioners}
+\begin{itemize}
+\item Simpler techniques
+\item That actually work
+\end{itemize}
+\end{column}
+\end{columns}
 
-**Sparse Linear Models:**
+\vspace{1cm}
 
-**LASSO (L1 regularization):**
+\begin{alertblock}{Central Question}
+What do practitioners really need?
+\end{alertblock}
 
-$$\\min_{\\beta} \\sum_{i=1}^{n} (y_i - \\beta^T x_i)^2 + \\lambda \\sum_{j=1}^{p} |\\beta_j|$$
+## Study Contributions
 
-**Benefits:**
+**Key Contributions:**
 
-- Automatic feature selection (some $\\beta_j = 0$)
-- Improves interpretability by reducing features
-- Prevents overfitting
+1. Conducts interview study to understand industry practitioners' existing needs and uses for interpretability
 
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/lasso.png} -->
+2. Presents findings on roles, stages, and goals related to interpretability
 
----
+3. Identifies aspects of interpretability under-supported by existing technical solutions
 
-# Decision Trees
+## Methodology: Qualitative Study
 
-\\begin{center}
-\\textbf{Hierarchical Decision Making}
-\\end{center}
+**Study Design:**
+- **Type:** Semi-structured interviews
+- **Participants:** 22 from convenience and snowball sampling
+- **Analysis:** Qualitative coding
 
-**Structure:**
+\vspace{0.5cm}
 
-- Internal nodes: Feature-based splits
-- Edges: Decision outcomes
-- Leaf nodes: Predictions
+**Qualitative Coding:**
+- Iteratively build up a set of codes
+- Look at data and compare notes with other annotators
+- Useful for exploratory research
+- Can generate hypotheses to test quantitatively
 
-**Example:** Medical diagnosis
+# Results: Three Dimensions
+
+## Results Overview
+
+**Three Key Dimensions:**
+
+1. **Interpretability Roles**
+   - Who needs interpretability?
+
+2. **Interpretability Stages**
+   - When is interpretability needed?
+
+3. **Interpretability Goals**
+   - Why is interpretability needed?
+
+## Interpretability Roles
+
+**Three Primary Roles:**
+
+\includegraphics[width=0.8\columnwidth]{imgs/three_roles.png} 
+
+1. **Model Builders**
+   - Create and develop ML models
+
+2. **Model Breakers**
+   - Test and validate models
+
+3. **Model Consumers**
+   - Use model outputs for decision-making
+
+\begin{alertblock}{Design Question}
+What methods are designed for different roles?
+\end{alertblock}
+
+## Interpretability Stages
+
+**Three Stages in ML Pipeline:**
 
 ```
-Is fever > 38°C?
-├─ Yes: Is cough present?
-│  ├─ Yes: Predict Flu (80%)
-│  └─ No: Predict Infection (60%)
-└─ No: Predict Healthy (95%)
+\begin{center}
+\begin{tikzpicture}[node distance=2.5cm]
+\node (fe) [rectangle, draw, minimum width=2.5cm, minimum height=1cm] {Feature Engineering};
+\node (mb) [rectangle, draw, minimum width=2.5cm, minimum height=1cm, right of=fe] {Model Building};
+\node (dep) [rectangle, draw, minimum width=2.5cm, minimum height=1cm, right of=mb] {Deployment};
+\draw [->] (fe) -- (mb);
+\draw [->] (mb) -- (dep);
+\end{tikzpicture}
+\end{center}
 ```
 
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/decision_tree.png} -->
+**Detailed Stages:**
+- Ideation and conceptualization stage
+- Building and validation stage
+- Deployment, maintenance, and use stage
+
+\begin{alertblock}{Design Question}
+What methods are designed for different stages?
+\end{alertblock}
+
+## Interpretability Goals
+
+**Three Primary Goals:**
+
+1. **Model Validation and Improvement**
+   - Debugging and enhancing model performance
+
+2. **Decision Making and Knowledge Discovery**
+   - Using models to gain insights
+
+3. **Gaining Confidence and Obtaining Trust**
+   - Building confidence in model predictions
+
+\begin{alertblock}{Design Question}
+What methods are designed for different goals?
+\end{alertblock}
+
+# Key Themes
+
+## Theme 1: Interpretability is Cooperative
+
+**Communication is Central:**
+- Important for communicating with domain experts and stakeholders
+- Facilitates trust, sometimes just by virtue of including an explanation
+
+\includegraphics[width=0.6\columnwidth]{imgs/team_collaboration.png}
+
+\vspace{1cm}
+
+\begin{exampleblock}{Open Question}
+Better tools vs. better data science training for communication?
+\end{exampleblock}
+
+## Theme 2: Interpretability is a Process
+
+**Continuous Engagement:**
+- Important across many different stages of the ML pipeline
+- Dialogue with the model for continued use
+- Not a one-time activity
+
+## Theme 3: Mental Model Comparison
+
+**Understanding User Needs:**
+- Understanding what end-users need is important
+- Translating human hypotheses into ML models
+
+\includegraphics[width=0.7\columnwidth]{imgs/mental_model_comparison.png}
+
+\vspace{0.5cm}
+
+\begin{center}
+Human Mental Model $\stackrel{?}{=}$ Model Logic
+\end{center}
+
+## Theme 4: Context-Dependent Interpretability
+
+**Tailored Explanations:**
+- Good explanations depend on the user
+- How detailed should it be?
+- What skepticism will they bring to it?
+
+\includegraphics[width=0.7\columnwidth]{imgs/context_dependent.png}
+
+\vspace{0.5cm}
+
+**Different audiences require different approaches:**
+- Technical vs. non-technical stakeholders
+- Domain experts vs. general users
+
+## Design Opportunities Identified
+
+**Four Key Areas for Improvement:**
+
+1. **Integrating Human Expectations**
+   - Better incorporate domain knowledge
+
+2. **Communicating and Summarizing Behavior**
+   - Clearer communication of model behavior
+
+3. **Scalable and Integratable Tools**
+   - Tools that work at scale in production
+
+4. **Post-Deployment Support**
+   - Ongoing interpretability after deployment
+
+# Paper 2: Interpreting Interpretability
+
+## Interpreting Interpretability
+
+**Understanding Data Scientists' Use of Interpretability Tools for Machine Learning**
+
+**Authors:**
+- Harmanpreet Kaur, Harsha Nori, Samuel Jenkins (University of Michigan)
+- Rich Caruana, Hanna Wallach, Jennifer Wortman Vaughan (Microsoft Research)
+
+## Research Question
+
+\includegraphics[width=1.0\columnwidth]{imgs/paper2_research_question.png}
+
+\begin{columns}
+\begin{column}{0.45\textwidth}
+\textbf{Interpretability Researchers}
+\begin{itemize}
+\item Create interpretability tools
+\end{itemize}
+\end{column}
+
+\begin{column}{0.1\textwidth}
+\begin{center}
+\Large $\rightarrow$
+\end{center}
+\end{column}
+
+\begin{column}{0.45\textwidth}
+\textbf{ML Practitioners}
+\begin{itemize}
+\item Use interpretability tools
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{1cm}
+
+\begin{alertblock}{Critical Question}
+But do they actually work?
+\end{alertblock}
+
+## Study Contributions
+
+**Key Findings:**
+
+1. Evaluates whether interpretability tools help ML practitioners understand models
+
+2. Contextual inquiry and survey of how practitioners use ML tools
+
+3. Finds that data scientists **over-trust** and **misuse** interpretability tools
+
+## Methodology Overview
+
+**Three-Phase Study:**
+
+\begin{enumerate}
+\item \textbf{Pilot Interviews} (N = 6)
+   \begin{itemize}
+   \item Identified issues to test in contextual inquiry
+   \end{itemize}
+
+\item \textbf{Contextual Inquiry} (N = 11)
+   \begin{itemize}
+   \item Can users find issues when given standard tools?
+   \end{itemize}
+
+\item \textbf{Survey} (N = 197)
+   \begin{itemize}
+   \item Validate and quantify findings in large sample
+   \end{itemize}
+\end{enumerate}
+
+## Pilot Study: Common Issues
+
+\includegraphics[width=1.0\columnwidth]{imgs/common_issues_table.png}
+
+\small
+
+| **Theme** | **Description** |
+|-----------|----------------|
+| **Missing values** | Methods for dealing with missing values can cause biases or leakage |
+| **Changes in data** | Data can change over time (e.g., new categories) |
+| **Duplicate data** | Unclear naming conventions can lead to accidental duplication |
+| **Redundant features** | Same feature in several ways distributes importance |
+| **Ad-hoc categorization** | Arbitrary bins when converting continuous to categorical |
+| **Debugging difficulties** | Identifying model improvements from small samples is difficult |
+
+## Contextual Inquiry: Tools Used
+
+**Two Popular Interpretability Tools:**
+
+\includegraphics[width=1.0\columnwidth]{imgs/gam_shap_visualizations.png}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{GAM (Generalized Additive Models)}
+\begin{itemize}
+\item Inherently interpretable model
+\item Shows feature importance
+\item Shape functions for each feature
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\textbf{SHAP (SHapley Additive exPlanations)}
+\begin{itemize}
+\item Post-hoc explanation method
+\item Feature importance plots
+\item Local and global explanations
+\end{itemize}
+\end{column}
+\end{columns}
+
+## Contextual Inquiry Results
+
+**Key Findings:**
+
+1. **Misuse and Disuse**
+   - Participants struggled to use tools correctly
+
+2. **Social Context is Important**
+   - Organizational factors affect interpretability use
+
+3. **Visualizations Can Be Misleading**
+   - Participants misinterpreted visualizations
+
+# Large Scale Survey
+
+## Survey Methodology
+
+**Study Design:**
+
+- **Type:** Survey based on example queries from previous tools
+- **Participants:** 197 from mailing list of large tech company
+- **Analysis:**
+  - Coded open-ended responses
+  - Statistical tests to compare outcomes by condition
+
+## Experimental Conditions
+
+**Two Factors:**
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{Explanation Type}
+\begin{itemize}
+\item GAM
+\item SHAP
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\textbf{Visualization Type}
+\begin{itemize}
+\item Normal (correct)
+\item Manipulated (obviously wrong)
+\end{itemize}
+\end{column}
+\end{columns}
+
+\vspace{1cm}
+
+\begin{alertblock}{Key Question}
+Do people trust obviously wrong explanations less?
+\end{alertblock}
+
+## Result 1: Performance with Explanations
+
+**Key Findings:**
+
+- **GAM >> SHAP**
+  - GAM users performed significantly better
+
+- **Better results with good explanations than manipulated**
+  - But effect was smaller than expected
+
+\vspace{0.5cm}
+
+\begin{block}{Implication}
+People don't always detect obviously flawed explanations
+\end{block}
+
+## Result 2: Deployment Decisions
+
+**How Practitioners Make Deployment Decisions:**
+
+1. **Intuition-Based Decisions**
+   - Made decisions based on gut feeling
+
+2. **Superficial Justification**
+   - Used explanations to justify pre-existing beliefs
+
+3. **Critical Examination (Some)**
+   - Small group used tools as intended
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Design Challenge}
+How to push people towards deliberative reasoning?
+\end{exampleblock}
+
+## Result 3: Mental Models of Tools
+
+**Understanding vs. Confidence:**
+
+\includegraphics[width=0.6\columnwidth]{imgs/mental_models_results.png}
+
+- Participants largely **did not understand tools well**
+- Despite that, they **believed tools effective** for many uses
+
+\vspace{1cm}
+
+\begin{alertblock}{Critical Question}
+Is it bad for explanations to persuade people without understanding?
+\end{alertblock}
+
+## Result 4: Experience Paradox
+
+**The Experience-Confidence Trade-off:**
+
+- More ML background → Better understanding of explanations
+- More ML experience → Less confidence in explanations
+- Less confidence → Lower willingness to deploy
+
+\vspace{1cm}
+
+\begin{exampleblock}{Challenge}
+How do we make ML explanations more accessible without sacrificing quality?
+\end{exampleblock}
+
+# Discussion and Implications
+
+## Key Takeaways from Both Papers
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\textbf{Paper 1: What Users Need}
+\begin{itemize}
+\item Cooperative interpretability
+\item Process-oriented tools
+\item Context-dependent explanations
+\item Post-deployment support
+\end{itemize}
+\end{column}
+
+\begin{column}{0.5\textwidth}
+\textbf{Paper 2: How Tools Perform}
+\begin{itemize}
+\item Over-trust is common
+\item Misuse is frequent
+\item Better tools needed
+\item Training is essential
+\end{itemize}
+\end{column}
+\end{columns}
+
+## Critical Questions for Discussion
+
+1. **Better tools vs. better training?**
+   - Should we focus on improving tools or educating users?
+
+2. **Persuasion without understanding?**
+   - Is it problematic if explanations convince without comprehension?
+
+3. **Accessibility vs. sophistication?**
+   - How to make tools accessible without oversimplifying?
+
+4. **Role-specific design?**
+   - Should we design different tools for different roles?
+
+## Implications for Interpretability Research
+
+**Research Directions:**
+
+- Design tools with specific user roles and stages in mind
+- Account for social and organizational context
+- Provide safeguards against misuse
+- Balance complexity with accessibility
+- Support continuous engagement throughout ML lifecycle
+
+## Open Research Questions
+
+1. How can we design interpretability tools that are both powerful and accessible?
+
+2. What interventions can reduce over-trust in explanations?
+
+3. How should interpretability tools adapt to different user expertise levels?
+
+4. What role should organizational culture play in interpretability tool design?
+
+5. How can we better evaluate whether tools actually help users?
+
+## Conclusion
+
+**Main Messages:**
+
+- Interpretability tools are widely used but often misused
+- Gap exists between what researchers build and what practitioners need
+- Context, role, and stage matter significantly
+- User training is as important as tool design
+- Much work remains to bridge research and practice
 
 ---
 
-# Decision Trees: Training
+\begin{center}
+\Huge Thank You!
 
-**CART Algorithm** (Classification and Regression Trees)
+\vspace{1cm}
 
-**Splitting criteria:**
-
-- **Classification**: Gini impurity, Entropy
-- **Regression**: Mean squared error
-
-**Gini Impurity:**
-
-$$G = 1 - \\sum_{i=1}^{C} p_i^2$$
-
-where $p_i$ is the proportion of class $i$ in the node.
-
----
-
-# Decision Trees: Interpretability
-
-**Why are they interpretable?**
-
-- **Visual structure**: Easy to draw and understand
-- **Logical rules**: Can be expressed as IF-THEN statements
-- **Feature importance**: By split position and frequency
-- **Non-parametric**: No distributional assumptions
-
-**Simulatability:**
-
-- Small trees can be mentally traced
-- Clear decision path for each prediction
-
----
-
-# Decision Trees: Limitations
-
-**Challenges:**
-
-1. **Instability**: Small data changes → large tree changes
-2. **Overfitting**: Deep trees memorize training data
-3. **Greedy learning**: Locally optimal splits may not be globally optimal
-4. **Bias towards features with many levels**
-
-**Size-Interpretability Trade-off:**
-
-- Small trees: Interpretable but may underfit
-- Large trees: More accurate but less interpretable
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/tree_complexity.png} -->
-
----
-
-# Rule-Based Models
-
-\\begin{center}
-\\textbf{Sets of IF-THEN Rules}
-\\end{center}
-
-**General Form:**
-
-```
-IF (condition₁ AND condition₂ AND ...) THEN prediction
-```
-
-**Types:**
-
-1. **Unordered rules**: All rules evaluated independently
-2. **Ordered rules (decision lists)**: Rules evaluated sequentially
-3. **Rule sets**: Collections with priority/conflict resolution
-
----
-
-# Rule Lists
-
-**Sequential Decision Making**
-
-[@letham2015interpretable]
-
-**Example: Stroke Risk Assessment**
-
-```
-IF (age ≥ 75) THEN high_risk
-ELSE IF (age ≥ 65 AND diabetes = yes) THEN high_risk
-ELSE IF (hypertension = yes AND smoking = yes) THEN medium_risk
-ELSE low_risk
-```
-
-**Properties:**
-
-- Rules evaluated in order (like switch/case)
-- First matching rule determines prediction
-- Default rule at the end
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/rule_list.png} -->
-
----
-
-# Rule Lists: Learning
-
-**Bayesian Rule Lists (BRL)** [@letham2015interpretable]
-
-**Objective:**
-
-- Find short, accurate rule lists
-- Balance between accuracy and simplicity
-- Use Bayesian approach for model selection
-
-**Key Idea:**
-
-$$P(\\text{model}|\\text{data}) \\propto P(\\text{data}|\\text{model}) \\times P(\\text{model})$$
-
-- Prior favors shorter lists (Occam's razor)
-- Posterior balances fit and complexity
-
----
-
-# Rule Sets
-
-**Non-Sequential Rules**
-
-[@lakkaraju2016interpretable]
-
-**Example: Loan Approval**
-
-```
-Rule 1: IF (income > 50K AND credit_score > 700) THEN approve [support=35%, accuracy=92%]
-Rule 2: IF (age > 30 AND employed=yes) THEN approve [support=28%, accuracy=85%]
-Rule 3: IF (debt_ratio < 0.3) THEN approve [support=22%, accuracy=88%]
-Default: reject
-```
-
-**Differences from Rule Lists:**
-
-- Multiple rules can match simultaneously
-- Need conflict resolution strategy
-- More flexible but potentially less interpretable
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/rule_set.png} -->
-
----
-
-# Interpretable Rule Sets
-
-**Learning Certifiably Optimal Rule Lists (CORELS)** [@angelino2017learning]
-
-**Goals:**
-
-- Provably optimal rule lists
-- User-specified interpretability constraints
-- Efficient learning via branch-and-bound
-
-**Falling Rule Lists** [@wang2017falling]
-
-- Rules with monotonically decreasing probability
-- Natural ordering by confidence
-- Easier to understand and trust
-
----
-
-# Rule-Based Models: Interpretability
-
-**Advantages:**
-
-- **Logical transparency**: Clear reasoning path
-- **Modular**: Each rule can be understood independently
-- **Actionable**: Rules suggest interventions
-- **Domain alignment**: Can incorporate expert knowledge
-
-**Measuring Interpretability:**
-
-- Number of rules
-- Average rule length (number of conditions)
-- Overlap between rules
-- Consistency with domain knowledge
-
----
-
-# Generalized Additive Models (GAMs)
-
-\\begin{center}
-\\textbf{Flexible Yet Interpretable}
-\\end{center}
-
-**Model Form:**
-
-$$g(E[y]) = \\beta_0 + f_1(x_1) + f_2(x_2) + \\ldots + f_p(x_p)$$
-
-where:
-- $g$ is a link function
-- $f_i$ are smooth functions (e.g., splines)
-
-**Key Property:** Additivity is preserved, but functions can be non-linear
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/gam.png} -->
-
----
-
-# GAMs: Interpretability
-
-**Why are GAMs interpretable?**
-
-- **Additive structure**: Each feature contributes independently
-- **Visualizable**: Can plot $f_i(x_i)$ for each feature
-- **Shape functions**: Reveal complex patterns (U-shapes, thresholds)
-- **No feature interactions**: Simplifies reasoning
-
-**Example Interpretation:**
-
-- Plot shows age effect is non-linear (U-shaped)
-- Risk increases for very young and very old
-- Middle age has lowest risk
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/gam_shape.png} -->
-
----
-
-# GAMs: Extensions
-
-**Limitations of Standard GAMs:**
-
-- No interactions between features
-- May miss important combined effects
-
-**GA²Ms** (Generalized Additive² Models) [@lou2013accurate]
-
-$$g(E[y]) = \\beta_0 + \\sum_i f_i(x_i) + \\sum_{i<j} f_{ij}(x_i, x_j)$$
-
-**Benefits:**
-
-- Captures pairwise interactions
-- Maintains interpretability (can visualize pairs)
-- Better accuracy than GAMs
-
----
-
-# Explainable Boosting Machines (EBM)
-
-[@nori2019interpretml; @lou2012intelligible]
-
-**Modern GAMs with Boosting:**
-
-- Use gradient boosting to learn shape functions
-- Automatically detect and include interactions
-- State-of-the-art accuracy among interpretable models
-
-**InterpretML Library:**
-
-- Open-source implementation
-- Visualization tools
-- Comparison with other interpretable models
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/ebm.png} -->
-
----
-
-# Accuracy vs. Interpretability Trade-off
-
-\\begin{center}
-\\textbf{The Central Dilemma}
-\\end{center}
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/accuracy_interpretability.png} -->
-
-**General Pattern:**
-
-- Linear models: High interpretability, lower accuracy
-- Decision trees: Moderate on both dimensions
-- GAMs/EBMs: Good balance
-- Neural networks: High accuracy, low interpretability
-
-**Question:** Is this trade-off fundamental or an artifact of our methods?
-
----
-
-# Case Study: COMPAS Risk Assessment
-
-[@dressel2018accuracy]
-
-**Context:**
-
-- Criminal justice recidivism prediction
-- COMPAS: Proprietary black-box system
-- Controversy over accuracy and fairness
-
-**Findings:**
-
-- Simple linear models matched COMPAS accuracy
-- Interpretable models performed competitively
-- Non-experts could achieve similar performance with simple rules
-
-**Implications:**
-
-- Complex models may not always be necessary
-- Interpretability can be achieved without sacrificing accuracy
-
----
-
-# When Interpretable Models Fall Short
-
-**High-Dimensional Data:**
-
-- Images, text, speech
-- Too many features for simple models
-
-**Complex Interactions:**
-
-- Non-additive effects
-- High-order dependencies
-
-**Representation Learning:**
-
-- Need to learn features, not just weights
-- E.g., word embeddings, image features
-
-\\begin{center}
-\\textbf{In these cases, post-hoc explanations become necessary}
-\\end{center}
-
----
-
-# Hybrid Approaches
-
-**Combining Interpretability and Accuracy:**
-
-1. **Distillation**: Train complex model, then distill to interpretable one
-   - [@craven1996extracting; @frosst2017distilling]
-
-2. **Selective Prediction**: Use interpretable model when confident, complex model otherwise
-
-3. **Hierarchical Models**: Interpretable model makes coarse decisions, complex model refines
-
-<!-- \\includegraphics[width=1.0\\columnwidth]{imgs/hybrid.png} -->
-
----
-
-# Best Practices: Choosing Interpretable Models
-
-**Guidelines:**
-
-1. **Start simple**: Try linear models first
-2. **Understand trade-offs**: Accuracy vs. interpretability for your domain
-3. **Consider stakeholders**: Who needs to understand the model?
-4. **Validate interpretations**: Are explanations actually meaningful?
-5. **Measure interpretability**: Use proxy metrics (model size, depth, etc.)
-
-**Questions to Ask:**
-
-- Can domain experts validate the model's logic?
-- Can users simulate model predictions mentally?
-- Are the features themselves interpretable?
-
----
-
-# Evaluation of Interpretable Models
-
-**Beyond Accuracy:**
-
-1. **Functional Metrics**:
-   - Model size (number of parameters/rules)
-   - Model depth (for trees)
-   - Number of non-zero coefficients
-
-2. **Human Studies**:
-   - Can users understand the model?
-   - Can users predict model behavior?
-   - Do users trust the model more?
-
-3. **Task Performance**:
-   - Debugging: Can users find errors?
-   - Decision support: Does model improve decisions?
-
----
-
-# Research Frontiers
-
-**Open Challenges:**
-
-1. **Theory**: Formal definitions of interpretability
-2. **Scaling**: Interpretable models for big data
-3. **Deep Learning**: Can we make neural networks interpretable by design?
-4. **Interactions**: Handling high-order interactions interpretably
-5. **Evaluation**: Better metrics and benchmarks
-
-**Emerging Directions:**
-
-- Concept-based models
-- Neural-symbolic integration
-- Structured neural networks
-
----
-
-# Summary: Inherently Interpretable Models
-
-**Key Takeaways:**
-
-- Multiple model classes offer interpretability
-  - Linear models: Simple, transparent
-  - Decision trees: Visual, logical
-  - Rule-based models: Modular, actionable
-  - GAMs: Flexible, visualizable
-
-- Interpretability is multifaceted
-  - Simulatability, decomposability, transparency
-
-- Trade-offs exist but can be managed
-  - Modern methods (EBMs) achieve strong accuracy
-  - Domain-specific evaluation is crucial
-
----
-
-# Next Class
-
-**Post-hoc Explanation Methods:**
-
-- LIME (Local Interpretable Model-agnostic Explanations)
-- SHAP (SHapley Additive exPlanations)
-- Counterfactual Explanations
-- Saliency Maps and Attribution Methods
-
-**Reading:**
-
-- [@ribeiro2016should] - "Why Should I Trust You?"
-- [@lundberg2017unified] - "A Unified Approach to Interpreting Model Predictions"
-
----
-
-# Discussion Questions
-
-1. In what domains would you prefer interpretable models over black-boxes?
-
-2. How would you evaluate if a decision tree with 20 nodes is "interpretable"?
-
-3. Can regularization (L1/L2) be considered an interpretability technique?
-
-4. Should we always prefer inherently interpretable models in high-stakes domains?
-
-5. How do you balance the needs of different stakeholders (developers, users, regulators)?
-
----
-
-# References {.allowframebreaks}
-
-\\footnotesize
+\Large Questions and Discussion
+\end{center}
