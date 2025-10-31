@@ -95,9 +95,9 @@ bibliography: references.bib
 \end{itemize}
 
 \end{column}
-\begin{column}{0.45\textwidth}
+\begin{column}{0.5\textwidth}
 \begin{center}
-\includegraphics[width=.75\columnwidth]{imgs/dimensions.png}
+\includegraphics[width=.65\columnwidth]{imgs/dimensions.png}
 \end{center}
 \end{column}
 \end{columns}
