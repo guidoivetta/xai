@@ -53,87 +53,62 @@ bibliography: references.bib
 
 ---
 
+# Research Motivation
 
-
-## Research Motivation
-
-\includegraphics[width=1.0\columnwidth]{imgs/researcher_practitioner_gap.png}
-
-\begin{columns}
-\begin{column}{0.45\textwidth}
-\textbf{Interpretability Researchers}
-\begin{itemize}
-\item Fancy models
-\item Not always practical
-\end{itemize}
-\end{column}
-
-\begin{column}{0.1\textwidth}
 \begin{center}
-\Large $\leftrightarrow$
+\includegraphics[width=1.0\columnwidth]{imgs/researcher_practitioner_gap.png}
 \end{center}
-\end{column}
 
-\begin{column}{0.45\textwidth}
-\textbf{ML Practitioners}
-\begin{itemize}
-\item Simpler techniques
-\item That actually work
-\end{itemize}
-\end{column}
-\end{columns}
 
-\vspace{1cm}
+---
 
-\begin{alertblock}{Central Question}
-What do practitioners really need?
-\end{alertblock}
+# Methodology: Qualitative Study
 
-## Study Contributions
-
-**Key Contributions:**
-
-1. Conducts interview study to understand industry practitioners' existing needs and uses for interpretability
-
-2. Presents findings on roles, stages, and goals related to interpretability
-
-3. Identifies aspects of interpretability under-supported by existing technical solutions
-
-## Methodology: Qualitative Study
-
-**Study Design:**
-- **Type:** Semi-structured interviews
-- **Participants:** 22 from convenience and snowball sampling
-- **Analysis:** Qualitative coding
-
-\vspace{0.5cm}
-
-**Qualitative Coding:**
-- Iteratively build up a set of codes
-- Look at data and compare notes with other annotators
 - Useful for exploratory research
 - Can generate hypotheses to test quantitatively
 
+\vspace{2em}
+
+## Study Design:
+
+- **Type:** Semi-structured interviews
+- **Participants:** 22 from convenience and snowball sampling
+- **Analysis:** Qualitative coding
+   - Iteratively build up a set of codes
+   - Look at data and compare notes with other annotators
+
+---
+
 # Results: Three Dimensions
 
-## Results Overview
+\begin{columns}
+\begin{column}{0.5\textwidth}
 
-**Three Key Dimensions:**
+\begin{itemize}
+\item \textbf{Interpretability Roles:} Who needs interpretability?
 
-1. **Interpretability Roles**
-   - Who needs interpretability?
+\item \textbf{Interpretability Stages:}
+   When is interpretability needed?
 
-2. **Interpretability Stages**
-   - When is interpretability needed?
+\item \textbf{Interpretability Goals:}
+   Why is interpretability needed?
+\end{itemize}
 
-3. **Interpretability Goals**
-   - Why is interpretability needed?
+\end{column}
+\begin{column}{0.45\textwidth}
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/dimensions.png}
+\end{center}
+\end{column}
+\end{columns}
 
-## Interpretability Roles
+
+
+---
+
+# Results Dimension: Interpretability Roles
 
 **Three Primary Roles:**
-
-\includegraphics[width=0.8\columnwidth]{imgs/three_roles.png} 
 
 1. **Model Builders**
    - Create and develop ML models
@@ -143,6 +118,8 @@ What do practitioners really need?
 
 3. **Model Consumers**
    - Use model outputs for decision-making
+
+---
 
 \begin{alertblock}{Design Question}
 What methods are designed for different roles?
