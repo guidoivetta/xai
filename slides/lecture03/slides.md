@@ -102,124 +102,308 @@ bibliography: references.bib
 \end{column}
 \end{columns}
 
+---
+
+# Results Dimension: Interpretability Roles
+
+\begin{center}
+   \large
+   \textbf{What methods are designed for different roles?}
+\end{center}
+
+\vspace{20pt}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+
+\textbf{Three Primary Roles:}
+\vspace{10pt}
+\begin{enumerate}
+    \item \textbf{Model Builders} -- Create and develop ML models
+    \item \textbf{Model Breakers} -- Test and validate models
+    \item \textbf{Model Consumers} -- Use model outputs for decision-making
+\end{enumerate}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+\includegraphics[width=.65\columnwidth]{imgs/roles.png}
+\end{center}
+\end{column}
+\end{columns}
 
 
 ---
 
 # Results Dimension: Interpretability Roles
 
-**Three Primary Roles:**
 
-1. **Model Builders**
-   - Create and develop ML models
+\begin{columns}
+\begin{column}{0.5\textwidth}
+\begin{itemize}
+    \item \textbf{Model Builders}
+    \begin{itemize}
+        \item Debug models, identify edge cases, and compare model versions
+        \item Communicate how models work to gain organizational trust
+    \end{itemize}
+    \item \textbf{Model Breakers}
+    \begin{itemize}
+        \item Verify legal compliance and validate predictions against domain knowledge
+        \item Identify spurious correlations and provide improvement feedback
+    \end{itemize}
+    \item \textbf{Model Consumers}
+    \begin{itemize}
+        \item Need actionable explanations for decisions
+        \item Require justifications when models contradict expertise and evidence for high-stakes choices
+    \end{itemize}
+\end{itemize}
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+\includegraphics[width=.65\columnwidth]{imgs/roles.png}
+\end{center}
+\end{column}
+\end{columns}
 
-2. **Model Breakers**
-   - Test and validate models
-
-3. **Model Consumers**
-   - Use model outputs for decision-making
 
 ---
 
-\begin{alertblock}{Design Question}
-What methods are designed for different roles?
-\end{alertblock}
+# Results Dimension: Interpretability Stages
 
-## Interpretability Stages
-
-**Three Stages in ML Pipeline:**
-
-```
 \begin{center}
-\begin{tikzpicture}[node distance=2.5cm]
-\node (fe) [rectangle, draw, minimum width=2.5cm, minimum height=1cm] {Feature Engineering};
-\node (mb) [rectangle, draw, minimum width=2.5cm, minimum height=1cm, right of=fe] {Model Building};
-\node (dep) [rectangle, draw, minimum width=2.5cm, minimum height=1cm, right of=mb] {Deployment};
-\draw [->] (fe) -- (mb);
-\draw [->] (mb) -- (dep);
-\end{tikzpicture}
+   \large
+   \textbf{What methods are designed for different stages?}
 \end{center}
-```
 
-**Detailed Stages:**
-- Ideation and conceptualization stage
-- Building and validation stage
-- Deployment, maintenance, and use stage
+\vspace{20pt}
 
-\begin{alertblock}{Design Question}
-What methods are designed for different stages?
-\end{alertblock}
+\begin{columns}
+\begin{column}{0.5\textwidth}
 
-## Interpretability Goals
+\textbf{Three Stages in ML Pipeline:}
+\vspace{10pt}
+\begin{enumerate}
+    \item Ideation and conceptualization stage
+    \item Building and validation stage
+    \item Deployment, maintenance, and use stage
+\end{enumerate}
 
-**Three Primary Goals:**
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/stages.png}
+\end{center}
+\end{column}
+\end{columns}
 
-1. **Model Validation and Improvement**
-   - Debugging and enhancing model performance
+---
 
-2. **Decision Making and Knowledge Discovery**
-   - Using models to gain insights
+# Results Dimension: Interpretability Stages
 
-3. **Gaining Confidence and Obtaining Trust**
-   - Building confidence in model predictions
+\begin{columns}
+\begin{column}{0.65\textwidth}
 
-\begin{alertblock}{Design Question}
-What methods are designed for different goals?
-\end{alertblock}
+\begin{enumerate}
+    \item \textbf{Ideation and Conceptualization Stage}
+    \begin{itemize}
+        \item Feature engineering with interpretability in mind and collaboration with domain experts
+        \item Working with auditors to ensure compliance and write model white papers
+    \end{itemize}
+    \item \textbf{Building and Validation Stage}
+    \begin{itemize}
+        \item Testing edge cases, examining feature importance, and comparing model versions
+        \item Communicating model behavior to stakeholders to gain trust
+    \end{itemize}
+    \item \textbf{Deployment, Maintenance, and Use Stage}
+    \begin{itemize}
+        \item Monitoring models and performing root cause analysis when issues arise
+        \item Providing explanations to end-users for high-stakes decisions and knowledge discovery
+    \end{itemize}
+\end{enumerate}
 
-# Key Themes
+\end{column}
+\begin{column}{.35\textwidth}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/stages.png}
+\end{center}
+\end{column}
+\end{columns}
 
-## Theme 1: Interpretability is Cooperative
+---
+
+# Results Dimension: Interpretability Goals
+
+
+\begin{center}
+   \large
+   \textbf{What methods are designed for different goals?}
+\end{center}
+
+\vspace{20pt}
+
+\begin{columns}
+\begin{column}{0.5\textwidth}
+
+\textbf{Three Primary Goals:}
+\vspace{10pt}
+\begin{enumerate}
+    \item \textbf{Model Validation and Improvement} --- Debugging and enhancing model performance
+    \item \textbf{Decision Making and Knowledge Discovery} --- Using models to gain insights
+    \item \textbf{Gaining Confidence and Obtaining Trust} --- Building confidence in model predictions
+\end{enumerate}
+
+\end{column}
+\begin{column}{0.5\textwidth}
+\begin{center}
+\includegraphics[width=.65\columnwidth]{imgs/goals.png}
+\end{center}
+\end{column}
+\end{columns}
+
+
+---
+
+# Results Dimension: 27 combinations
+
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/full_dims.png}
+\end{center}
+
+---
+
+# Three Key Themes: 1 Interpretability is Cooperative
 
 **Communication is Central:**
-- Important for communicating with domain experts and stakeholders
-- Facilitates trust, sometimes just by virtue of including an explanation
 
-\includegraphics[width=0.6\columnwidth]{imgs/team_collaboration.png}
+   - Important for communicating with domain experts and stakeholders
+   - Facilitates trust, sometimes just by virtue of including an explanation
 
-\vspace{1cm}
+\begin{center}
+\includegraphics[width=0.45\columnwidth]{imgs/team_collaboration.png}
+\end{center}
 
-\begin{exampleblock}{Open Question}
-Better tools vs. better data science training for communication?
-\end{exampleblock}
+\begin{center}
+   \large
+   \textbf{Better tools vs. better data science training for communication?}
+\end{center}
 
-## Theme 2: Interpretability is a Process
+---
+
+# Three Key Themes: 1 Interpretability is Cooperative
+
+\vspace{1em}
+\begin{center}
+   \large
+   \textbf{Better tools vs. better data science training for communication?}
+\end{center}
+    
+:::: {.columns}
+::: {.column width="48%"}
+### Better Tools
+
+- Advanced visualization systems
+- Automated explanation methods
+- Interactive debugging interfaces
+:::
+
+::: {.column width="48%"}
+### Better Training
+
+- Communication skills development
+- Stakeholder empathy building
+- Cross-functional collaboration
+:::
+::::
+
+::: {.block}
+### Key Finding
+Interpretability are often **communication problems between people**, not just technical person-model alignment issues.
+:::
+
+\begin{center}
+\includegraphics[width=0.20\columnwidth]{imgs/vs.png}
+\end{center}
+
+
+---
+
+# Three Key Themes: 2 Interpretability is a Process
 
 **Continuous Engagement:**
+
 - Important across many different stages of the ML pipeline
 - Dialogue with the model for continued use
 - Not a one-time activity
 
-## Theme 3: Mental Model Comparison
 
+---
+
+# Three Key Themes: 3 Mental Model Comparison
+
+\vspace{1em}
 **Understanding User Needs:**
+
 - Understanding what end-users need is important
 - Translating human hypotheses into ML models
 
-\includegraphics[width=0.7\columnwidth]{imgs/mental_model_comparison.png}
-
-\vspace{0.5cm}
-
 \begin{center}
-Human Mental Model $\stackrel{?}{=}$ Model Logic
+\includegraphics[width=0.55\columnwidth]{imgs/mental_model_comparison.png}
 \end{center}
 
-## Theme 4: Context-Dependent Interpretability
+---
+
+# Three Key Themes: 4 Context-Dependent 
 
 **Tailored Explanations:**
+
 - Good explanations depend on the user
 - How detailed should it be?
 - What skepticism will they bring to it?
 
-\includegraphics[width=0.7\columnwidth]{imgs/context_dependent.png}
+\begin{center}
+\includegraphics[width=0.87\columnwidth]{imgs/context_dependent.png}
+\end{center}
 
-\vspace{0.5cm}
 
-**Different audiences require different approaches:**
-- Technical vs. non-technical stakeholders
-- Domain experts vs. general users
 
-## Design Opportunities Identified
+---
+
+# Three Key Themes: 4 Context-Dependent 
+
+\vspace{1em}
+\begin{center}
+   \large
+   \textbf{Effective explanations must be tailored to the specific user and context:}
+\end{center}
+
+:::: {.columns}
+::: {.column width="48%"}
+### Key Considerations
+
+- **User expertise level** --- Technical depth varies by role
+- **Actionability** --- What can users actually change?
+- **Domain context** --- Healthcare ≠ Finance ≠ Manufacturing
+:::
+
+::: {.column width="48%"}
+### Critical Questions
+
+- How detailed should explanations be?
+- What skepticism will users bring?
+- Which features are meaningful to them?
+:::
+::::
+
+::: {.block}
+### Example
+Doctors need explanations tied to **actionable treatments**, not just top features. 
+
+A feature ranking without clinical context provides no value.
+:::
+
+---
+
+# Design Opportunities Identified
 
 **Four Key Areas for Improvement:**
 
@@ -235,51 +419,39 @@ Human Mental Model $\stackrel{?}{=}$ Model Logic
 4. **Post-Deployment Support**
    - Ongoing interpretability after deployment
 
-# Paper 2: Interpreting Interpretability
 
-## Interpreting Interpretability
+---
 
-**Understanding Data Scientists' Use of Interpretability Tools for Machine Learning**
+# In other words
 
-**Authors:**
-- Harmanpreet Kaur, Harsha Nori, Samuel Jenkins (University of Michigan)
-- Rich Caruana, Hanna Wallach, Jennifer Wortman Vaughan (Microsoft Research)
 
-## Research Question
-
-\includegraphics[width=1.0\columnwidth]{imgs/paper2_research_question.png}
-
-\begin{columns}
-\begin{column}{0.45\textwidth}
-\textbf{Interpretability Researchers}
-\begin{itemize}
-\item Create interpretability tools
-\end{itemize}
-\end{column}
-
-\begin{column}{0.1\textwidth}
 \begin{center}
-\Large $\rightarrow$
+\includegraphics[width=0.6\columnwidth]{imgs/bsotwbresc.png}
+
+\textbf{
+\href{https://www.software.ac.uk/}{Software Sustainability Institute\\https://www.software.ac.uk/}}
 \end{center}
-\end{column}
 
-\begin{column}{0.45\textwidth}
-\textbf{ML Practitioners}
-\begin{itemize}
-\item Use interpretability tools
-\end{itemize}
-\end{column}
-\end{columns}
 
-\vspace{1cm}
+---
 
-\begin{alertblock}{Critical Question}
-But do they actually work?
-\end{alertblock}
+# Let's try to understand other people mental models
 
-## Study Contributions
+\begin{center}
+\includegraphics[width=.95\columnwidth]{imgs/paper1end.png}
+\end{center}
 
-**Key Findings:**
+---
+
+# Paper 2
+
+\vspace{1em}
+\begin{center}
+\includegraphics[width=.8\columnwidth]{imgs/paper2.png}
+\end{center}
+
+## Key Contributions:
+
 
 1. Evaluates whether interpretability tools help ML practitioners understand models
 
@@ -287,9 +459,15 @@ But do they actually work?
 
 3. Finds that data scientists **over-trust** and **misuse** interpretability tools
 
-## Methodology Overview
+---
 
-**Three-Phase Study:**
+# Research Question
+
+\includegraphics[width=.9\columnwidth]{imgs/paper2_research_question.png}
+
+---
+
+# Methodology Overview: Three-Phase Study
 
 \begin{enumerate}
 \item \textbf{Pilot Interviews} (N = 6)
@@ -308,59 +486,84 @@ But do they actually work?
    \end{itemize}
 \end{enumerate}
 
-## Pilot Study: Common Issues
+---
 
-\includegraphics[width=1.0\columnwidth]{imgs/common_issues_table.png}
+# Stage 1: Pilot Interviews
 
-\small
+\vspace{1em}
+\begin{center}
+   \large
+   \textbf{Objective:} Identify common issues faced by data scientists in their day-to-day ML work
+\end{center}
 
-| **Theme** | **Description** |
-|-----------|----------------|
-| **Missing values** | Methods for dealing with missing values can cause biases or leakage |
-| **Changes in data** | Data can change over time (e.g., new categories) |
-| **Duplicate data** | Unclear naming conventions can lead to accidental duplication |
-| **Redundant features** | Same feature in several ways distributes importance |
-| **Ad-hoc categorization** | Arbitrary bins when converting continuous to categorical |
-| **Debugging difficulties** | Identifying model improvements from small samples is difficult |
 
-## Contextual Inquiry: Tools Used
+## Method
+
+- **N = 6** data scientists from large tech company
+- **Semi-structured interviews** (~40 minutes each)
+- **Analysis:** Inductive thematic analysis (open coding + affinity diagramming)
+
+
+---
+
+# Stage 1: Pilot Interviews - Common Issues
+
+\begin{center}
+\includegraphics[width=0.99\columnwidth]{imgs/common_issues_table.png}
+\vspace{1em}
+\textbf{These 6 issues were synthetically injected into the dataset for Stages 2 \& 3}
+\end{center}
+
+---
+
+# Stage 2: Contextual Inquiry
+
+**Objective:** Observe whether data scientists can use interpretability tools to **uncover** the injected issues
+
+
+## Participants & Setup
+- **N = 11** participants (ML researchers, data scientists, interns)
+- **Dataset:** Adult Income (1994 census) - synthetically manipulated
+- **Tools:** GAMs (n=6) or SHAP (n=5) - randomly assigned
+- **Format:** Jupyter notebooks with tutorials
+
+---
+
+# Stage 2: Contextual Inquiry -- Tools Used
 
 **Two Popular Interpretability Tools:**
 
+## GAMs (Generalized Additive Models)
+**Glassbox model** that decomposes predictions into additive components—one per feature—that can each be visualized as a non-linear function. Inherently interpretable by design; no post-hoc explanation needed.
+
+## SHAP (SHapley Additive exPlanations)
+**Post-hoc explanation technique** for blackbox models that assigns importance scores to features based on Shapley values from game theory. Explains any model's predictions by computing each feature's contribution to moving the prediction from a baseline.
+
+---
+
+# Stage 2: Contextual Inquiry -- Tools Used
+
+\begin{center}
 \includegraphics[width=1.0\columnwidth]{imgs/gam_shap_visualizations.png}
+\end{center}
 
-\begin{columns}
-\begin{column}{0.5\textwidth}
-\textbf{GAM (Generalized Additive Models)}
-\begin{itemize}
-\item Inherently interpretable model
-\item Shows feature importance
-\item Shape functions for each feature
-\end{itemize}
-\end{column}
+---
 
-\begin{column}{0.5\textwidth}
-\textbf{SHAP (SHapley Additive exPlanations)}
-\begin{itemize}
-\item Post-hoc explanation method
-\item Feature importance plots
-\item Local and global explanations
-\end{itemize}
-\end{column}
-\end{columns}
+# Stage 2: Contextual Inquiry -- Results
 
-## Contextual Inquiry Results
+- **Misuse:** Over-trusted tools due to visualizations
+  - *"Age 38... the explanation clearly shows it... makes sense"* (P9)
+- **Rationalization:** Used tools to justify suspicious observations
+  - *"Test of means says same as SHAP about Age. All's good!"* (P8)
+- **Social context:** Trusted because tools are public/popular
+- **Misleading visualizations:** Different axis scales caused errors
 
-**Key Findings:**
 
-1. **Misuse and Disuse**
-   - Participants struggled to use tools correctly
+---
 
-2. **Social Context is Important**
-   - Organizational factors affect interpretability use
+\here
 
-3. **Visualizations Can Be Misleading**
-   - Participants misinterpreted visualizations
+---
 
 # Large Scale Survey
 
