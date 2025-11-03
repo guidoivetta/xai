@@ -506,11 +506,13 @@ def main():
         print("Command:", PANDOC_CMD_TEMPLATE)
         print("")
         now = datetime.now().strftime("%H:%M:%S")
+        partial_rendering = "[Partial Rendering]" if RENDER_FROM_HERE in src else ""
         print(
             f"[{now}] Compiling",
             original_path,
             "->",
             os.path.join(wd, output_path),
+            f"{partial_rendering}"
         )
 
         # Run initial compilation
@@ -534,11 +536,13 @@ def main():
             if md5 != new_md5:
                 # File has changed, recompile
                 now = datetime.now().strftime("%H:%M:%S")
+                partial_rendering = "[Partial Rendering]" if RENDER_FROM_HERE in src else ""
                 print(
                     f"[{now}] Compiling",
                     original_path,
                     "->",
                     os.path.join(wd, output_path),
+                    f"{partial_rendering}"
                 )
                 processed_path = preprocess_markdown_source(src, filepath, tempdir)
                 output = run_pandoc(
