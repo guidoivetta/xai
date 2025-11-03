@@ -59,6 +59,9 @@ REPLACES = {
 }
 
 
+RENDER_FROM_HERE = r"\\RENDER FROM HERE\\"
+
+
 @contextlib.contextmanager
 def chdir(newdir):
     """
@@ -136,9 +139,7 @@ def get_parser():
     parser.add_argument(
         "-w", "--watch", help="watch mode", action="store_true", default=False
     )
-    parser.add_argument(
-        "-i", "--ignore_error", action="store_false", default=True
-    )
+    parser.add_argument("-i", "--ignore_error", action="store_false", default=True)
     parser.add_argument(
         "--cd",
         help="cambiar al directorio del archivo",
@@ -203,6 +204,20 @@ def calculate_md5(src):
     return hashlib.md5(src.encode("utf-8")).hexdigest()
 
 
+def find_last_index_second_dash_line(src):
+    idx = 0
+    find_one = False
+    for line in src.splitlines():
+        idx += len(line) + 1
+        line = line.strip()
+        if line.replace("-", "") == "":
+            if find_one:
+                return idx
+            else:
+                find_one = True
+    return -1
+
+
 def process_unicode(src, fname, tempdir):
     """
     Process Unicode characters in source content and save to temporary file.
@@ -243,6 +258,12 @@ def process_unicode(src, fname, tempdir):
     Add more replacements to REPLACES as needed for additional Unicode characters.
     """
     output = os.path.join(tempdir, fname)
+    if RENDER_FROM_HERE in src:
+        idx_head_stop = find_last_index_second_dash_line(src)
+
+        idx_render_from_here = src.index(RENDER_FROM_HERE) + len(RENDER_FROM_HERE)
+        src = src[:idx_head_stop] + src[idx_render_from_here:]
+
     for pattern, replace in REPLACES.items():
         src = src.replace(pattern, replace)
 
