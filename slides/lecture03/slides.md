@@ -470,17 +470,17 @@ A feature ranking without clinical context provides no value.
 # Methodology Overview: Three-Phase Study
 
 \begin{enumerate}
-\item \textbf{Pilot Interviews} (N = 6)
+\item \textbf{\textit{Stage 1} -- Pilot Interviews} (N = 6)
    \begin{itemize}
    \item Identified issues to test in contextual inquiry
    \end{itemize}
 
-\item \textbf{Contextual Inquiry} (N = 11)
+\item \textbf{\textit{Stage 2} -- Contextual Inquiry} (N = 11)
    \begin{itemize}
    \item Can users find issues when given standard tools?
    \end{itemize}
 
-\item \textbf{Survey} (N = 197)
+\item \textbf{\textit{Stage 3} -- Survey} (N = 197)
    \begin{itemize}
    \item Validate and quantify findings in large sample
    \end{itemize}
@@ -558,18 +558,18 @@ A feature ranking without clinical context provides no value.
 - **Social context:** Trusted because tools are public/popular
 - **Misleading visualizations:** Different axis scales caused errors
 
-
+\\RENDER FROM HERE\\
 ---
 
-\here
 
----
+# Stage 3: Large Scale Survey
 
-# Large Scale Survey
+**Objective:** Observe whether data scientists can use interpretability tools to **uncover** the injected issues
 
-## Survey Methodology
 
-**Study Design:**
+## Study Design
+
+\vspace{2pt}
 
 - **Type:** Survey based on example queries from previous tools
 - **Participants:** 197 from mailing list of large tech company
@@ -577,9 +577,12 @@ A feature ranking without clinical context provides no value.
   - Coded open-ended responses
   - Statistical tests to compare outcomes by condition
 
-## Experimental Conditions
 
-**Two Factors:**
+---
+
+# Stage 3: Large Scale Survey -- Experimental Conditions
+
+\vspace{0.5cm}
 
 \begin{columns}
 \begin{column}{0.5\textwidth}
@@ -599,13 +602,23 @@ A feature ranking without clinical context provides no value.
 \end{column}
 \end{columns}
 
-\vspace{1cm}
+\vspace{5pt}
 
 \begin{alertblock}{Key Question}
-Do people trust obviously wrong explanations less?
+\begin{center}
+\large
+\textbf{Do people trust obviously wrong explanations less?}
+\includegraphics[width=0.5\columnwidth]{imgs/godzilla.png}
+\end{center}
 \end{alertblock}
 
-## Result 1: Performance with Explanations
+---
+
+# Stage 3: Large Scale Survey -- # Result 1:
+
+\begin{center}
+\textbf{Performance with Explanations}
+\end{center}
 
 **Key Findings:**
 
@@ -617,13 +630,20 @@ Do people trust obviously wrong explanations less?
 
 \vspace{0.5cm}
 
-\begin{block}{Implication}
-People don't always detect obviously flawed explanations
-\end{block}
+\begin{alertblock}{Implication}
+\begin{center}
+\large
+\textbf{People don't always detect obviously flawed explanations}
+\end{center}
+\end{alertblock}
 
-## Result 2: Deployment Decisions
+---
 
-**How Practitioners Make Deployment Decisions:**
+# Stage 3: Large Scale Survey -- Result 2:
+
+\begin{center}
+\textbf{How Practitioners Make Deployment Decisions}
+\end{center}
 
 1. **Intuition-Based Decisions**
    - Made decisions based on gut feeling
@@ -636,40 +656,61 @@ People don't always detect obviously flawed explanations
 
 \vspace{0.5cm}
 
-\begin{exampleblock}{Design Challenge}
-How to push people towards deliberative reasoning?
-\end{exampleblock}
+\begin{alertblock}{Design Challenge}
+\begin{center}
+\large
+\textbf{How to push people towards deliberative reasoning?}
+\end{center}
+\end{alertblock}
 
-## Result 3: Mental Models of Tools
+---
 
-**Understanding vs. Confidence:**
+# Stage 3: Large Scale Survey -- # Result 3:
 
-\includegraphics[width=0.6\columnwidth]{imgs/mental_models_results.png}
+\begin{center}
+\textbf{Mental Models of Tools} \\
+\textbf{Understanding vs. Confidence}
+\end{center}
+
 
 - Participants largely **did not understand tools well**
 - Despite that, they **believed tools effective** for many uses
 
-\vspace{1cm}
+\vspace{0.5cm}
 
 \begin{alertblock}{Critical Question}
-Is it bad for explanations to persuade people without understanding?
+\begin{center}
+\large
+\textbf{Is it bad for explanations to persuade people without understanding?}
+\end{center}
 \end{alertblock}
 
-## Result 4: Experience Paradox
 
-**The Experience-Confidence Trade-off:**
+---
+
+# Stage 3: Large Scale Survey -- Result 4:
+
+\begin{center}
+\textbf{Experience Paradox} \\
+\textbf{The Experience-Confidence Trade-off}
+\end{center}
 
 - More ML background → Better understanding of explanations
 - More ML experience → Less confidence in explanations
 - Less confidence → Lower willingness to deploy
 
-\vspace{1cm}
+\vspace{0.5cm}
 
-\begin{exampleblock}{Challenge}
+\begin{alertblock}{Challenge}
+\begin{center}
+\large
 How do we make ML explanations more accessible without sacrificing quality?
-\end{exampleblock}
+\end{center}
+\end{alertblock}
 
-# Discussion and Implications
+---
+
+# Discussion and Implications 1/3
 
 ## Key Takeaways from Both Papers
 
@@ -695,6 +736,10 @@ How do we make ML explanations more accessible without sacrificing quality?
 \end{column}
 \end{columns}
 
+---
+
+# Discussion and Implications 2/3
+
 ## Critical Questions for Discussion
 
 1. **Better tools vs. better training?**
@@ -709,6 +754,10 @@ How do we make ML explanations more accessible without sacrificing quality?
 4. **Role-specific design?**
    - Should we design different tools for different roles?
 
+---
+
+# Discussion and Implications 3/3
+
 ## Implications for Interpretability Research
 
 **Research Directions:**
@@ -719,7 +768,9 @@ How do we make ML explanations more accessible without sacrificing quality?
 - Balance complexity with accessibility
 - Support continuous engagement throughout ML lifecycle
 
-## Open Research Questions
+---
+
+# Open Research Questions
 
 1. How can we design interpretability tools that are both powerful and accessible?
 
@@ -731,7 +782,9 @@ How do we make ML explanations more accessible without sacrificing quality?
 
 5. How can we better evaluate whether tools actually help users?
 
-## Conclusion
+---
+
+# Conclusion
 
 **Main Messages:**
 
