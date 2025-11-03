@@ -58,7 +58,11 @@ REPLACES = {
     "≠": r"$\neq$",  # Not equal sign
 }
 
-
+# Marker string to indicate partial rendering start point in Markdown source.
+# When this marker is present in the source file, the compilation will skip content
+# between the end of the YAML front matter (second dash line) and this marker.
+# This allows quick iteration by rendering only from a specific point in the document.
+# Format: \\RENDER FROM HERE\\ (with escaped backslashes for LaTeX compatibility)
 RENDER_FROM_HERE = r"\\RENDER FROM HERE\\"
 
 
@@ -205,72 +209,147 @@ def calculate_md5(src):
 
 
 def find_last_index_second_dash_line(src):
-    idx = 0
-    find_one = False
-    for line in src.splitlines():
-        idx += len(line) + 1
-        line = line.strip()
-        if line.replace("-", "") == "":
-            if find_one:
-                return idx
-            else:
-                find_one = True
-    return -1
-
-
-def process_unicode(src, fname, tempdir):
     """
-    Process Unicode characters in source content and save to temporary file.
+    Find the character index immediately after the second consecutive dash line.
 
-    This function replaces specific Unicode characters with their LaTeX equivalents
-    to ensure proper rendering in the PDF output. The character mappings are defined
-    in the REPLACES dictionary. The processed content is written to a temporary file
-    that will be passed to Pandoc for compilation.
+    This function locates the end of the YAML front matter in a Markdown file.
+    Markdown files typically use three dashes (---) to delimit YAML front matter,
+    with one dash line at the start and another at the end. This function finds
+    the position after the second dash line (the closing delimiter).
+
+    A "dash line" is defined as a line that contains only dash characters (-)
+    and optional whitespace.
 
     Parameters
     ----------
     src : str
-        Source content to process (the raw Markdown file contents).
+        Source content of the Markdown file to search.
+
+    Returns
+    -------
+    int
+        Character index (0-based) of the position immediately after the second
+        dash line. Returns -1 if fewer than two dash lines are found.
+
+    Examples
+    --------
+    >>> src = "---\\ntitle: Test\\n---\\nContent here"
+    >>> pos = find_last_index_second_dash_line(src)
+    >>> print(src[pos:])
+    Content here
+
+    Notes
+    -----
+    - The function counts newlines as single characters (\\n)
+    - Lines are stripped of whitespace before checking if they consist only of dashes
+    - Only finds the second occurrence; additional dash lines are ignored
+    - Used in conjunction with RENDER_FROM_HERE to extract content sections
+    """
+    current_position = 0
+    found_first_dash_line = False
+
+    for line in src.splitlines():
+        current_position += len(line) + 1  # +1 for the newline character
+        line = line.strip()
+
+        # Check if line contains only dash characters
+        if line.replace("-", "") == "":
+            if found_first_dash_line:
+                # Found the second dash line, return position after it
+                return current_position
+            else:
+                # Found the first dash line, mark it and continue
+                found_first_dash_line = True
+
+    # Fewer than two dash lines found
+    return -1
+
+
+def preprocess_markdown_source(src, fname, tempdir):
+    """
+    Preprocess Markdown source for Pandoc compilation and save to temporary file.
+
+    This function performs multiple preprocessing steps to prepare Markdown content
+    for PDF compilation with Pandoc/Beamer:
+
+    1. **Partial Rendering**: If RENDER_FROM_HERE marker is present, extracts only
+       the content from that marker onwards (while preserving YAML front matter).
+       This allows quick iteration by rendering only a specific section.
+
+    2. **Unicode Conversion**: Replaces Unicode characters with LaTeX equivalents
+       for proper rendering in PDF output (e.g., ≠ -> $\\neq$).
+
+    3. **File Creation**: Writes the preprocessed content to a temporary file that
+       will be consumed by Pandoc.
+
+    Parameters
+    ----------
+    src : str
+        Raw Markdown source content from the input file.
     fname : str
-        Original filename to use for the temporary file (preserves the file extension).
+        Original filename to preserve in the temporary file (maintains extension).
     tempdir : str
-        Path to the temporary directory where the processed file will be saved.
+        Path to temporary directory where the preprocessed file will be saved.
 
     Returns
     -------
     str
-        Absolute path to the processed temporary file.
+        Absolute path to the preprocessed temporary file ready for Pandoc compilation.
 
     Examples
     --------
+    Basic Unicode replacement:
     >>> with tempfile.TemporaryDirectory() as tmpdir:
-    ...     processed_path = process_unicode("a ≠ b", "test.md", tmpdir)
-    ...     with open(processed_path) as f:
+    ...     path = preprocess_markdown_source("a ≠ b", "test.md", tmpdir)
+    ...     with open(path) as f:
     ...         print(f.read())
-    a $\neq$ b
+    a $\\neq$ b
+
+    Partial rendering with RENDER_FROM_HERE marker:
+    >>> src = "---\\ntitle: Test\\n---\\nIntro\\n\\\\RENDER FROM HERE\\\\\\nMain content"
+    >>> with tempfile.TemporaryDirectory() as tmpdir:
+    ...     path = preprocess_markdown_source(src, "test.md", tmpdir)
+    ...     with open(path) as f:
+    ...         content = f.read()
+    ...     print("Main content" in content and "Intro" not in content)
+    True
 
     Notes
     -----
-    The REPLACES dictionary at the module level defines which Unicode characters
-    are replaced. Currently includes:
-    - ≠ (not equal) -> $\neq$ (LaTeX not equal)
+    - Unicode replacements are defined in the REPLACES module constant
+    - RENDER_FROM_HERE marker enables partial document compilation for faster iteration
+    - When using RENDER_FROM_HERE, YAML front matter is always preserved
+    - The temporary file uses UTF-8 encoding to handle international characters
+    - Original source content is modified in memory; input file remains unchanged
 
-    Add more replacements to REPLACES as needed for additional Unicode characters.
+    See Also
+    --------
+    find_last_index_second_dash_line : Locates YAML front matter boundary
+    REPLACES : Dictionary of Unicode to LaTeX character mappings
+    RENDER_FROM_HERE : Marker constant for partial rendering
     """
-    output = os.path.join(tempdir, fname)
+    output_path = os.path.join(tempdir, fname)
+
+    # Handle partial rendering if marker is present
     if RENDER_FROM_HERE in src:
-        idx_head_stop = find_last_index_second_dash_line(src)
+        # Find where YAML front matter ends (after second dash line)
+        yaml_end_position = find_last_index_second_dash_line(src)
 
-        idx_render_from_here = src.index(RENDER_FROM_HERE) + len(RENDER_FROM_HERE)
-        src = src[:idx_head_stop] + src[idx_render_from_here:]
+        # Find where to start rendering from
+        marker_end_position = src.index(RENDER_FROM_HERE) + len(RENDER_FROM_HERE)
 
-    for pattern, replace in REPLACES.items():
-        src = src.replace(pattern, replace)
+        # Combine YAML front matter with content after the marker
+        src = src[:yaml_end_position] + src[marker_end_position:]
 
-    with open(output, "w", encoding="utf-8") as f:
+    # Replace Unicode characters with LaTeX equivalents
+    for unicode_char, latex_replacement in REPLACES.items():
+        src = src.replace(unicode_char, latex_replacement)
+
+    # Write preprocessed content to temporary file
+    with open(output_path, "w", encoding="utf-8") as f:
         f.write(src)
 
-    return output
+    return output_path
 
 
 def run_pandoc(path, output_path, ignore_error, bibliography):
@@ -420,7 +499,7 @@ def main():
         # Initial compilation: read file and calculate hash for change detection
         src = read_file(filepath)
         md5 = calculate_md5(src)
-        processed_path = process_unicode(src, filepath, tempdir)
+        processed_path = preprocess_markdown_source(src, filepath, tempdir)
 
         # Show compilation details
         print("Proccesed file:", processed_path)
@@ -461,7 +540,7 @@ def main():
                     "->",
                     os.path.join(wd, output_path),
                 )
-                processed_path = process_unicode(src, filepath, tempdir)
+                processed_path = preprocess_markdown_source(src, filepath, tempdir)
                 output = run_pandoc(
                     processed_path,
                     output_path,
