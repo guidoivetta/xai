@@ -9,16 +9,6 @@ bibliography: references.bib
 
 ---
 
-# Evaluating Interpretability
-
-**CS 282 BR Topics in Machine Learning:**  
-**Interpretability and Explainability**
-
-Ike Lage  
-02/01/2023
-
----
-
 # Overview
 
 - Evaluating interpretability in the interpretable ML community:
@@ -27,36 +17,48 @@ Ike Lage
 - These papers:
   - Evaluating factors related to interpretability through user studies
 
+\begin{center}
+ \includegraphics[width=0.3\columnwidth]{imgs/overview.png} 
+\end{center}
+
 ---
 
 # Other Relevant Fields
 
 - **Human-Computer Interaction (HCI):**
-  - Theories for how people interact with technology
+  - Theories for how people **interact with technology**
 - **Psychology:**
-  - Theories for how people process information
-- **Both** have thought carefully about experimental design
+  - Theories for how people **process information**
+- Both have thought carefully about **experimental design**
+
+\begin{center}
+ \includegraphics[width=0.3\columnwidth]{imgs/relevant_fields.png} 
+\end{center}
 
 ---
 
 # Outline
 
-- Research paper: "Human Evaluation of Models Built for Interpretability" by Lage et al.
-- Research paper: "Manipulating and Measuring Model Interpretability" by Poursabzi-Sangdeh et al.
+- Research paper: **"Human Evaluation of Models Built for Interpretability"** by Lage et al.
+- Research paper: **"Manipulating and Measuring Model Interpretability"** by Poursabzi-Sangdeh et al.
 - Discussion
 
 ---
 
 # Paper 1
 
+\begin{center}
+ \includegraphics[width=0.95\columnwidth]{imgs/paper1_title.png}
+ \end{center} 
+
 ---
 
-# Human Evaluation of Models Built for Interpretability
+# Definitions
 
-**Isaac Lage, Emily Chen, Jeffrey He, Menaka Narayanan,**  
-**Been Kim, Samuel J. Gershman, Finale Doshi-Velez**
+   - **Human-simulatability**: The ability of humans to mentally trace through a model's decision-making process and accurately predict its outputs for given inputs, essentially simulating how the model would behave.
+   - **Decision set**: A logic-based machine learning model consisting of a collection of independent logical rules, where each rule maps a combination of input features to an output prediction.
+   - **Decision set complexity**: A decision set is more complex when it has more rules, more conditions per rule, or conditions that are more cognitively difficult to evaluate.
 
- \includegraphics[width=0.8\columnwidth]{imgs/paper1_title.png} 
 
 ---
 
@@ -64,8 +66,8 @@ Ike Lage
 
 ## Research Questions:
 
-- Which types of decision set complexity most affect human-simulatability?
-- Is relationship between complexity and human-simulatability context dependent?
+- Which types of **decision set complexity** most affect human-simulatability?
+- Is relationship between complexity and human-simulatability **context dependent**?
 
 ## Approach:
 
@@ -75,31 +77,30 @@ Ike Lage
 
 # Decision Sets
 
-- Logic-based models are often considered interpretable
-- Many approaches for learning them from data
+- **Logic-based models** are often considered interpretable
+- Many approaches for **learning them from data** (Decision Trees)
 
+\vspace{1cm}
+\begin{center}
  \includegraphics[width=0.9\columnwidth]{imgs/decision_sets_example.png} 
+\end{center}
+
+
 
 ---
 
 # Regularizers
 
-- There are many ways to regularize decision sets that make them **less complex**
+- **Regularizer (paper context)**: A technique that penalizes certain types of complexity during decision set training (such as number of rules, conditions per rule, or specific types of conditions) to make the models **less complex and more interpretable**.
+
 - What kinds of complexity is it **most urgent to regularize** to learn interpretable models?
 
-\vspace{1cm}
+\vspace{.5cm}
 
-\begin{columns}
-\begin{column}{0.3\textwidth}
-**Choose a regularizer for interpretability**
-\end{column}
-\begin{column}{0.3\textwidth}
-**Optimize With regularizer**
-\end{column}
-\begin{column}{0.3\textwidth}
-**Interpretable Model?**
-\end{column}
-\end{columns}
+\vspace{1cm}
+\begin{center}
+ \includegraphics[width=0.9\columnwidth]{imgs/regu.png} 
+\end{center}
 
 ---
 
@@ -109,11 +110,12 @@ Ike Lage
 - **Variable repetitions**: Same variable appearing multiple times
 - **Cognitive chunks**: Number of distinct logical conditions
 
- \includegraphics[width=0.85\columnwidth]{imgs/complexity_types.png} 
-
+\begin{center}
+ \includegraphics[width=0.85\columnwidth]{imgs/complexity_types.png} \\
 \vspace{0.5cm}
-
-What if we optimized the models with data?
+\large
+\textbf{What if we optimized the models with data?}
+\end{center}
 
 ---
 
