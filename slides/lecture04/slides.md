@@ -56,7 +56,7 @@ Ike Lage
 **Isaac Lage, Emily Chen, Jeffrey He, Menaka Narayanan,**  
 **Been Kim, Samuel J. Gershman, Finale Doshi-Velez**
 
-<!-- \includegraphics[width=0.8\columnwidth]{imgs/paper1_title.png} -->
+ \includegraphics[width=0.8\columnwidth]{imgs/paper1_title.png} 
 
 ---
 
@@ -78,7 +78,7 @@ Ike Lage
 - Logic-based models are often considered interpretable
 - Many approaches for learning them from data
 
-<!-- \includegraphics[width=0.9\columnwidth]{imgs/decision_sets_example.png} -->
+ \includegraphics[width=0.9\columnwidth]{imgs/decision_sets_example.png} 
 
 ---
 
@@ -109,7 +109,7 @@ Ike Lage
 - **Variable repetitions**: Same variable appearing multiple times
 - **Cognitive chunks**: Number of distinct logical conditions
 
-<!-- \includegraphics[width=0.85\columnwidth]{imgs/complexity_types.png} -->
+ \includegraphics[width=0.85\columnwidth]{imgs/complexity_types.png} 
 
 \vspace{0.5cm}
 
@@ -121,12 +121,12 @@ What if we optimized the models with data?
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/alien_food.png} -->
+ \includegraphics[width=\columnwidth]{imgs/alien_food.png} 
 
 **Low Risk:** Alien meal recommendation
 \end{column}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/alien_medical.png} -->
+ \includegraphics[width=\columnwidth]{imgs/alien_medical.png} 
 
 **High Risk:** Alien medical prescription
 \end{column}
@@ -144,7 +144,7 @@ What if we used 2 different real domains?
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/decision_set_tasks.png} -->
+ \includegraphics[width=\columnwidth]{imgs/decision_set_tasks.png} 
 \end{column}
 \begin{column}{0.48\textwidth}
 - **Simulation:**
@@ -211,7 +211,7 @@ We use a linear model for each metric in each experiment:
 
 # Statistical Analysis: Multiple Hypothesis Testing
 
-<!-- \includegraphics[width=0.9\columnwidth]{imgs/xkcd_hypothesis.png} -->
+ \includegraphics[width=0.9\columnwidth]{imgs/xkcd_hypothesis.png} 
 
 ## We use a Bonferroni correction
 
@@ -224,7 +224,7 @@ We use a linear model for each metric in each experiment:
 
 **Recipe Domain**
 
-<!-- \includegraphics[width=0.7\columnwidth]{imgs/complexity_response_time.png} -->
+ \includegraphics[width=0.7\columnwidth]{imgs/complexity_response_time.png} 
 
 \vspace{1cm}
 
@@ -240,7 +240,7 @@ Greater complexity results in longer response time for all kinds of complexity
 \textbf{Response time for: cognitive chunks > model size > repeated terms}
 \end{center}
 
-<!-- \includegraphics[width=0.85\columnwidth]{imgs/complexity_comparison_table.png} -->
+ \includegraphics[width=0.85\columnwidth]{imgs/complexity_comparison_table.png} 
 
 - **Model size:** Significant in one domain
 - **Cognitive chunks:** Significant in all domains
@@ -252,7 +252,7 @@ Greater complexity results in longer response time for all kinds of complexity
 
 Results consistent across domains, tasks and the response time and subjective difficulty metrics
 
-<!-- \includegraphics[width=0.7\columnwidth]{imgs/consistency_results.png} -->
+ \includegraphics[width=0.7\columnwidth]{imgs/consistency_results.png} 
 
 \begin{exampleblock}{Example}
 Similar effect sizes, both statistically significant across different experimental conditions
@@ -264,7 +264,7 @@ Similar effect sizes, both statistically significant across different experiment
 
 The counterfactual task is much more challenging than simulation!
 
-<!-- \includegraphics[width=0.75\columnwidth]{imgs/counterfactual_difficulty.png} -->
+ \includegraphics[width=0.75\columnwidth]{imgs/counterfactual_difficulty.png} 
 
 \vspace{0.5cm}
 
@@ -299,7 +299,7 @@ In all experiments, counterfactual tasks require longer response time than simul
 
 Microsoft Research
 
-<!-- \includegraphics[width=0.8\columnwidth]{imgs/paper2_title.png} -->
+ \includegraphics[width=0.8\columnwidth]{imgs/paper2_title.png} 
 
 ---
 
@@ -337,12 +337,12 @@ Microsoft Research
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/clear_2_features.png} -->
+ \includegraphics[width=\columnwidth]{imgs/clear_2_features.png} 
 
 \textbf{CLEAR-2:} 2 features, transparent
 \end{column}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/blackbox_2_features.png} -->
+ \includegraphics[width=\columnwidth]{imgs/blackbox_2_features.png} 
 
 \textbf{BB-2:} 2 features, black-box
 \end{column}
@@ -352,12 +352,12 @@ Microsoft Research
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/clear_8_features.png} -->
+ \includegraphics[width=\columnwidth]{imgs/clear_8_features.png} 
 
 \textbf{CLEAR-8:} 8 features, transparent
 \end{column}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/blackbox_8_features.png} -->
+ \includegraphics[width=\columnwidth]{imgs/blackbox_8_features.png} 
 
 \textbf{BB-8:} 8 features, black-box
 \end{column}
@@ -433,7 +433,7 @@ Can introduce bias & Increases variance \\
 
 **Experiment 1: New York City prices**
 
-<!-- \includegraphics[width=0.7\columnwidth]{imgs/simulation_error_nyc.png} -->
+ \includegraphics[width=0.7\columnwidth]{imgs/simulation_error_nyc.png} 
 
 \vspace{1cm}
 
@@ -449,12 +449,12 @@ Best simulation accuracy with small, transparent models (CLEAR-2)
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/deviation_results.png} -->
+ \includegraphics[width=\columnwidth]{imgs/deviation_results.png} 
 
 \textbf{Trust (Deviation)}
 \end{column}
 \begin{column}{0.48\textwidth}
-<!-- \includegraphics[width=\columnwidth]{imgs/prediction_error.png} -->
+ \includegraphics[width=\columnwidth]{imgs/prediction_error.png} 
 
 \textbf{Prediction Error}
 \end{column}
@@ -472,7 +472,7 @@ None of the conditions are statistically different for trust or prediction error
 
 **Experiment 1: New York City prices - Apartment 12 (1 bed, 3 bath)**
 
-<!-- \includegraphics[width=0.7\columnwidth]{imgs/deviation_unusual.png} -->
+ \includegraphics[width=0.7\columnwidth]{imgs/deviation_unusual.png} 
 
 \vspace{0.5cm}
 
