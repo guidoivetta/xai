@@ -32,7 +32,7 @@ bibliography: references.bib
 - Both have thought carefully about **experimental design**
 
 \begin{center}
- \includegraphics[width=0.3\columnwidth]{imgs/relevant_fields.png} 
+ \includegraphics[width=0.6\columnwidth]{imgs/relevant_fields.png} 
 \end{center}
 
 ---
@@ -121,24 +121,28 @@ bibliography: references.bib
 
 # Context: Domains
 
+\vspace{1em}
 \begin{columns}
 \begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/alien_food.png} 
-
-**Low Risk:** Alien meal recommendation
+ \includegraphics[width=\columnwidth]{imgs/alien_food.png}
+ \begin{center}
+ \textbf{Low Risk:} Alien meal recommendation
+ \end{center}
 \end{column}
+
 \begin{column}{0.48\textwidth}
  \includegraphics[width=\columnwidth]{imgs/alien_medical.png} 
-
-**High Risk:** Alien medical prescription
+\begin{center}
+\textbf{High Risk:} Alien medical prescription
+\end{center}
 \end{column}
 \end{columns}
 
 \vspace{1cm}
 
-\begin{alertblock}{Design Question}
-What if we used 2 different real domains?
-\end{alertblock}
+\begin{center}
+\textbf{What if we used 2 different real domains?}
+\end{center}
 
 ---
 
@@ -147,88 +151,101 @@ What if we used 2 different real domains?
 \begin{columns}
 \begin{column}{0.48\textwidth}
  \includegraphics[width=\columnwidth]{imgs/decision_set_tasks.png} 
+
 \end{column}
 \begin{column}{0.48\textwidth}
-- **Simulation:**
-  - What would the model recommend the alien?
-- **Verification:**
-  - Is *milk and guava* a correct recommendation?
-- **Counterfactual:**
-  - If *patient* were replaced with *sleepy*, would the correctness of the *milk and guava* recommendation change?
+\begin{itemize}
+    \item \textbf{Simulation:}
+    \begin{itemize}
+        \item What would the model recommend the alien?
+    \end{itemize}
+    \item \textbf{Verification:}
+    \begin{itemize}
+        \item Is \textit{milk and guava} a correct recommendation?
+    \end{itemize}
+    \item \textbf{Counterfactual:}
+    \begin{itemize}
+        \item If \textit{patient} were replaced with \textit{sleepy}, would the correctness of the \textit{milk and guava} recommendation change?
+    \end{itemize}
+\end{itemize}
 \end{column}
 \end{columns}
 
 \vspace{0.5cm}
 
-What if we used more realistic tasks?
+\begin{center}
+\textbf{What if we used more realistic tasks?}
+\end{center}
 
 ---
 
 # Tradeoff Between Control and Generalizability
 
-- Tradeoff between the ability to tightly control the experiment and running it under realistic conditions (generalizability)
+\begin{center}
+\textit{Tradeoff} between the ability to \textit{tightly control} the experiment and \textit{running it under realistic conditions} (\textbf{generalizability})
+\end{center}
 
 \vspace{1cm}
 
 \begin{center}
-\textbf{Tightly controlled} $\longleftrightarrow$ \textbf{Realistic}
-
-\vspace{0.5cm}
-
-\textcolor{blue}{\textbf{This paper}}
+ \includegraphics[width=\columnwidth]{imgs/darrow.png} 
 \end{center}
 
 ---
 
 # Procedure
 
-- Experiment posted on Mturk
-- Takes around 20 minutes
-- Participants paid 3 USD
+- Experiment posted on **Mturk**
+- Takes around **20 minutes**
+- Participants paid **3 USD**
 - Excluded participants who could not complete practice questions
-- Total: 50-70 participants out of 150
+- Total: **50-70** participants **out of 150**
 
 \vspace{1cm}
 
 \begin{center}
-Instructions $\rightarrow$ 3-6 practice questions $\rightarrow$ 15-18 test questions $\rightarrow$ Payment code
+\includegraphics[width=\columnwidth]{imgs/procedure.png}
 \end{center}
 
 ---
 
 # Statistical Analysis: Linear Model
 
-We use a linear model for each metric in each experiment:
+We use a **linear model** for each metric in each experiment:
 
 - Response time
 - Accuracy
 - Satisfaction
 
+\vspace{1cm}
+
 ## Example – Model Size, Response Time:
 
 - **Step 1:** Fit linear regression to predict response time from number of lines and number of output terms
 - **Step 2:** Interpret coefficients as effects of number of lines and number of output terms on response time
+  - The coefficient with the **largest magnitude** indicates which factor has the **strongest impact** on response time
 
 ---
 
 # Statistical Analysis: Multiple Hypothesis Testing
 
- \includegraphics[width=0.9\columnwidth]{imgs/xkcd_hypothesis.png} 
+\begin{center}
+ \includegraphics[width=0.5\columnwidth]{imgs/xkcd_hypothesis.png} \\
+ \tiny \url{https://xkcd.com/882/}
+\end{center}
 
 ## We use a Bonferroni correction
 
-- Instead of p < 0.05, use:  
-  **p < (0.05 / # comparisons)**
+- Instead of **p < 0.05**, use: **p < (0.05 / # comparisons)**
 
 ---
 
 # Results: Complexity Increases Response Time
 
-**Recipe Domain**
-
- \includegraphics[width=0.7\columnwidth]{imgs/complexity_response_time.png} 
-
-\vspace{1cm}
+\begin{center}
+\textbf{Recipe Domain} \\
+ \includegraphics[width=0.6\columnwidth]{imgs/complexity_response_time.png} 
+\end{center}
 
 \begin{exampleblock}{Key Finding}
 Greater complexity results in longer response time for all kinds of complexity
@@ -239,25 +256,25 @@ Greater complexity results in longer response time for all kinds of complexity
 # Results: Type of Complexity Matters
 
 \begin{center}
-\textbf{Response time for: cognitive chunks > model size > repeated terms}
+ \includegraphics[width=0.85\columnwidth]{imgs/complexity_comparison_table.png} 
 \end{center}
 
- \includegraphics[width=0.85\columnwidth]{imgs/complexity_comparison_table.png} 
-
-- **Model size:** Significant in one domain
-- **Cognitive chunks:** Significant in all domains
-- **Variable repetitions:** Significant in neither domain
+\begin{exampleblock}{Key Finding}
+\textbf{Response time for: cognitive chunks > model size > repeated terms}
+\end{exampleblock}
 
 ---
 
 # Results: Consistency - Domains, Tasks, Metrics
 
+\begin{center}
+ \includegraphics[width=0.7\columnwidth]{imgs/consistency_results.png}
+\end{center}
+
+\vspace{0.5cm}
+
+\begin{exampleblock}{Key Findings}
 Results consistent across domains, tasks and the response time and subjective difficulty metrics
-
- \includegraphics[width=0.7\columnwidth]{imgs/consistency_results.png} 
-
-\begin{exampleblock}{Example}
-Similar effect sizes, both statistically significant across different experimental conditions
 \end{exampleblock}
 
 ---
@@ -266,13 +283,16 @@ Similar effect sizes, both statistically significant across different experiment
 
 The counterfactual task is much more challenging than simulation!
 
+\begin{center}
  \includegraphics[width=0.75\columnwidth]{imgs/counterfactual_difficulty.png} 
+\end{center}
+ 
 
 \vspace{0.5cm}
 
-\begin{alertblock}{Key Finding}
+\begin{exampleblock}{Key Finding}
 In all experiments, counterfactual tasks require longer response time than simulation tasks
-\end{alertblock}
+\end{exampleblock}
 
 ---
 
@@ -284,9 +304,9 @@ In all experiments, counterfactual tasks require longer response time than simul
 
 \vspace{1cm}
 
-\begin{center}
-\textbf{Key Takeaway:} Different types of complexity affect human-simulatability differently, with cognitive chunks having the strongest effect
-\end{center}
+\begin{exampleblock}{Key Takeaway}
+Different types of complexity affect \textit{human-simulatability} differently, with cognitive chunks having the strongest effect
+\end{exampleblock}
 
 ---
 
