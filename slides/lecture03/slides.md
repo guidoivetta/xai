@@ -44,12 +44,13 @@ bibliography: references.bib
 \includegraphics[width=.8\columnwidth]{imgs/paper1.png}
 \end{center}
 
+[@hong2020human]
+
 ## Key Contributions:
 
 1. Conducts interview study to understand industry practitioners' existing needs and uses for interpretability
 2. Presents findings on roles, stages, and goals related to interpretability
 3. Identifies aspects of interpretability under-supported by existing technical solutions
-
 
 ---
 
@@ -447,11 +448,12 @@ A feature ranking without clinical context provides no value.
 
 \vspace{1em}
 \begin{center}
-\includegraphics[width=.8\columnwidth]{imgs/paper2.png}
+\includegraphics[width=.65\columnwidth]{imgs/paper2.png}
 \end{center}
 
-## Key Contributions:
+[@kaur2020interpreting]
 
+## Key Contributions:
 
 1. Evaluates whether interpretability tools help ML practitioners understand models
 
@@ -803,3 +805,9 @@ How do we make ML explanations more accessible without sacrificing quality?
 
 \Large Questions and Discussion
 \end{center}
+
+---
+
+# References {.allowframebreaks}
+
+\footnotesize
