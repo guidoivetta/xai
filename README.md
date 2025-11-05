@@ -40,7 +40,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Slides 1](slides/lecture01/slides.pdf) | [Slides 2](slides/lecture02/slides.pdf) \]
+\[ [Lecture 1](slides/lecture01/slides.pdf) | [Lecture 2](slides/lecture02/slides.pdf) \]
 
 ---
 
@@ -55,11 +55,11 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 - Lage et. al., 2019, [Human Evaluation of Models Built for Interpretability](https://ojs.aaai.org/index.php/HCOMP/article/view/5280/5132) !
 
-- Poursabzi-Sangdeh et. al., 2021, [Manipulating and Measuring Model Interpretability](https://arxiv.org/abs/1802.07810)
+- Poursabzi-Sangdeh et. al., 2021, [Manipulating and Measuring Model Interpretability](https://arxiv.org/abs/1802.07810) !
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_3.pdf) | [Slides 2](slides/Lecture_4.pptx) \]
+\[ [Lecture 3](slides/Lecture_3.pdf) | [Lecture 4](slides/Lecture_4.pptx) \]
 
 
 ---
@@ -79,7 +79,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_5.pptx) | [Slides 2](slides/Lecture_6.pptx) \]
+\[ [Lecture 5](slides/Lecture_5.pptx) | [Lecture 6](slides/Lecture_6.pptx) \]
 
 ---
 
