@@ -18,7 +18,7 @@ bibliography: references.bib
   - Evaluating factors related to interpretability through user studies
 
 \begin{center}
- \includegraphics[width=0.3\columnwidth]{imgs/overview.png} 
+ \includegraphics[width=0.5\columnwidth]{imgs/overview.png} 
 \end{center}
 
 ---
