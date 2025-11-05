@@ -51,6 +51,8 @@ bibliography: references.bib
  \includegraphics[width=0.95\columnwidth]{imgs/paper1_title.png}
  \end{center} 
 
+ [@lage2019human]
+
 ---
 
 # Definitions
@@ -312,24 +314,20 @@ Different types of complexity affect \textit{human-simulatability} differently, 
 
 # Paper 2
 
----
 
-# Manipulating and Measuring Model Interpretability
+\begin{center}
+ \includegraphics[width=0.98\columnwidth]{imgs/paper2_title.png} 
+\end{center}
 
-**Forough Poursabzi-Sangdeh, Daniel G. Goldstein, Jake M. Hofman**  
-**Jennifer Wortman Vaughan, Hanna Wallach**
-
-Microsoft Research
-
- \includegraphics[width=0.8\columnwidth]{imgs/paper2_title.png} 
+[@poursabzi2018manipulating]
 
 ---
 
 # Motivation
 
-- Interpretability as a latent property that can be manipulated or measured indirectly
-- What are the factors through which it can be manipulated effectively?
-- Bring HCI methods to interpretable ML since interpretability is defined by user experience
+- **Interpretability as a latent property** that can be manipulated or measured indirectly
+- What are the factors through which it can be **manipulated effectively?**
+- Bring **HCI methods** to interpretable ML since interpretability is defined by user experience
 
 ---
 
@@ -337,13 +335,13 @@ Microsoft Research
 
 ## Research Questions:
 
-- How well can people estimate what a model will predict?
-- How much do people trust a model's predictions?
-- How well can people detect when a model has made a sizable mistake?
+- How well can people estimate what a **model will predict**?
+- How much do people **trust** a model's predictions?
+- How well can people detect when a model has made a **sizable mistake**?
 
 ## Approach:
 
-- Large-scale, pre-registered user studies to answer these questions in the context of linear regression models
+- Large-scale, pre-registered **user studies** to answer these questions in the context of **linear regression models**
 
 ---
 
@@ -357,37 +355,9 @@ Microsoft Research
 
 # Ways to Manipulate Interpretability
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/clear_2_features.png} 
-
-\textbf{CLEAR-2:} 2 features, transparent
-\end{column}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/blackbox_2_features.png} 
-
-\textbf{BB-2:} 2 features, black-box
-\end{column}
-\end{columns}
-
-\vspace{0.5cm}
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/clear_8_features.png} 
-
-\textbf{CLEAR-8:} 8 features, transparent
-\end{column}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/blackbox_8_features.png} 
-
-\textbf{BB-8:} 8 features, black-box
-\end{column}
-\end{columns}
-
-\vspace{0.5cm}
-
-**Two manipulations:** Number of Features & Transparency
+\begin{center}
+ \includegraphics[width=0.75\columnwidth]{imgs/ways_to_manipulate.png} 
+\end{center}
 
 ---
 
@@ -396,26 +366,25 @@ Microsoft Research
 - Participants shown:
   - **Training:** 10 apartments
   - **Testing:** 12 apartments (this is the data they use)
-- Participants paid 2.5 USD
-- 750-1,250 participants per experiment
+- Participants paid **2.5 USD**
+- **750-1,250** participants per experiment
 
 \vspace{1cm}
 
 \begin{center}
-\textbf{Each Trial:}
-
-Forward simulate model's prediction $\rightarrow$ View model's true prediction $\rightarrow$ Make own prediction
+\textbf{Each Trial:}\\
+\vspace{.5cm}
+ \includegraphics[width=0.60\columnwidth]{imgs/each_trial.png} 
 \end{center}
 
 ---
 
 # Statistical Analysis: Participant Specific Effects
 
-## A repeated measures experimental design
-
-- Each participant makes many predictions
+- A **repeated measures** experimental design
+   - Each participant makes many predictions
 - Use a **mixed-effects model** to control for correlations between a participant's responses
-- Assumes a random, participant-specific effect
+   - Assumes a random, participant-specific effect
 
 ---
 
@@ -427,37 +396,37 @@ Forward simulate model's prediction $\rightarrow$ View model's true prediction $
 \vspace{1cm}
 
 \begin{exampleblock}{Example}
-\texttt{https://aspredicted.org/xy5s6.pdf}
 
-"We will use 2-by-2 ANOVA for statistical analysis of the effect of number of features and model clarity on final deviation from model's prediction and simulation error."
+\textbf{4) Specify exactly which analyses you will conduct to examine the main question/hypothesis."}\\
+\vspace{.3cm}
+We will use 2-by-2 ANOVA for statistical analysis of the effect of number of features and model clarity on final deviation from model's prediction and simulation error. \\
+\vspace{.3cm}
+\raggedleft \url{https://aspredicted.org/xy5s6.pdf}
 \end{exampleblock}
 
 ---
 
 # Design Choices
 
-- Randomized the order of the first 10 (normal) apartments and fixed the order of the last 2 (unusual)
-- All participants are shown an identical set of apartments
-- Each participant completed a single condition (between subjects design)
+- **Randomized the order** of the first 10 (normal) apartments and **fixed the order** of the last 2 (unusual)
+- All participants are shown an **identical set of apartments**
+- Each participant completed **a single condition** (between subjects design)
 
 \vspace{1cm}
 
-\begin{center}
-\begin{tabular}{cc}
-\textbf{Fix sources of randomness} & \textbf{Randomize as much as possible} \\
-Can introduce bias & Increases variance \\
-\end{tabular}
-\end{center}
+![](imgs/design_choices.png)
 
 ---
 
 # Results: Simulating Small, Transparent Models
 
-**Experiment 1: New York City prices**
+\begin{center}
+\textbf{Experiment 1: New York City prices}\\
+\vspace{.25cm}
+ \includegraphics[width=0.5\columnwidth]{imgs/simulation_error_nyc.png} 
+\end{center}
 
- \includegraphics[width=0.7\columnwidth]{imgs/simulation_error_nyc.png} 
-
-\vspace{1cm}
+\vspace{.5cm}
 
 \begin{exampleblock}{Key Finding}
 Best simulation accuracy with small, transparent models (CLEAR-2)
@@ -467,70 +436,44 @@ Best simulation accuracy with small, transparent models (CLEAR-2)
 
 # Results: No Difference in Trust or Prediction
 
-**Experiment 1: New York City prices**
+\begin{center}
+\textbf{Experiment 1: New York City prices}\\
+\vspace{.25cm}
+\includegraphics[width=.95\columnwidth]{imgs/deviation_prediction_results.png} 
+\end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/deviation_results.png} 
+\vspace{.5cm}
 
-\textbf{Trust (Deviation)}
-\end{column}
-\begin{column}{0.48\textwidth}
- \includegraphics[width=\columnwidth]{imgs/prediction_error.png} 
-
-\textbf{Prediction Error}
-\end{column}
-\end{columns}
-
-\vspace{1cm}
-
-\begin{alertblock}{Key Finding}
+\begin{exampleblock}{Key Finding}
 None of the conditions are statistically different for trust or prediction error
-\end{alertblock}
+\end{exampleblock}
 
 ---
 
 # Results: Clear Models Make Mistakes Worse
 
-**Experiment 1: New York City prices - Apartment 12 (1 bed, 3 bath)**
+\begin{center}
+\textbf{Experiment 1: New York City prices}\\
+\vspace{.25cm}
+\includegraphics[width=0.7\columnwidth]{imgs/deviation_unusual.png} 
+\end{center}
 
- \includegraphics[width=0.7\columnwidth]{imgs/deviation_unusual.png} 
-
-\vspace{0.5cm}
+\vspace{0.25cm}
 
 \begin{alertblock}{Surprising Finding}
 Participants deviate \textit{less} from the bad prediction with clear models (CLEAR-2, CLEAR-8)
-
-Higher deviation is better - means people are catching the error!
 \end{alertblock}
 
 ---
 
 # Additional Experiments
 
-## Experiment 2: Scaled Prices
-
 - Scaled down prices to better reflect national average
-- **Same results** for simulation accuracy
-
----
-
-# Additional Experiments (cont.)
-
-## Experiment 3: Better Trust Metrics
-
-- Scaled down prices to better reflect national average
+   - **Same results**
 - Better trust metrics
-- **No significant difference in trust between models**
-
----
-
-# Additional Experiments (cont.)
-
-## Experiment 4: Attention Check
-
+   - **No significant difference in trust between models**
 - Attention check for unusual features
-- **People catch more errors** when explicitly asked to look for unusual inputs
+   - **People catch more errors** when explicitly asked to look for unusual inputs
 
 ---
 
@@ -571,3 +514,9 @@ More interpretable models (transparent, fewer features) led to worse error detec
 \begin{center}
 \Huge Thank You!
 \end{center}
+
+---
+
+# References {.allowframebreaks}
+
+\footnotesize

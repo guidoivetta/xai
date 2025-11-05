@@ -27,6 +27,6 @@ variables:
     - \newcommand{\here}{\textbf{\textcolor{red}{\Huge HASTA ACÁ LLEGUE!}}}
     - \newcommand{\wtf}[1]{"\textbf{#1} \emoji{wtf}"}
     - \renewcommand{\textbf}[1]{\textcolor{darkgreen}{\bf#1}}
-    - \renewcommand{\textit}[1]{\textcolor{lightgreen}{\bf#1}}
+    - \renewcommand{\textit}[1]{\textcolor{lightgreen}{\it#1}}
     - \let\oldframetitle\frametitle
     - \renewcommand{\frametitle}[1]{\oldframetitle{\emoji{mate}~\texttt{#1~------}}}
