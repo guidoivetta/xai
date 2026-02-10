@@ -2,6 +2,11 @@
 
 Convierte los PDFs proporcionados en slides Beamer usando Markdown-Pandoc. Puedes proporcionar múltiples PDFs y generaré slides separadas para cada uno.
 
+## Cómo usar este prompt:
+
+- **Claude.ai (Project):** Agregá este prompt como System Prompt del proyecto y subí el PDF.
+- **Claude Code:** `Convertí @slides/original_pdf/Lecture_X.pdf a slides siguiendo @slides/pdf2md_prompt.md`
+
 ## Para cada PDF nuevo:
 
 1. **Indica el número de PDF**: "PDF #1", "PDF #2", etc.
@@ -31,12 +36,17 @@ slides/
 
 **Pasos:**
 1. Crear la carpeta `lectureNN/` y subcarpeta `imgs/`
-2. Extraer las imágenes del PDF original y guardarlas en `imgs/`
+2. Para cada imagen referenciada en slides.md, copiar un placeholder genérico y crear un archivo `imgs/images.md` con la tabla de imágenes a reemplazar:
+   ```bash
+   # Copiar placeholder para cada imagen
+   cp slides/lecture03/imgs/placeholder.png slides/lectureNN/imgs/nombre_imagen.png
+   ```
+   El archivo `imgs/images.md` debe tener una tabla con columnas: Archivo, Slide PDF, Contenido — para saber qué screenshot extraer manualmente del PDF original.
 3. Crear `references.bib` con las entradas BibTeX de los papers citados (formato `[@clave]` en el .md)
 4. Crear `slides.md` usando este prompt
 5. Compilar con: `python ../make.py slides.md` (desde dentro de la carpeta `lectureNN/`)
 6. Para modo watch: `python ../make.py slides.md --watch`
-7. Tne en cuenta que normalmente las referencias y las imagenes las toco manualmente.
+7. Ten en cuenta que normalmente las referencias y las imagenes las toco manualmente.
 
 ---
 
