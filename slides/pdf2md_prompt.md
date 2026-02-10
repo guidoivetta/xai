@@ -10,6 +10,36 @@ Convierte los PDFs proporcionados en slides Beamer usando Markdown-Pandoc. Puede
 
 ---
 
+## Estructura de carpetas para una nueva lecture:
+
+Cada lecture vive en su propia carpeta. Para crear una nueva (e.g., lecture05):
+
+```
+slides/
+├── defaults.yaml          # Configuración Pandoc compartida (NO tocar)
+├── disclaimer.tex         # Disclaimer compartido (NO tocar)
+├── emojis/                # Emojis PNG compartidos (NO tocar)
+├── make.py                # Script de compilación (NO tocar)
+├── pdf2md_prompt.md       # Este prompt
+├── lecture05/             # ← Nueva carpeta
+│   ├── slides.md          # Archivo principal de slides (lo que genera este prompt)
+│   ├── references.bib     # Bibliografía con las citas usadas en slides.md
+│   └── imgs/              # Imágenes extraídas del PDF original
+│       ├── figura1.png
+│       └── figura2.png
+```
+
+**Pasos:**
+1. Crear la carpeta `lectureNN/` y subcarpeta `imgs/`
+2. Extraer las imágenes del PDF original y guardarlas en `imgs/`
+3. Crear `references.bib` con las entradas BibTeX de los papers citados (formato `[@clave]` en el .md)
+4. Crear `slides.md` usando este prompt
+5. Compilar con: `python ../make.py slides.md` (desde dentro de la carpeta `lectureNN/`)
+6. Para modo watch: `python ../make.py slides.md --watch`
+7. Tne en cuenta que normalmente las referencias y las imagenes las toco manualmente.
+
+---
+
 ## Formato YAML (header):
 ```yaml
 ---
