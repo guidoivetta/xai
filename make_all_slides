@@ -3,7 +3,7 @@
 original_dir=$(pwd)
 cd slides
 trap "cd '$original_dir'" EXIT
-for i in {1..2}; do
+for i in {1..4}; do
     file="lecture0$i/slides.md"
     if [ -f "$file" ]; then
         python make.py "$file"

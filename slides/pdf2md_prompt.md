@@ -13,7 +13,6 @@ Convierte los PDFs proporcionados en slides Beamer usando Markdown-Pandoc. Puede
 ## Formato YAML (header):
 ```yaml
 ---
-title: ""
 title: "\\emoji{wtf} XAI: [Título del PDF]"
 bibliography: references.bib
 
@@ -29,40 +28,65 @@ bibliography: references.bib
 - Subtítulos dentro de slide con `##`
 
 **Imágenes:**
-```markdown
-<!-- \includegraphics[width=0.8\columnwidth]{imgs/nombre.png} -->
+- Siempre dentro de `\begin{center}...\end{center}`
+- Todas las imágenes en la carpeta `imgs/`
+```latex
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/nombre.png}
+\end{center}
 ```
 
 **Bloques:**
 ```latex
+\begin{block}{Título}
+Contenido neutral
+\end{block}
+
 \begin{alertblock}{Título}
-Contenido importante
+Contenido importante o advertencias
 \end{alertblock}
 
 \begin{exampleblock}{Título}
-Ejemplos
+Ejemplos o hallazgos positivos
 \end{exampleblock}
+
+\begin{definition}{}
+Definiciones formales
+\end{definition}
 ```
 
-**Columnas:**
+**Columnas (LaTeX):**
 ```latex
 \begin{columns}
-\begin{column}{0.5\textwidth}
+\begin{column}{0.48\textwidth}
 Izquierda
 \end{column}
-\begin{column}{0.5\textwidth}
+\begin{column}{0.48\textwidth}
 Derecha
 \end{column}
 \end{columns}
 ```
+
+**Citas bibliográficas:**
+- Usar formato Pandoc: `[@clave]` (e.g., `[@lipton2018mythos]`)
+- Las citas se colocan después del contenido relevante, en su propia línea
+
+**Espaciado y formato LaTeX:**
+- Espaciado vertical: `\vspace{1cm}`, `\vspace{1em}`, `\vspace{0.5cm}`
+- Relleno vertical (empujar contenido al fondo): `\vfill`
+- Tamaños de texto: `\Huge`, `\huge`, `\Large`, `\large`, `\small`, `\footnotesize`, `\tiny`
+- Formato LaTeX inline: `\textbf{negrita}`, `\textit{cursiva}`
+- Color: `\textcolor{primarygreen}{texto}`
+- URLs: `\url{https://...}`
+- Emojis: `\emoji{nombre}` (e.g., `\emoji{wtf}`, `\emoji{fire}`, `\emoji{test-tube}`)
 
 **Contenido:**
 - Máximo 6-8 puntos por slide
 - Una idea principal por slide
 - Usa viñetas (`-`) y numeración (`1.`)
 - `**negrita**`, `*cursiva*`, `` `código` ``
-- Espaciado: `\vspace{1cm}`
 - Tablas markdown estándar
+- Mezclar Pandoc markdown y LaTeX crudo es válido y esperado
 
 ## Estructura típica:
 ```markdown
@@ -70,17 +94,15 @@ Derecha
 [YAML header]
 ---
 
-# Introducción
+# Disclaimer
+
+\input{../disclaimer.tex}
 
 ---
 
 # Título Slide 1
 
 Contenido...
-
----
-
-# Sección Principal
 
 ---
 
@@ -91,7 +113,9 @@ Contenido...
 - Punto 1
 - Punto 2
 
-<!-- \includegraphics[width=0.7\columnwidth]{imgs/figura.png} -->
+\begin{center}
+\includegraphics[width=0.7\columnwidth]{imgs/figura.png}
+\end{center}
 
 ---
 
@@ -102,6 +126,12 @@ Contenido...
 \begin{center}
 \Huge Thank You!
 \end{center}
+
+---
+
+# References {.allowframebreaks}
+
+\footnotesize
 ```
 
 **CRÍTICO:**
@@ -110,9 +140,9 @@ Contenido...
 - Títulos con `#` (nivel 1)
 - No alteres el contenido de las slides, que sean todas iguales.
 - Mostrame el codigo en un visor de codigo markdown (artefacto)
-- La primer slides tiene que ser exactamente:
+- La primer slide después del YAML tiene que ser exactamente:
 
-    ```markdow
+    ```markdown
     ---
 
     # Disclaimer
@@ -120,4 +150,20 @@ Contenido...
     \input{../disclaimer.tex}
 
     ---
+    ```
+
+- La última slide de contenido es "Thank You!", seguida de la slide de References:
+
+    ```markdown
+    ---
+
+    \begin{center}
+    \Huge Thank You!
+    \end{center}
+
+    ---
+
+    # References {.allowframebreaks}
+
+    \footnotesize
     ```
