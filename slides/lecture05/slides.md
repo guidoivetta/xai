@@ -9,45 +9,6 @@ bibliography: references.bib
 
 ---
 
-# Project Proposals
-
-- Due next Monday (13th Feb) 11.59pm ET
-
-- 2 page proposal (more details on "Course Logistics" document on canvas) + References
-
-- Today by 5pm ET, we will post:
-  - Project topics and some concrete problems
-  - Sample proposals and final reports from past iterations
-  - LaTeX and Word templates which you will use to write the proposal
-
----
-
-# Office Hours and Paper Presentations
-
-- Office hours switch this week
-  - Suraj and Jiaqi today
-  - Hima on Thursday
-
-- Students signed up for presentations next week should see us in office hours this week
-  - Full slide deck (ideally!)
-  - An overview of what you plan to present
-
----
-
-# Rule Based Approaches
-
----
-
-# Agenda
-
-- Paper 1: Interpretable Rule Lists (Letham et. al.)
-
-- Paper 2: Interpretable Rule Sets (Lakkaraju et. al.)
-
-- Discussion
-
----
-
 # Paper 1
 
 \begin{center}
@@ -60,39 +21,66 @@ bibliography: references.bib
 
 # Contributions
 
-- Introducing a generative model called \textcolor{blue}{Bayesian Rule Lists (BRL)}
-  - Goal is to output a decision list (if then else-if)
+- Introducing a generative model called \textbf{Bayesian Rule Lists (BRL)}
+  - Goal is to output a decision list (\texttt{if then else-lif})
 
-- Novel prior structure to \textcolor{blue}{encourage sparsity}
+- Novel prior structure to \textbf{encourage sparsity}
 
-- Predictive accuracy \textcolor{blue}{on par} with top algorithms
+  - "Sparse" means the model has few active elements
+  - Instead of using all possible rules, BRL keeps only a few that are sufficiently expressive.
+  - Truncated Poisson priors over list length (λ) and rule complexity (η) encourage \textit{sparse}, \textit{interpretable} decision lists.
+
+- Predictive accuracy \textbf{on par} with top classic algorithms (RF, SVM, CHADS$_2$)
 
 ---
 
-# Decision List: Example
+# Decision List: Titanic Example
 
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/decision_list_example.png}
 \end{center}
 
-This is \textcolor{blue}{"an" accurate and interpretable decision list} -- possibly one of many such lists
+- This **is one of many** accurate and interpretable decision lists that can be learned from the data — BRL captures this uncertainty by maintaining a posterior distribution over all of them.
+- **Each rule fires in order** — the first matching rule determines the prediction. 
+- A male adult in 1st class gets **21%**, not **96%**, because the first rule takes priority.
+- The values in parentheses are **95% credible intervals** — the narrower, the more data behind that rule.
+
+---
+
+# Implementing a Decision List in Python
+
+```python
+>>> def predict_survival(male, adult, passenger_class):
+...     if male and adult:
+...         return 0.21, (0.19, 0.23)
+...     elif passenger_class == 3:
+...         return 0.44, (0.38, 0.51)
+...     elif passenger_class == 1:
+...         return 0.96, (0.92, 0.99)
+...     return 0.88, (0.82 , 0.94)
+...     
+>>> survival, confidence = predict_survival(True, False, 3)
+>>> survival
+0.44
+>>> confidence
+(0.38, 0.51)
+```
+
+---
+# Introduction: BRL
+
+- Produces \textbf{a posterior distribution over permutations of \textit{if.. then.. Else-if...} rules} from a large set of \textbf{pre-mined rules} with FP-Growth (*Frequent Pattern Growth*, is an algorithm for mining frequent itemsets from data.).
+
+- Decision lists with \textbf{high posterior probability tend to be both accurate and interpretable}
+  - \textbf{Prior} favors concise lists with small number of rules and fewer terms in left hand side
 
 ---
 
 # Introduction: BRL
 
-- Produces \textcolor{blue}{a posterior distribution over permutations of if.. then.. Else-if.. rules} from a large set of \textcolor{blue}{pre-mined rules}
+- New type of \textbf{balance} between accuracy, interpretability, and computation
 
-- Decision lists with \textcolor{blue}{high posterior probability tend to be both accurate and interpretable}
-  - \textcolor{blue}{Prior} favors concise lists with small number of rules and fewer terms in left hand side
-
----
-
-# Introduction: BRL
-
-- New type of \textcolor{blue}{balance} between accuracy, interpretability, and computation
-
-- \textcolor{blue}{What about using other similar models}?
+- \textbf{What about using other similar models}?
   - Decision trees (CART)
   - They employ greedy construction methods
   - Not particularly computationally demanding but affects quality of solution -- both accuracy and interpretability
@@ -101,23 +89,23 @@ This is \textcolor{blue}{"an" accurate and interpretable decision list} -- possi
 
 # Pre-mined Rules
 
-- A major source of practical feasibility: \textcolor{blue}{pre-mined rules}
+- A major source of practical feasibility: \textbf{pre-mined rules}
   - Reduces model space
   - Complexity of problem depends on number of pre-mined rules
 
-- As long as pre-mined set is expressive, \textcolor{blue}{accurate decision list can be found} + smaller model space means \textcolor{blue}{better generalization} (Vapnik, 1995)
+- As long as pre-mined set is expressive, \textbf{accurate decision list can be found} + smaller model space means \textbf{better generalization} (Vapnik, 1995)
 
 ---
 
 # Pre-mined Rules: Intuition
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/premined_rules_intuition.png}
+\includegraphics[width=0.8\columnwidth]{imgs/premined_rules_intuition.png}
 \end{center}
 
-Minimum Support = 3
+- So the final candidate antecedents passed to BRL would be: \{2\}, \{3\}, \{4\}, \{2,3\}, \{2,4\}, \{3,4\}.
 
-This is Apriori algorithm. FP-growth is a single pass algorithm (more efficient).
+- This is Apriori algorithm. FP-growth is a single pass algorithm (more efficient).
 
 ---
 
@@ -127,40 +115,97 @@ This is Apriori algorithm. FP-growth is a single pass algorithm (more efficient)
 
 $$\mathbf{x} = (x_1, \ldots, x_n) \quad \mathbf{y} = (y_1, \ldots, y_n)$$
 
-- Two labels: stroke or no stroke
+## Two labels: 
+
+1. stroke
+2. no stroke
+
+---
+
+# Warning
+
+\begin{center}
+\Large
+\emoji{desktop-computer.png}
+\emoji{warning.png}
+\textcolor{red}{Warning}
+\textcolor{lightgreen}{
+for students with a background in computer science}
+\normalsize
+\end{center}
+\vspace{1em}
+
+- **Intuition:** Bayesians use probability distributions like programmers use libraries (`numpy`, `sklearn`). Instead of building new theory from scratch, they pick standard distributions that fit their problem and update them with data.
+
+- **Formally:** You encode prior beliefs using these distributions *before* seeing data, then combine them with observations via Bayes' theorem to get the posterior. The 'library' gives you the mathematical machinery, but you still need to choose the right prior and let the data update it.
+
 
 ---
 
 # Bayesian Decision Lists
 
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/bayesian_decision_lists.png}
+\includegraphics[width=0.6\columnwidth]{imgs/bayesian_decision_lists.png}
 \end{center}
+
+\small
+## Where:
+\begin{itemize}
+    \item $a_j$: Antecedent (the "if" condition) for rule $j$
+    \item $y \sim \text{Multinomial}(\boldsymbol{\theta}_j)$: The predicted label follows a multinomial distribution with probabilities $\boldsymbol{\theta}_j$
+    \item $\boldsymbol{\theta}_j \sim \text{Dirichlet}(\boldsymbol{\alpha} + \mathbf{N}_j)$: The parameters $\boldsymbol{\theta}_j$ themselves have a posterior distribution (Dirichlet) that combines the prior pseudocounts $\boldsymbol{\alpha}$ with the observed data counts $\mathbf{N}_j$
+    \item $\boldsymbol{\alpha}$: Prior pseudocounts (hyperparameter). Setting $\boldsymbol{\alpha} = (1,1,\ldots,1)$ gives a uniform prior with no class preference
+    \item $\mathbf{N}_j = (N_{j,1}, \ldots, N_{j,L})$: Counts of observations captured by rule $j$ for each of the $L$ classes
+\end{itemize}
+\normalsize
 
 ---
 
-# Preliminaries: Multinomial
+# Preliminaries: Sampling from a multinomial
 
-- Sampling from a multinomial:
+The code simulates throwing a 6-sided die 20 times, where each face has equal probability 1/6.
 
+```python
+>>> import numpy as np
+>>> np.random.multinomial(20, [1/6]*6, size=1) 
+array([[4, 1, 7, 5, 2, 1]])
+```
+
+- `[1/6] * 6` = `[1/6, 1/6, 1/6, 1/6, 1/6, 1/6]`
+- returns how many times each face appeared:  means face 1 appeared 4 times, face 2 once, face 3 seven times, etc.
+
+## Parameters are probability values
+
+- $\theta_j$, in BRL, is  a vector of probabilities, one per class. For example, $\theta_j = [0.6, 0.3, 0.1]$ for a 3-class problem.
+- When you sample a label y from Multinomial($\theta_j$), you're drawing one outcome according to those probabilities.
+
+---
+
+# Preliminaries: Dirichlet Distribution
+
+- **Dirichlet samples from this simplex:** Drawing from $Dirichlet(\alpha_1, \alpha_2$ gives probability vectors like (0.6, 0.4) or (0.3, 0.7)
+
+- **Probability simplex:** The space of all valid probability vectors (sum to 1, non-negative)
+  - Example: (0.6, 0.4) is valid; (0.6, 0.5) is not (sums to 1.1)
+
+- **K-dimensional Dirichlet has k parameters $(\alpha_1, \alpha_2, ..., \alpha_m)$**
+  - Each $\alpha_k$ controls expected probability mass for dimension $k$
+  - Higher $\alpha_k$ → more weight on that dimension
+  - All $\alpha_k = 1$ → uniform distribution over the simplex
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
 \begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/multinomial_example.png}
-\end{center}
-
-- Parameters are probability values
-
----
-
-# Preliminaries: Dirichlet
-
-- Dirichlet: sampling over a probability simplex
-  - E.g., (0.6, 0.4) is a sample from a Dirichlet distribution;
-
-- K-dimensional Dirichlet has k parameters -- any positive number
-
-$$\Theta \sim \text{Dirichlet}(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
-
+ $$\Theta \sim \text{Dirichlet}(\alpha_1, \alpha_2, \ldots, \alpha_m)$$
+ \end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
 $$P(\theta_1, \theta_2, \ldots, \theta_m) = \frac{\Gamma(\sum_k \alpha_k)}{\prod_k \Gamma(\alpha_k)} \prod_{k=1}^{m} \theta_k^{\alpha_k - 1}$$
+\end{center}
+\end{column}
+\end{columns}
+
 
 ---
 
@@ -177,6 +222,22 @@ $$(p_1, \ldots, p_k) \sim \text{Dirichlet}(\alpha_1, \ldots, \alpha_k)$$
 - Posterior:
 
 $$(p_1, \ldots, p_k) | (x_1, \ldots, x_k) \sim \text{Dirichlet}(\alpha_1 + x_1, \ldots, \alpha_k + x_k)$$
+
+Conjugado (conjugate):
+Un prior es "conjugado" cuando el posterior tiene la misma forma matemática que el prior. Esto hace que los cálculos bayesianos sean simples — no necesitás integrales complicadas.
+
+Verosimilitud (likelihood):
+Es la probabilidad de observar tus datos dado un modelo. Por ejemplo: si tenés un dado y observás 100 tiros, la verosimilitud te dice qué tan probable es ver esos resultados si el dado tiene ciertos parámetros.
+
+Para datos multinomiales:
+
+Prior: Las probabilidades (p₁, ..., pₖ) siguen Dirichlet(α₁, ..., αₖ)
+Datos observados: Contás cuántas veces apareció cada categoría: (x₁, ..., xₖ)
+Posterior: Sigue siendo Dirichlet, pero con parámetros actualizados: Dirichlet(α₁ + x₁, ..., αₖ + xₖ)
+
+
+Por qué importa para BRL:
+Literalmente sumás las observaciones a los pseudoconteos del prior. Si tenías α = (1,1,1) y observaste (5,2,3) datos, tu posterior es Dirichlet(6,3,4). Esta actualización limpia permite que BRL calcule posteriors eficientemente para cada regla.
 
 ---
 
@@ -363,13 +424,13 @@ Match the antecedent by looking at feature values of new observation
 
 # Contributions
 
-- A framework called \textcolor{blue}{Interpretable Decision Sets} (IDS) for classification
+- A framework called \textbf{Interpretable Decision Sets} (IDS) for classification
 
-- \textcolor{blue}{Novel objective function} + proof of \textcolor{blue}{submodularity}
+- \textbf{Novel objective function} + proof of \textbf{submodularity}
 
 - Optimization procedure with optimality guarantees
 
-- \textcolor{blue}{Detailed metrics for evaluating interpretability} + user studies
+- \textbf{Detailed metrics for evaluating interpretability} + user studies
 
 ---
 
@@ -381,7 +442,7 @@ Match the antecedent by looking at feature values of new observation
 
 - Model being "readable" is not enough
 
-- \textcolor{blue}{Humans should be able to reason about predictions and readily explain the functionality of the model}
+- \textbf{Humans should be able to reason about predictions and readily explain the functionality of the model}
 
 ---
 
@@ -411,13 +472,13 @@ Match the antecedent by looking at feature values of new observation
 
 # Criteria for Interpretability
 
-- \textcolor{blue}{Parsimony}: Fewer rules with fewer conditions
+- \textbf{Parsimony}: Fewer rules with fewer conditions
   - Cognitive limits of human understanding
 
-- \textcolor{blue}{Distinctness}: Minimal overlap of rules w.r.t the data points they cover
+- \textbf{Distinctness}: Minimal overlap of rules w.r.t the data points they cover
   - No redundant and contradicting explanations of data points
 
-- \textcolor{blue}{Class Coverage}: Explain all the classes in the data
+- \textbf{Class Coverage}: Explain all the classes in the data
   - Rules explaining minority classes are important
 
 ---
@@ -552,9 +613,9 @@ The complete objective is non-negative, non-normal, non-monotone, submodular
 
 # Optimizing the Objective
 
-- Maximizing a non-monotone submodular function is \textcolor{blue}{NP-hard}
+- Maximizing a non-monotone submodular function is \textbf{NP-hard}
 
-- \textcolor{blue}{Smooth local search} [SLS] algorithm provides a 2/5 approximation [Feige, Mirrokni, Vondrak FOCS 07; SIAM Comp. J. 11]
+- \textbf{Smooth local search} [SLS] algorithm provides a 2/5 approximation [Feige, Mirrokni, Vondrak FOCS 07; SIAM Comp. J. 11]
   - Will be at least 2/5 of the optimal solution
 
 ---

@@ -56,6 +56,11 @@ PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
 # Add more mappings here as needed for special mathematical or typographic symbols
 REPLACES = {
     "≠": r"$\neq$",  # Not equal sign
+    "λ": r"$\lambda$",
+    "η": r"$\eta$",
+    "θ": r"$\theta$",
+    "α": r"$\alpha$",
+    "ⱼ": r"$_{j}$",
 }
 
 # Marker string to indicate partial rendering start point in Markdown source.
