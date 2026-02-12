@@ -41,7 +41,7 @@ bibliography: references.bib
 \end{center}
 
 - This **is one of many** accurate and interpretable decision lists that can be learned from the data — BRL captures this uncertainty by maintaining a posterior distribution over all of them.
-- **Each rule fires in order** — the first matching rule determines the prediction. 
+- **Each rule fires in order** — the first matching rule determines the prediction.
 - A male adult in 1st class gets **21%**, not **96%**, because the first rule takes priority.
 - The values in parentheses are **95% credible intervals** — the narrower, the more data behind that rule.
 
@@ -58,7 +58,7 @@ bibliography: references.bib
 ...     elif passenger_class == 1:
 ...         return 0.96, (0.92, 0.99)
 ...     return 0.88, (0.82 , 0.94)
-...     
+...
 >>> survival, confidence = predict_survival(True, False, 3)
 >>> survival
 0.44
@@ -115,7 +115,7 @@ bibliography: references.bib
 
 $$\mathbf{x} = (x_1, \ldots, x_n) \quad \mathbf{y} = (y_1, \ldots, y_n)$$
 
-## Two labels: 
+## Two labels:
 
 1. stroke
 2. no stroke
@@ -167,7 +167,7 @@ The code simulates throwing a 6-sided die 20 times, where each face has equal pr
 
 ```python
 >>> import numpy as np
->>> np.random.multinomial(20, [1/6]*6, size=1) 
+>>> np.random.multinomial(20, [1/6]*6, size=1)
 array([[4, 1, 7, 5, 2, 1]])
 ```
 
@@ -206,38 +206,45 @@ $$P(\theta_1, \theta_2, \ldots, \theta_m) = \frac{\Gamma(\sum_k \alpha_k)}{\prod
 \end{column}
 \end{columns}
 
+---
+
+# Dirichlet as Conjugate Prior for Multinomial
+
+- **Conjugate prior:** A prior is conjugate when the posterior has the same distributional form as the prior — no complex integrals needed.
+
+- **Prior:**
+    $$(p_1, \ldots, p_k) \sim \text{Dirichlet}(\alpha_1, \ldots, \alpha_k)$$
+
+- **Posterior:** Just add observed counts to prior pseudocounts:
+    $$(p_1, \ldots, p_k) \mid (x_1, \ldots, x_k) \sim \text{Dirichlet}(\alpha_1 + x_1, \ldots, \alpha_k + x_k)$$
 
 ---
 
-# Preliminaries: Dirichlet Prior
+# Dirichlet as Conjugate Prior for Multinomial - Example
 
-- Conjugate prior for multinomial distribution
+**Prior**
 
-- Conjugate prior: posterior in the same family as prior
+- **Prior** $\alpha = (1,1,1)$ (uniform, no class preference)
+- $+$ observed counts $(5,2,3)$
+- **Posterior** $= \text{Dirichlet}(6,3,4)$
 
-- Prior:
+## Why it matters for BRL:
+Each rule's posterior is computed by simply adding observation counts to prior pseudocounts — clean and efficient.
 
-$$(p_1, \ldots, p_k) \sim \text{Dirichlet}(\alpha_1, \ldots, \alpha_k)$$
+---
 
-- Posterior:
+# Bayesian Association Rules
 
-$$(p_1, \ldots, p_k) | (x_1, \ldots, x_k) \sim \text{Dirichlet}(\alpha_1 + x_1, \ldots, \alpha_k + x_k)$$
+- A **Bayesian association rule** $a \rightarrow y$ predicts a label distribution instead of a single label:
+$$a \rightarrow y \sim \text{Multinomial}(\boldsymbol{\theta})$$
 
-Conjugado (conjugate):
-Un prior es "conjugado" cuando el posterior tiene la misma forma matemática que el prior. Esto hace que los cálculos bayesianos sean simples — no necesitás integrales complicadas.
+- The parameters $\boldsymbol{\theta}$ themselves are uncertain — we put a Dirichlet prior on them:
+$$\boldsymbol{\theta} \mid \boldsymbol{\alpha} \sim \text{Dirichlet}(\boldsymbol{\alpha})$$
 
-Verosimilitud (likelihood):
-Es la probabilidad de observar tus datos dado un modelo. Por ejemplo: si tenés un dado y observás 100 tiros, la verosimilitud te dice qué tan probable es ver esos resultados si el dado tiene ciertos parámetros.
+- After observing data $(\mathbf{x}, \mathbf{y})$, the posterior is simply:
+$$\boldsymbol{\theta} \mid \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha} \sim \text{Dirichlet}(\boldsymbol{\alpha} + N)$$
 
-Para datos multinomiales:
-
-Prior: Las probabilidades (p₁, ..., pₖ) siguen Dirichlet(α₁, ..., αₖ)
-Datos observados: Contás cuántas veces apareció cada categoría: (x₁, ..., xₖ)
-Posterior: Sigue siendo Dirichlet, pero con parámetros actualizados: Dirichlet(α₁ + x₁, ..., αₖ + xₖ)
-
-
-Por qué importa para BRL:
-Literalmente sumás las observaciones a los pseudoconteos del prior. Si tenías α = (1,1,1) y observaste (5,2,3) datos, tu posterior es Dirichlet(6,3,4). Esta actualización limpia permite que BRL calcule posteriors eficientemente para cada regla.
+- where $N = (N_{\cdot,1}, \ldots, N_{\cdot,L})$ are the observed counts per class for observations captured by this rule.
 
 ---
 
@@ -249,19 +256,66 @@ $$\boldsymbol{\theta} | \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha} \sim \text{D
 
 $$N = (N_{\cdot,1}, \ldots, N_{\cdot,L})$$
 
+## Example
+
+- Rule \texttt{"age > 60 AND diabetes"}
+- Captures 10 patients: 7 with stroke, 3 without.
+- With $\boldsymbol{\alpha} = (1,1)$,
+- posterior $= \text{Dirichlet}(8, 4)$
+- → estimated stroke probability $= 8/12 \approx 67\%$
+
 ---
 
-# Generative Model
+# Finally
 
+At this point we know the ingredients:
+
+- What a **Bayesian Rule List (BRL)** is: an ordered `if-then-else` decision list with probabilistic predictions
+- How to mine a collection of candidate rules using **FP-Growth** (frequent itemset mining)
+- How a **single rule** combines observations with a Dirichlet-Multinomial model to estimate class probabilities
+
+\vspace{1em}
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/generative_model.png}
+Now it's time to put it all together and \textbf{learn the full BRL from data}.
 \end{center}
 
-Our goal is to sample from the posterior distribution over antecedent lists:
+---
+
+# Generative Model 1/2
+
+\begin{center}
+\includegraphics[width=0.7\columnwidth]{imgs/generative_model.png}
+\end{center}
+
+
+Our goal instead of finding a single optimal list like a greedy algorithm, BRL assigns a **probability to every possible list** — giving us the full posterior distribution over decision lists.
 
 $$p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta) \propto p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha}) p(d|\mathcal{A}, \lambda, \eta).$$
 
-$\mathcal{A}$ is complete collection of pre-mined antecedents
+\begin{center}
+\textbf{continue...}
+\end{center}
+
+----
+
+# Generative Model 2/2
+
+$$p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta) \propto p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha}) p(d|\mathcal{A}, \lambda, \eta).$$
+
+The posterior probability of list $d$, given the data $\mathbf{x}$, labels $\mathbf{y}$,
+candidate rules $\mathcal{A}$, and hyperparameters $\boldsymbol{\alpha} (pseudocounts), \lambda, \eta$,
+is proportional to the product of:
+
+- $p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha})$: the **likelihood** — how well list $d$ explains the observed labels
+- $p(d|\mathcal{A}, \lambda, \eta)$: the **prior** — how probable that list was before seeing any data
+- $\lambda$ controls the prior expected list length (number of `if then`),
+- $\eta$ controls the prior expected antecedent cardinality (number of conditions per rule).
+
+***In short:** $\text{posterior} \propto \text{likelihood} \times \text{prior}$
+
+\begin{center}
+\textbf{continue...}
+\end{center}
 
 ---
 
