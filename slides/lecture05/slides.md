@@ -281,7 +281,7 @@ Now it's time to put it all together and \textbf{learn the full BRL from data}.
 
 ---
 
-# Generative Model 1/2
+# Generative Model 1/3
 
 \begin{center}
 \includegraphics[width=0.7\columnwidth]{imgs/generative_model.png}
@@ -298,7 +298,37 @@ $$p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta) \
 
 ----
 
-# Generative Model 2/2
+# Generative Model 2/3
+
+\scriptsize
+\begin{center}
+% "Frame" interno más pequeño usando minipage
+\fbox{%
+\begin{minipage}{0.5\textwidth}
+\includegraphics[width=\columnwidth]{imgs/generative_model.png}
+%
+\scriptsize
+\vspace{0.1cm} % Ajusta este valor para acercar o alejar la fórmula
+\centering
+$p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta) \propto p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha}) p(d|\mathcal{A}, \lambda, \eta).$
+\end{minipage}
+}
+\end{center}
+
+The formula decomposes the posterior into two parts defined by the generative model:
+
+- $p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha})$: how well list $d$ explains the data — comes from the **"For observation $i=1,\ldots,n$"** step - **Likelihood**
+- $p(d|\mathcal{A}, \lambda, \eta)$: how probable it was to construct that list — comes from the **"For decision list rule $j=1,\ldots,m$"** step - **Prior**
+
+## In resume
+
+- The generative model goes **list $\rightarrow$ data** ($p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha})$), while the posterior goes **data $\rightarrow$ list** ($p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta)$)
+- Bayes inverts the generative process.
+\normalsize
+
+----
+
+# Generative Model 3/3
 
 $$p(d|\mathbf{x}, \mathbf{y}, \mathcal{A}, \boldsymbol{\alpha}, \lambda, \eta) \propto p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\alpha}) p(d|\mathcal{A}, \lambda, \eta).$$
 
@@ -313,9 +343,7 @@ is proportional to the product of:
 
 ***In short:** $\text{posterior} \propto \text{likelihood} \times \text{prior}$
 
-\begin{center}
-\textbf{continue...}
-\end{center}
+
 
 ---
 
