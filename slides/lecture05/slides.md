@@ -650,27 +650,29 @@ From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 r
 
 ---
 
+# Decision Sets
+
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{imgs/dsets.png}
+\end{center}
+
+---
+
 # Decision Lists vs Decision Sets
 
 ## Decision Lists
 
-- Ordered sequence of if-then-else rules
+- Ordered sequence of `if-then-else` rules
 - Order matters: first matching rule applies
-- Like a chain of if/else-if statements
+- Like a chain of `if/else-if` statements
 
 ## Decision Sets
 
-- Unordered collection of if-then rules
+- Unordered collection of `if-then` rules
 - Each rule independently assigns a class
 - Rules can overlap (multiple rules may fire)
 
----
 
-# Decision Sets
-
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/decision_sets_example.png}
-\end{center}
 
 ---
 
@@ -687,36 +689,60 @@ From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 r
 
 ---
 
-# Problem Formulation
+# Interpretable Decision Sets: Problem Setup
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/problem_formulation.png}
-\end{center}
+**Input:**
+
+- Set of data points: $\mathcal{D} = \{(\mathbf{x}_1, y_1), \cdots, (\mathbf{x}_N, y_N)\}$
+- Set of class labels: $\mathcal{C}$
+- Set of frequent itemsets obtained via Apriori: $\mathcal{S} = \{s_1, s_2, s_3, \ldots, s_M\}$
+  - Ex: $s_i =$ `Gender = Female AND Age > 35 AND Smoker = True`
+
+**Output:** An interpretable decision set $\mathcal{R} \subseteq \mathcal{S} \times \mathcal{C}$
+
+- Each rule in $\mathcal{R}$ is a pair (itemset, class) — you pick an itemset from $\mathcal{S}$ and assign it a class label from $\mathcal{C}$
+- $\mathcal{R}$ is a subset of all possible itemset-class combinations $\mathcal{S} \times \mathcal{C}$
 
 ---
 
 # Desiderata
 
-- We need to optimize for the following criteria
-  - Recall
-  - Precision
-  - Distinctness
-  - Parsimony
-  - Class Coverage
+\begin{center}
+\Large
+\textbf{We need to optimize for the following criteria for...}
+\end{center}
 
-- Recall and Precision $\Rightarrow$ Accurate predictions
+## Acurate Predictions
 
-- Distinctness, Parsimony, and Class Coverage $\Rightarrow$ Interpretability
+- **Recall:** Fraction of data points correctly covered by some rule
+- **Precision:** Fraction of covered points that belong to the correct class
+
+
+## Interpretability
+
+- **Distinctness:** Rules cover non-overlapping regions of the feature space
+- **Parsimony:** Decision set has few short rules
+- **Class Coverage:** At least one rule exists for each class
 
 ---
 
-# Objective Function
+# Objective Function - Parsimony 1/2
 
-## Parsimony
+![alt text](imgs/ofparsimony.png)
 
-- Fewer rules: $f_1(\mathcal{R}) = |\mathcal{S}| - \text{size}(\mathcal{R})$
+---
 
-- Fewer predicates: $f_2(\mathcal{R}) = L_{\max} \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} \text{length}(r)$
+# Objective Function - Parsimony 2/2
+
+<!-- ![alt text](imgs/ofparsimony.png) -->
+
+**Fewer rules** ($f_1$): The fewer rules in the decision set, the easier it is for a user to understand all the conditions for each class. Since $|\mathcal{S}|$ is constant, **maximizing $f_1(\mathcal{R}) = |\mathcal{S}| - \text{size}(\mathcal{R})$** is equivalent to minimizing the number of rules.
+
+- Prefer: 12 rules over 30 rules
+
+**Fewer predicates** ($f_2$): The fewer conditions inside each rule, the easier each rule is to parse. Since $L_{\max}$ and $|\mathcal{S}|$ are constant, **maximizing $f_2(\mathcal{R}) = L_{\max} \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} \text{length}(r)$** is equivalent to minimizing the total number of predicates across all rules.
+
+- Prefer: `Age > 60` (length 1) over `Age > 60 AND Diabetes AND Hypertension AND Smoker` (length 4)
 
 ---
 
