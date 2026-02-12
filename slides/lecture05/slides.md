@@ -349,25 +349,52 @@ is proportional to the product of:
 
 # Prior Probabilities
 
-$$p(d|\mathcal{A}, \lambda, \eta) = p(m|\mathcal{A}, \lambda) \prod_{j=1}^{m} p(c_j|c_{<j}, \mathcal{A}, \eta) p(a_j|a_{<j}, c_j, \mathcal{A}).$$
+\begin{center}
+$p(d|\mathcal{A}, \lambda, \eta) = p(m|\mathcal{A}, \lambda) \prod_{j=1}^{m} p(c_j|c_{<j}, \mathcal{A}, \eta) p(a_j|a_{<j}, c_j, \mathcal{A}).$
+\end{center}
 
-Truncated Poisson:
+\scriptsize
+## List length prior (Truncated Poisson):
 
-$$p(m|\mathcal{A}, \lambda) = \frac{(\lambda^m / m!)}{\sum_{j=0}^{|\mathcal{A}|}(\lambda^j / j!)}, \qquad m = 0, \ldots, |\mathcal{A}|.$$
+$$p(m|\mathcal{A}, \lambda) = \frac{(\lambda^m / m!)}{\sum_{j=0}^{|\mathcal{A}|}(\lambda^j / j!)}, \qquad m = 0, \ldots, |\mathcal{A}|$$
 
-Ensures that sampled values are within bounds!
+- Ensures that sampled values are within bounds! (in normal Poisson $m = 0, \ldots, \infty$)
+- Also, ensures expected value is close to $\lambda$ when there are a large number of pre-mined rules
 
-Also, ensures expected value is close to $\lambda$ when there are a large number of pre-mined rules
+## Cardinality prior (Truncated Poisson)
 
+$$p(c_j|c_{<j}, \mathcal{A}, \eta) = \frac{(\eta^{c_j} / c_j!)}{\sum_{k \in R_{j-1}(c_{<j}, \mathcal{A})}(\eta^k / k!)}, \qquad c_j \in R_{j-1}(c_{<j}, \mathcal{A}).$$
+
+## Antecedent selection 
+
+$p(a_j|a_{<j}, c_j, \mathcal{A})$ is sampled uniformly from available antecedents with appropriate cardinality.
+\normalsize
 ---
 
 # Prior Probabilities
 
-Another Truncated Poisson,
+\begin{center}
+$p(d|\mathcal{A}, \lambda, \eta) = p(m|\mathcal{A}, \lambda) \prod_{j=1}^{m} p(c_j|c_{<j}, \mathcal{A}, \eta) p(a_j|a_{<j}, c_j, \mathcal{A}).$
+\end{center}
 
-$$p(c_j|c_{<j}, \mathcal{A}, \eta) = \frac{(\eta^{c_j} / c_j!)}{\sum_{k \in R_{j-1}(c_{<j}, \mathcal{A})}(\eta^k / k!)}, \qquad c_j \in R_{j-1}(c_{<j}, \mathcal{A}).$$
+\scriptsize
+- **List length prior:**
+  - Controls how many rules the list has (parameter $\lambda$)
+  - Truncated at $|\mathcal{A}|$ instead of $\infty$ — list length can't exceed available rules
+  - Expected value is close to $\lambda$ when there are a large number of pre-mined rules
+- **Cardinality prior:** 
+  - Controls how many conditions each rule has (parameter $\eta$)
+  - Truncated to exclude cardinalities with no available rules at position $j$
+- **Antecedent selection:**
+  - Given a cardinality $c_j$, a rule is sampled **uniformly** from all available antecedents of that size
+\normalsize
 
-$p(a_j|a_{<j}, c_j, \mathcal{A})$ is sampled uniformly from available antecedents with appropriate cardinality.
+\vspace{1cm}
+\begin{center}
+\large
+\textbf{For each position in the list, the product picks a complexity (cardinality) and then a specific rule — repeated for all $m$ rules.}
+\end{center}
+
 
 ---
 
@@ -375,55 +402,81 @@ $p(a_j|a_{<j}, c_j, \mathcal{A})$ is sampled uniformly from available antecedent
 
 - Likelihood is the product of multinomial probability mass functions for the observed label counts at each rule
 
-$$p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\theta}) = \prod_{j: \sum_l N_{j,l} > 0} \text{Multinomial}(\mathbf{N}_j | \theta_j),$$
+$$p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\theta}) = \prod_{j: \sum_l N_{j,l} > 0} \text{Multinomial}(\mathbf{N}_j | \theta_j), \qquad \theta_j \sim \text{Dirichlet}(\boldsymbol{\alpha})$$
 
-$$\theta_j \sim \text{Dirichlet}(\boldsymbol{\alpha}).$$
+- For each rule $j$ that captures at least one observation, $\mathbf{N}_j$ counts how many times each class appeared — the multinomial measures how probable those counts are given $\theta_j$
 
-Marginalize over $\theta_j$, integrate out the intermediate parameter $\theta_j$
-
----
-
-# Markov Chain Monte Carlo
-
-- Generate a chain of random samples until convergence
-
-- Each random sample is a stepping stone for the next one (chain)
-
-- New samples do not depend on any samples before the previous one (Markov)
+- **Marginalizing over $\theta_j$:** $\theta_j$ is an intermediate parameter we don't need explicitly. Thanks to Dirichlet-Multinomial conjugacy, we can integrate it out analytically — the result depends only on observed counts $\mathbf{N}_j$ and prior $\boldsymbol{\alpha}$, with no need to estimate $\theta_j$ directly
 
 ---
 
 # Markov Chain Monte Carlo
 
-- How to go to (optimal) $d^*$ from current $d^t$
+- **Monte Carlo:** Generate random samples to approximate a distribution that is too complex to compute exactly
 
-- Move an antecedent to a different position in the list
+- **Markov:** Each proposed list $d^*$ depends only on the current list $d^t$ — not on the entire history of the chain
 
-- Add an antecedent that is not currently in the list
+- **Chain:** Samples are sequential stepping stones — each one is used to propose the next
 
-- Remove an antecedent from the list
-
----
-
-# Metropolis Hastings
-
-- Start with a random decision list
-
-- Choose a move based on "proposal distribution" Q
-
-- After you choose your move, you compute an acceptance probability A
-
-- Generate a random number u
-
-- If $u \leq A$, then accept; otherwise reject
+- After enough iterations, the chain **converges** to the true posterior distribution over decision lists
 
 ---
 
-# Metropolis Hastings
+# Markov Chain Monte Carlo: Proposal Moves
+
+- At each iteration, propose a new list $d^*$ from the current $d^t$ by randomly choosing one of three moves:
+
+  - **Move:** relocate an existing rule to a different position in the list
+  - **Add:** insert a new rule from $\mathcal{A}$ not currently in $d^t$
+  - **Remove:** delete a rule from $d^t$
+
+- The proposed $d^*$ is then accepted or rejected via the **Metropolis-Hastings** criterion
+
+---
+
+# Metropolis-Hastings
+
+\small
+- **Initialize:** start with a random decision list $d^0$ sampled from the prior
+
+- **Propose:** sample a new list $d^*$ from the proposal distribution $Q(d^*|d^t)$ using one of the three moves (add, remove, move)
+
+- **Accept/Reject:** compute the acceptance probability:
+$$A = \min\left(1, \frac{p(d^*|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^t|d^*)}{p(d^t|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^*|d^t)}\right), \quad A \in (0, 1]$$
+
+- **Sample:** 
+  - \textbf{draw} {$u \sim \text{Uniform}(0,1)$}
+  - \textbf{if} $u \leq A$ 
+    - \textbf{if-True: set} $d^{t+1} = d^*$
+    - \textbf{otherwise: keep} $d^{t+1} = d^t$
+
+- **Repeat** until convergence
+\normalsize
+
+---
+
+# Metropolis-Hastings: Acceptance Probability
+
+\scriptsize
+$$A = \min\left(1, \frac{p(d^*|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^t|d^*)}{p(d^t|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^*|d^t)}\right), \quad A \in (0, 1]$$
+
+\small
+The formula compares how good the proposed list $d^*$ is vs. the current list $d^t$. The ratio has two parts:
+
+- **Posterior ratio** $p(d^*|\ldots) / p(d^t|\ldots)$: how much better $d^*$ is in terms of posterior — if $d^*$ has higher posterior, this ratio is $> 1$
+- **Proposal ratio** $Q(d^t|d^*) / Q(d^*|d^t)$: corrects for the fact that some moves are easier to propose than others
+
+The $\min(1, \ldots)$:
+
+- If the ratio $\geq 1$: always accept ($A = 1$) — $d^*$ is better
+- If the ratio $< 1$: accept with probability equal to the ratio — $d^*$ is worse but not discarded completely
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/metropolis_hastings_algorithm.png}
+\large
+\textbf{Accepting worse solutions with some probability prevents getting trapped in local optima.}
 \end{center}
+
+\normalsize
 
 ---
 
@@ -433,9 +486,8 @@ Marginalize over $\theta_j$, integrate out the intermediate parameter $\theta_j$
 
 - Which antecedents and their new position is also chosen uniformly
 
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/proposal_probabilities.png}
-\end{center}
+$$Q(d^*|d^t, \mathcal{A}) = \begin{cases} \frac{1}{(|d^t|)(|d^t| - 1)}, & \text{if move proposal,} \\ \frac{1}{(|\mathcal{A}| - |d^t|)(|d^t| + 1)}, & \text{if add proposal,} \\ \frac{1}{|d^t|}, & \text{if remove proposal.} \end{cases}$$
+
 
 ---
 
@@ -447,11 +499,22 @@ Match the antecedent by looking at feature values of new observation
 
 ---
 
-# Experiments
+!!include python: codes/pseudo.py
 
 ---
 
-# Tic-Tac-Toe
+# Clone
+
+$$p(\tilde{y} = l \mid \tilde{x}, d, \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha}) = \frac{\alpha_l + N_{j(d,\tilde{x}),l}}{\sum_{k=1}^{L}(\alpha_k + N_{j(d,\tilde{x}),k})}$$
+
+- $j(d, \tilde{x})$: index of the **first rule in $d$ that matches** the new observation $\tilde{x}$
+- **Numerator:** observed counts for class $l$ in that rule + prior pseudocount $\alpha_l$
+- **Denominator:** total counts across all classes + all priors — ensures the result is a valid probability
+- This is the Dirichlet-Multinomial posterior evaluated at the matched rule
+
+---
+
+# Experiment: Tic-Tac-Toe
 
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{imgs/tictactoe_results.png}

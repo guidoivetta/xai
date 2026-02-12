@@ -38,6 +38,7 @@ import contextlib
 import time
 import hashlib
 import argparse
+import re
 import tempfile
 from datetime import datetime
 
@@ -49,8 +50,15 @@ import sh
 # - filter="pandoc-citeproc": Process citations and bibliography
 # - verbose=True: Show detailed compilation output
 PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
-    t="beamer", d="../defaults.yaml", filter="pandoc-citeproc", verbose=True
+    t="beamer",
+    d="../defaults.yaml",
+    filter="pandoc-citeproc",
+    verbose=True,
 )
+
+
+# "RX" por Regex e "INCLUDE" por la acción que realiza
+RX_INCLUDE_DIRECTIVE = re.compile(r"!!include\s+([a-zA-Z0-9+#-]+):\s*(.+)")
 
 # Unicode to LaTeX replacements for characters that don't render properly
 # Add more mappings here as needed for special mathematical or typographic symbols
@@ -270,6 +278,23 @@ def find_last_index_second_dash_line(src):
     return -1
 
 
+def render_include_to_markdown(target):
+    """
+    Recibe un string (línea única) o un objeto re.Match (para re.sub).
+    Devuelve el bloque Markdown con el código.
+    """
+    # Si es string, buscamos el match; si ya es un match (de re.sub), lo usamos directo
+    match = RX_INCLUDE_DIRECTIVE.search(target) if isinstance(target, str) else target
+
+    lang = match.group(1).lower()
+    path = match.group(2).strip()
+
+    with open(path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    return f"```{lang}\n{content}\n```"
+
+
 def preprocess_markdown_source(src, fname, tempdir):
     """
     Preprocess Markdown source for Pandoc compilation and save to temporary file.
@@ -349,6 +374,8 @@ def preprocess_markdown_source(src, fname, tempdir):
     # Replace Unicode characters with LaTeX equivalents
     for unicode_char, latex_replacement in REPLACES.items():
         src = src.replace(unicode_char, latex_replacement)
+
+    src = RX_INCLUDE_DIRECTIVE.sub(render_include_to_markdown, src)
 
     # Write preprocessed content to temporary file
     with open(output_path, "w", encoding="utf-8") as f:
@@ -517,7 +544,7 @@ def main():
             original_path,
             "->",
             os.path.join(wd, output_path),
-            f"{partial_rendering}"
+            f"{partial_rendering}",
         )
 
         # Run initial compilation
@@ -541,13 +568,15 @@ def main():
             if md5 != new_md5:
                 # File has changed, recompile
                 now = datetime.now().strftime("%H:%M:%S")
-                partial_rendering = "[Partial Rendering]" if RENDER_FROM_HERE in src else ""
+                partial_rendering = (
+                    "[Partial Rendering]" if RENDER_FROM_HERE in src else ""
+                )
                 print(
                     f"[{now}] Compiling",
                     original_path,
                     "->",
                     os.path.join(wd, output_path),
-                    f"{partial_rendering}"
+                    f"{partial_rendering}",
                 )
                 processed_path = preprocess_markdown_source(src, filepath, tempdir)
                 output = run_pandoc(
