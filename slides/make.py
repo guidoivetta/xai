@@ -57,7 +57,7 @@ PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
 )
 
 
-# "RX" por Regex e "INCLUDE" por la acción que realiza
+# "RX" for Regex and "INCLUDE" for the action it performs
 RX_INCLUDE_DIRECTIVE = re.compile(r"!!include\s+([a-zA-Z0-9+#-]+):\s*(.+)")
 
 # Unicode to LaTeX replacements for characters that don't render properly
@@ -142,13 +142,13 @@ def get_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "archivo",
-        help="ruta del archivo a compilar",
+        help="path to the file to compile",
         type=str,
     )
     parser.add_argument(
         "-s",
         "--sleep",
-        help="segundos de espera",
+        help="seconds to wait between checks",
         action="store",
         type=float,
         default=1.5,
@@ -159,7 +159,7 @@ def get_parser():
     parser.add_argument("-i", "--ignore_error", action="store_false", default=True)
     parser.add_argument(
         "--cd",
-        help="cambiar al directorio del archivo",
+        help="change to the file's directory before compiling",
         action="store_true",
         default=True,
     )
@@ -280,19 +280,23 @@ def find_last_index_second_dash_line(src):
 
 def render_include_to_markdown(target):
     """
-    Recibe un string (línea única) o un objeto re.Match (para re.sub).
-    Devuelve el bloque Markdown con el código.
+    Receive a string (single line) or an re.Match object (for re.sub).
+    Return the Markdown block with the included code.
     """
-    # Si es string, buscamos el match; si ya es un match (de re.sub), lo usamos directo
+    # If it's a string, search for the match; if it's already a match (from re.sub), use it directly
     match = RX_INCLUDE_DIRECTIVE.search(target) if isinstance(target, str) else target
 
     lang = match.group(1).lower()
     path = match.group(2).strip()
 
-    with open(path, "r", encoding="utf-8") as f:
-        content = f.read()
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            content = f"```{lang}\n{f.read()}\n```"
+    except Exception as err:
+        print(f"WARNING: Failed to include '{path}': {err}")
+        content = f"**ERROR: could not include `{path}`: {err}**"
 
-    return f"```{lang}\n{content}\n```"
+    return content
 
 
 def preprocess_markdown_source(src, fname, tempdir):
@@ -435,7 +439,7 @@ def run_pandoc(path, output_path, ignore_error, bibliography):
     except sh.ErrorReturnCode as err:
         if ignore_error:
             print("=======================")
-            print(">>> IGNORANDO ERROR <<<")
+            print(">>> IGNORING ERROR <<<")
             print("=======================")
             print(err)
         else:
@@ -534,7 +538,7 @@ def main():
         processed_path = preprocess_markdown_source(src, filepath, tempdir)
 
         # Show compilation details
-        print("Proccesed file:", processed_path)
+        print("Processed file:", processed_path)
         print("Command:", PANDOC_CMD_TEMPLATE)
         print("")
         now = datetime.now().strftime("%H:%M:%S")

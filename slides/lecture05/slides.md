@@ -491,19 +491,17 @@ $$Q(d^*|d^t, \mathcal{A}) = \begin{cases} \frac{1}{(|d^t|)(|d^t| - 1)}, & \text{
 
 ---
 
+# Naive Python BRL creation
+
+\fontsize{7.5pt}{6pt}
+!!include python: codes/brl_pseudo.py
+\normalsize
+
+
+---
+
 # Estimating label of a new observation
 
-$$p(\tilde{y} = l | \tilde{x}, d, \mathbf{x}, \mathbf{y}, \alpha) = \frac{\alpha_l + N_{j(d,\tilde{x}),l}}{\sum_{k=1}^{L}(\alpha_k + N_{j(d,\tilde{x}),k})}.$$
-
-Match the antecedent by looking at feature values of new observation
-
----
-
-!!include python: codes/pseudo.py
-
----
-
-# Clone
 
 $$p(\tilde{y} = l \mid \tilde{x}, d, \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha}) = \frac{\alpha_l + N_{j(d,\tilde{x}),l}}{\sum_{k=1}^{L}(\alpha_k + N_{j(d,\tilde{x}),k})}$$
 
@@ -514,37 +512,91 @@ $$p(\tilde{y} = l \mid \tilde{x}, d, \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha}
 
 ---
 
+# Prediction: Estimating the Label of a New Observation
+
+Once MCMC has converged and we have a point estimate $\hat{d}$:
+
+1. Find the **first rule** in $\hat{d}$ that matches the new observation $\tilde{x}$
+2. Retrieve the **precomputed counts** $N_j$ for that rule
+3. Compute the **posterior probability** for each class:
+
+\hrulefill
+\vspace{1em}
+
+\fontsize{8.pt}{7pt}
+!!include python: codes/predict_pseudo.py
+\normalsize
+
+---
+
 # Experiment: Tic-Tac-Toe
 
 \begin{center}
 \includegraphics[width=0.95\columnwidth]{imgs/tictactoe_results.png}
 \end{center}
 
+\begin{center}
 5 fold cross validation; accuracy computed across 5 folds
+\end{center}
+
+---
+
+# Stroke Prediction - CHADS$_2$: The Baseline
+
+| Factor | Points |
+|--------|--------|
+| **C** — Congestive heart failure | 1 |
+| **H** — Hypertension | 1 |
+| **A** — Age $\geq$ 75 | 1 |
+| **D** — Diabetes mellitus | 1 |
+| **S$_2$** — Prior stroke/TIA | 2 |
+
+- Higher score → higher stroke risk
+- Designed **manually** by clinical experts
+- Calibrated on only **1,733 patients** and **5 variables**
 
 ---
 
 # Stroke Prediction
 
 - N = 12,586, 14% had stroke
-- 6000 times larger than data for CHADS2 score
-- Pre-mining: support 10% and max cardinality 2
+- 6000 times larger than data for CHADS$_2$ score
 - 5 fold evaluation
+- Pre-mining: support 10% and max cardinality 2
+
+## Pre-mining Example
+
+From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 reduces the candidate pool to $\approx 2,200$ antecedents:
+
+- \texttt{diabetes AND age > 60} $\checkmark$ (cardinality 2, appears in $\geq 10\%$ of patients)
+- \texttt{hypertension} $\checkmark$ (cardinality 1, frequent)
+- \texttt{diabetes AND age > 60 AND hypertension} $\times$ (cardinality 3, excluded)
+- \texttt{rare\_condition} $\times$ (support $< 10\%$, excluded)
+
+
 
 ---
 
 # Stroke Prediction
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/stroke_prediction_rules.png}
-\end{center}
+\begin{block}{}
+\textbf{if} hemiplegia \textbf{and} age $> 60$ \textbf{then} \textit{stroke risk} 58.9\% (53.8\%--63.8\%) \\
+\textbf{else if} cerebrovascular disorder \textbf{then} \textit{stroke risk} 47.8\% (44.8\%--50.7\%) \\
+\textbf{else if} transient ischaemic attack \textbf{then} \textit{stroke risk} 23.8\% (19.5\%--28.4\%) \\
+\textbf{else if} occlusion and stenosis of carotid artery without infarction \\
+\hspace{10pt} \textbf{then} \textit{stroke risk} 15.8\% (12.2\%--19.6\%) \\
+\textbf{else if} altered state of consciousness \textbf{and} age $> 60$ \\
+\hspace{10pt} \textbf{then} \textit{stroke risk} 16.0\% (12.2\%--20.2\%) \\
+\textbf{else if} age $\leq 70$ \textbf{then} \textit{stroke risk} 4.6\% (3.9\%--5.4\%) \\
+\textbf{else} \textit{stroke risk} 8.7\% (7.9\%--9.6\%)
+\end{block}
 
 ---
 
-# Stroke Prediction
+# Stroke Prediction - ROC
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/stroke_prediction_more.png}
+\includegraphics[width=0.75\columnwidth]{imgs/stroke_prediction_more.png}
 \end{center}
 
 ---
@@ -554,6 +606,13 @@ $$p(\tilde{y} = l \mid \tilde{x}, d, \mathbf{x}, \mathbf{y}, \boldsymbol{\alpha}
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/stroke_prediction_auc.png}
 \end{center}
+\vspace{10pt}
+
+\small
+## Note 
+
+- AUC may be misleading here — the dataset is heavily imbalanced (14% stroke, 86% no stroke). Metrics such as AUPRC or F1-score would better capture model performance on the minority class. 
+- Additionally, AUC treats false positives and false negatives equally, which is inappropriate in a medical setting where missing a stroke is far costlier than a false alarm.
 
 ---
 
