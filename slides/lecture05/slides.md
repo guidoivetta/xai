@@ -365,7 +365,7 @@ $$p(m|\mathcal{A}, \lambda) = \frac{(\lambda^m / m!)}{\sum_{j=0}^{|\mathcal{A}|}
 
 $$p(c_j|c_{<j}, \mathcal{A}, \eta) = \frac{(\eta^{c_j} / c_j!)}{\sum_{k \in R_{j-1}(c_{<j}, \mathcal{A})}(\eta^k / k!)}, \qquad c_j \in R_{j-1}(c_{<j}, \mathcal{A}).$$
 
-## Antecedent selection 
+## Antecedent selection
 
 $p(a_j|a_{<j}, c_j, \mathcal{A})$ is sampled uniformly from available antecedents with appropriate cardinality.
 \normalsize
@@ -382,7 +382,7 @@ $p(d|\mathcal{A}, \lambda, \eta) = p(m|\mathcal{A}, \lambda) \prod_{j=1}^{m} p(c
   - Controls how many rules the list has (parameter $\lambda$)
   - Truncated at $|\mathcal{A}|$ instead of $\infty$ — list length can't exceed available rules
   - Expected value is close to $\lambda$ when there are a large number of pre-mined rules
-- **Cardinality prior:** 
+- **Cardinality prior:**
   - Controls how many conditions each rule has (parameter $\eta$)
   - Truncated to exclude cardinalities with no available rules at position $j$
 - **Antecedent selection:**
@@ -444,9 +444,9 @@ $$p(\mathbf{y}|\mathbf{x}, d, \boldsymbol{\theta}) = \prod_{j: \sum_l N_{j,l} > 
 - **Accept/Reject:** compute the acceptance probability:
 $$A = \min\left(1, \frac{p(d^*|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^t|d^*)}{p(d^t|\mathbf{x},\mathbf{y},\mathcal{A}) \cdot Q(d^*|d^t)}\right), \quad A \in (0, 1]$$
 
-- **Sample:** 
+- **Sample:**
   - \textbf{draw} {$u \sim \text{Uniform}(0,1)$}
-  - \textbf{if} $u \leq A$ 
+  - \textbf{if} $u \leq A$
     - \textbf{if-True: set} $d^{t+1} = d^*$
     - \textbf{otherwise: keep} $d^{t+1} = d^t$
 
@@ -496,7 +496,6 @@ $$Q(d^*|d^t, \mathcal{A}) = \begin{cases} \frac{1}{(|d^t|)(|d^t| - 1)}, & \text{
 \fontsize{7.5pt}{6pt}
 !!include python: codes/brl_pseudo.py
 \normalsize
-
 
 ---
 
@@ -573,8 +572,6 @@ From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 r
 - \texttt{diabetes AND age > 60 AND hypertension} $\times$ (cardinality 3, excluded)
 - \texttt{rare\_condition} $\times$ (support $< 10\%$, excluded)
 
-
-
 ---
 
 # Stroke Prediction
@@ -609,9 +606,9 @@ From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 r
 \vspace{10pt}
 
 \small
-## Note 
+## Note
 
-- AUC may be misleading here — the dataset is heavily imbalanced (14% stroke, 86% no stroke). Metrics such as AUPRC or F1-score would better capture model performance on the minority class. 
+- AUC may be misleading here — the dataset is heavily imbalanced (14% stroke, 86% no stroke). Metrics such as AUPRC or F1-score would better capture model performance on the minority class.
 - Additionally, AUC treats false positives and false negatives equally, which is inappropriate in a medical setting where missing a stroke is far costlier than a false alarm.
 
 ---
@@ -728,69 +725,89 @@ From 4,148 variables, FP-Growth with support $\geq 10\%$ and max cardinality 2 r
 
 # Objective Function - Parsimony 1/2
 
-![alt text](imgs/ofparsimony.png)
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{imgs/ofparsimony.png}
+\end{center}
 
 ---
 
 # Objective Function - Parsimony 2/2
 
-<!-- ![alt text](imgs/ofparsimony.png) -->
+## Fewer rules ($f_1$)
 
-**Fewer rules** ($f_1$): The fewer rules in the decision set, the easier it is for a user to understand all the conditions for each class. Since $|\mathcal{S}|$ is constant, **maximizing $f_1(\mathcal{R}) = |\mathcal{S}| - \text{size}(\mathcal{R})$** is equivalent to minimizing the number of rules.
+The fewer rules in the decision set, the easier it is for a user to understand all the conditions for each class. Since $|\mathcal{S}|$ is constant, **maximizing $f_1(\mathcal{R}) = |\mathcal{S}| - \text{size}(\mathcal{R})$** is equivalent to minimizing the number of rules.
 
 - Prefer: 12 rules over 30 rules
 
-**Fewer predicates** ($f_2$): The fewer conditions inside each rule, the easier each rule is to parse. Since $L_{\max}$ and $|\mathcal{S}|$ are constant, **maximizing $f_2(\mathcal{R}) = L_{\max} \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} \text{length}(r)$** is equivalent to minimizing the total number of predicates across all rules.
+## Fewer predicates ($f_2$)
+
+The fewer conditions inside each rule, the easier each rule is to parse. Since $L_{\max}$ and $|\mathcal{S}|$ are constant, **maximizing $f_2(\mathcal{R}) = L_{\max} \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} \text{length}(r)$** is equivalent to minimizing the total number of predicates across all rules.
 
 - Prefer: `Age > 60` (length 1) over `Age > 60 AND Diabetes AND Hypertension AND Smoker` (length 4)
 
 ---
 
-# Objective Function
+# Objective Function - Distinctness 1/2
 
-## Distinctness
-
-- Intra-class overlap:
-
-$$f_3(\mathcal{R}) = N \cdot |S|^2 - \sum_{\substack{r_i, r_j \in \mathcal{R} \\ i \leq j \\ c_i = c_j}} \text{overlap}(r_i, r_j)$$
-
-- Inter-class overlap:
-
-$$f_4(\mathcal{R}) = N \cdot |S|^2 - \sum_{\substack{r_i, r_j \in \mathcal{R} \\ i \leq j \\ c_i \neq c_j}} \text{overlap}(r_i, r_j)$$
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/ofdisticnt.png}
+\end{center}
 
 ---
 
-# Objective Function
+# Objective Function - Distinctness 2/2
 
-## Class Coverage
+## Low intra-class overlap ($f_3$)
 
-$$f_5(\mathcal{R}) = \sum_{c' \in \mathcal{C}} \mathbf{1}\left(\exists r = (s, c) \in \mathcal{R} \text{ such that } c = c'\right)$$
+Two rules predicting the same class should not cover the same data points. Since $N$ and $|\mathcal{S}|^2$ are constant, maximizing $f_3(\mathcal{R}) = N \cdot |\mathcal{S}|^2 - \sum_{r_i, r_j \in \mathcal{R}, c_i = c_j} \text{overlap}(r_i, r_j)$ is equivalent to minimizing overlap among rules of the same class.
 
-Check if there exists some rule corresponding to a given class $c$
+- Prefer: two diabetes rules covering different patients over two diabetes rules covering the same patients
 
----
+## Low inter-class overlap ($f_4$) \emoji{warning}
 
-# Objective Function
+Two rules predicting different classes should not cover the same data points — otherwise the tie-breaking function must decide, reducing interpretability. Since $N$ and $|\mathcal{S}|^2$ are constant, maximizing $f_4(\mathcal{R}) = N \cdot |\mathcal{S}|^2 - \sum_{r_i, r_j \in \mathcal{R}, c_i \neq c_j} \text{overlap}(r_i, r_j)$ is equivalent to minimizing overlap among rules of different classes.
 
-## Precision
-
-- Minimize "incorrect" covers:
-
-$$f_6(\mathcal{R}) = N \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} |\text{incorrect-cover}(r)|$$
-
-Given a rule $r = (s, c)$, the number of data points which satisfy $s$ but do not belong to class $c$.
+- Prefer: a diabetes rule and a depression rule covering different patients over both covering the same patients
 
 ---
 
-# Objective Function
+# Objective Function - **Class Coverage**
 
-## Recall
+\vspace{1em}
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/ofclasscov.png}
+\end{center}
 
-- Encourage at least one "correct" cover per data point:
+At least one rule must exist for every class in the data. This is especially important for rare but critical classes that might otherwise be ignored in favor of more common ones.
 
-$$f_7(\mathcal{R}) = \sum_{(\mathbf{x}, y) \in \mathcal{D}} \mathbf{1}\left(|\{r | (\mathbf{x}, y) \in \text{correct-cover}(r)\}| \geq 1\right)$$
+- $f_5$​ counts how many classes have at least one rule predicting them — maximized when every class is covered by some rule in $\mathcal{R}$
+- Maximized when every class has at least one rule predicting it
+- Prefer: a decision set that covers all 6 diseases over one that ignores rare blood cancers like Leukemia
 
-Given a rule $r = (s, c)$, the number of data points which satisfy $s$ and belong to class $c$.
+---
+
+# Objective Function - **Precision**
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/ofprec.png}
+\end{center}
+
+Rules should cover as few incorrectly labeled data points as possible. Since $N$ and $|\mathcal{S}|$ are constant, maximizing $f_6(\mathcal{R}) = N \cdot |\mathcal{S}| - \sum_{r \in \mathcal{R}} |\text{incorrect-cover}(r)|$ is equivalent to minimizing the number of data points incorrectly covered by each rule.
+
+- Prefer: a diabetes rule that covers 90 diabetic and 2 non-diabetic patients over one that covers 90 diabetic and 30 non-diabetic patients
+
+---
+
+# Objective Function - **Recall**
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/ofrec.png}
+\end{center}
+
+The decision set should correctly cover as many data points as possible with at least one rule.
+
+- Maximized when every data point is correctly covered by at least one rule
+- Prefer: a decision set that correctly classifies 95% of patients over one that leaves 30% uncovered
 
 ---
 
@@ -798,34 +815,45 @@ Given a rule $r = (s, c)$, the number of data points which satisfy $s$ and belon
 
 - Complete objective is
 
-$$\underset{\mathcal{R} \subseteq \mathcal{S} \times \mathcal{C}}{\text{argmax}} \sum_{i=1}^{7} \lambda_i f_i(\mathcal{R})$$
+\begin{center}
+\huge
+\textbf{
+$\underset{\mathcal{R} \subseteq \mathcal{S} \times \mathcal{C}}{\text{argmax}} \sum_{i=1}^{7} \lambda_i f_i(\mathcal{R})$}
+\vspace{14pt}
+\end{center}
 
-- The intra-class and inter-class overlap terms are non-monotone
-- The parsimony, overlap, and precision terms are non-normal
-- All the component terms are submodular
+- The intra-class and inter-class overlap terms are **non-monotone**
+    - Adding more rules to $\mathcal{R}$ does not always improve $f_3$ and $f_4$. In fact, adding a rule can increase overlap and worsen the objective.
+- The parsimony, overlap, and precision terms are **non-normal**
+    - A function is "normal" if $f(\emptyset) = 0$. Here $f_3(\emptyset) = N \cdot |\mathcal{S}|^2 \neq 0$ — the empty set already has a positive value because the penalty terms vanish. The same applies to parsimony and precision.
+- All the component terms are **submodular**
 
 ---
 
 # Submodularity
 
+\begin{center}
+\Large
 \textbf{\textcolor{red}{Diminishing returns} characterization}
 
-$$F(A \cup d) - F(A) \geq F(B \cup d) - F(B)$$
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
-Gain of adding $d$ to a small set
-\end{column}
-\begin{column}{0.48\textwidth}
-Gain of adding $d$ to a large set
-\end{column}
-\end{columns}
-
+\includegraphics[width=0.75\columnwidth]{imgs/dreturns.png}
 \vspace{1em}
 
+\normalsize
 \begin{alertblock}{Key Property}
 A non-negative linear combination of submodular functions is submodular
 \end{alertblock}
+\end{center}
+
+---
+
+# Sublodularity
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/submodularity}
+
+submodularity \textbf{is} diminishing returns, \textbf{but for set functions} instead of continuous ones.
+\end{center}
 
 ---
 
@@ -833,90 +861,101 @@ A non-negative linear combination of submodular functions is submodular
 
 - Complete objective is
 
-$$\underset{\mathcal{R} \subseteq \mathcal{S} \times \mathcal{C}}{\text{argmax}} \sum_{i=1}^{7} \lambda_i f_i(\mathcal{R})$$
+\begin{center}
+\huge
+\textbf{
+$\underset{\mathcal{R} \subseteq \mathcal{S} \times \mathcal{C}}{\text{argmax}} \sum_{i=1}^{7} \lambda_i f_i(\mathcal{R})$}
+\vspace{14pt}
+\end{center}
 
-\begin{alertblock}{Result}
-The complete objective is non-negative, non-normal, non-monotone, submodular
-\end{alertblock}
+- **Non-negative**
+- **Non-normal**
+- **Non-monotone**
+- **Submodular**
+    - Adding a rule $r$ to a small $\mathcal{R}$ yields a large  gain (uncovered space, little overlap, few classes represented), while adding the same rule to a large $\mathcal{R}$ yields a smaller gain.
 
 ---
 
 # Optimizing the Objective
 
-- Maximizing a non-monotone submodular function is \textbf{NP-hard}
+- Maximizing a non-monotone submodular function is **NP-hard**
+  - The space of possible decision sets is exponential in $|\mathcal{S}|$ — exhaustive search is intractable
 
-- \textbf{Smooth local search} [SLS] algorithm provides a 2/5 approximation [Feige, Mirrokni, Vondrak FOCS 07; SIAM Comp. J. 11]
-  - Will be at least 2/5 of the optimal solution
-
----
-
-# Submodular Maximization: Local Search
-
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_1.png}
-\end{center}
-
-S and S' correspond to the intermediate solution sets
+- **Smooth Local Search (SLS)** algorithm provides a $2/5$ approximation [Feige, Mirrokni, Vondrak FOCS 07; SIAM Comp. J. 11]
+  - Stochastically adds and removes rules based on their estimated marginal contribution
+  - Guarantees a solution worth **at least $2/5$ of the optimal** — e.g., if the best possible score is 100, SLS finds a solution with score $\geq 40$
+  - Unlike MCMC-based methods (e.g., BRL), SLS provides a **formal theoretical guarantee** on solution quality
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 1/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_2.png}
-\end{center}
+\includegraphics[width=0.85\columnwidth]{imgs/local_search_1.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 2/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_3.png}
-\end{center}
+\includegraphics[width=0.85\columnwidth]{imgs/local_search_2.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 3/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_4.png}
-\end{center}
+\includegraphics[width=0.70\columnwidth]{imgs/local_search_3.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 4/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_5.png}
-\end{center}
+\includegraphics[width=0.80\columnwidth]{imgs/local_search_4.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 5/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_6.png}
-\end{center}
+\includegraphics[width=0.80\columnwidth]{imgs/local_search_5.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
+
 
 ---
 
-# Submodular Maximization: Local Search
+# Submodular Maximization: Local Search 6/7
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/local_search_7.png}
-\end{center}
+\includegraphics[width=0.80\columnwidth]{imgs/local_search_6.png}
 
 S and S' correspond to the intermediate solution sets
+\end{center}
+
+---
+
+# Submodular Maximization: Local Search 7/7
+
+\begin{center}
+\includegraphics[width=0.80\columnwidth]{imgs/local_search_7.png}
+
+S and S' correspond to the intermediate solution sets
+\end{center}
 
 ---
 

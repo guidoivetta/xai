@@ -31,3 +31,4 @@ variables:
     - \renewcommand{\textit}[1]{\textcolor{lightgreen}{\it#1}}
     - \let\oldframetitle\frametitle
     - \renewcommand{\frametitle}[1]{\oldframetitle{\emoji{mate}~\texttt{#1~------}}}
+    - \usepackage{listings}
