@@ -68,7 +68,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Readings
 
-- Letham and Rudin, 2015, [Interpretable Classifiers Using Rules and Bayesian Analysis](https://arxiv.org/abs/1511.01644)
+- Letham and Rudin, 2015, [Interpretable Classifiers Using Rules and Bayesian Analysis](https://arxiv.org/abs/1511.01644) ☠️
 - Lakkaraju et. al., 2016, [Interpretable Decision Sets](https://www-cs-faculty.stanford.edu/people/jure/pubs/interpretable-kdd16.pdf)
 - Caruana et. al., 2015, [Intelligible Models for Healthcare](http://people.dbmi.columbia.edu/noemie/papers/15kdd.pdf)
 - Li et. al., 2017, [Deep Learning for Case Based Reasoning Through Prototypes](https://arxiv.org/abs/1710.04806)
@@ -79,7 +79,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Lecture 5](slides/Lecture_5.pptx) | [Lecture 6](slides/Lecture_6.pptx) \]
+\[ [Lecture 5](slides/lecture05/slides.pdf) ☠️ | [Lecture 6](slides/Lecture_6.pptx) \]
 
 ---
 
