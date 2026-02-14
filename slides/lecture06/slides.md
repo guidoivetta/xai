@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{brain} XAI: Generalized Additive Models \\& Prototype-Based Approaches"
+title: "\\emoji{wtf} XAI: Generalized Additive Models \\& Prototype-Based Approaches"
 bibliography: references.bib
 
 ---
@@ -10,75 +10,32 @@ bibliography: references.bib
 
 ---
 
-# Paper Presentations
-
-\begin{alertblock}{Reminder}
-If you are presenting next week, please come and see us in office hours this week. Ideally, we would like to walk through your slides with you.
-\end{alertblock}
-
-\vspace{0.5cm}
-
-- Each paper: **25 mins** of Paper Presentation + **5 mins** Q\&A
-
----
-
-# Guidelines for Paper Presentation
-
-1. Motivation
-2. Problem Statement
-3. Summary of Contributions
-4. Related Work
-5. Preliminaries + Background \textit{(Intuition First!)}
-6. Approach \textit{(Intuition First!)}
-7. Key Experimental Results
-8. Conclusions
-9. Your Perspective on the Weaknesses of Paper
-10. What would you do differently?
-
----
-
-# Generalized Additive Models
+# Intelligible Models for HealthCare - GAMS
 
 \begin{center}
-\Huge Generalized Additive Models
-\end{center}
-
----
-
-# Intelligible Models for HealthCare
-
-\begin{center}
-\includegraphics[width=0.5\columnwidth]{imgs/healthcare_title.png}
+\includegraphics[width=0.95\columnwidth]{imgs/healthcare_title.png}
 \end{center}
 
 \begin{center}
-\Large \textcolor{red}{Intelligible Models for HealthCare}
-
-\vspace{0.3cm}
-Caruana et al.
+- Generalized Additive Models -
 \end{center}
+
+[@caruana2015intelligible]
 
 ---
 
 # Contributions
 
-\begin{exampleblock}{Main Contributions}
-Two case studies where Generalized Additive Models (intelligible) yield state-of-the-art accuracy:
-\begin{itemize}
-  \item Pneumonia risk prediction
-  \item 30-day hospital readmission
-\end{itemize}
-\end{exampleblock}
+Two healthcare case studies are presented:
+- **Pneumonia risk prediction** — small dataset (14K patients, 46 features)
+- **30-day hospital readmission** — large dataset (196K patients, 3,956 features)
 
 \vspace{0.5cm}
 
-\begin{block}{Claim}
-GAMs is a class of models that can handle the \textbf{interpretability/accuracy trade-off} quite well.
-\end{block}
+## Main Claim
+GA²Ms achieve **state-of-the-art accuracy** while remaining **intelligible, modular, and editable** — challenging the assumption that accuracy and interpretability must be traded off..
 
----
-
-# Roadmap
+## Roadmap
 
 1. Motivation
 2. Intelligible Models
@@ -87,126 +44,205 @@ GAMs is a class of models that can handle the \textbf{interpretability/accuracy 
 
 ---
 
-# Motivation (1/3)
+# Motivation
 
 - A large project to evaluate application of ML to healthcare problems
 - Predicting \textbf{probability of death (POD)} for pneumonia patients
 
-\vspace{0.5cm}
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\begin{exampleblock}{Most Accurate}
-Neural nets: \textbf{0.86 AUC}
-\end{exampleblock}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{Actually Deployed}
-Logistic Regression: \textbf{0.77 AUC}
-\end{alertblock}
-\end{column}
-\end{columns}
-
-\vspace{0.5cm}
+    - **Most accurate model:** Neural nets ($0.86$ AUC)
+    - **Actually Deployed:** Logistic Regression: ($0.77$ AUC)
 
 \begin{center}
+\Large
 \textbf{Why was logistic regression used instead?}
 \end{center}
 
 ---
 
-# Motivation (2/3)
+# Motivation: The Asthma Paradox
 
-- Rule-based learning method was also used
-- Insight: \texttt{HasAsthma(x) $\Rightarrow$ LowerRisk(x)}
-  - \textit{Counterintuitive?}
+- 1990s study: neural nets were the **most accurate** models for pneumonia mortality
+- A rule-based system discovered: \texttt{HasAsthma(x) $\Rightarrow$ LowerRisk(x)}
+  - Asthmatic patients were sent directly to the ICU $\rightarrow$ aggressive care $\rightarrow$ lower observed mortality
+  - The model learned the **effect of treatment**, not the true underlying risk
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 
-\begin{alertblock}{Key Problem}
-Rule-based system was intelligible, making it easy to \textbf{recognize and remove dangerous rules}. \\
-Lack of intelligibility made it harder to deploy neural nets because it was difficult to know other problems with the model.
+\begin{alertblock}{The Core Problem: {\bf The NN almost certainly learned the same pattern}}
+But because it was \textbf{opaque}, there was no way to detect or fix it. Deploying it could have sent high-risk asthmatic patients home.
 \end{alertblock}
+
+\vspace{0.3cm}
+
+## The Lesson
+- A dangerous rule in an intelligible model can be **recognized and removed**.
+- A dangerous pattern in a black-box model may never be found.
 
 ---
 
-# Motivation (3/3)
+# Motivation: The problem persists
 
-- Many more models today are equally unintelligible: SVMs, random forests, boosted trees
+\begin{center}
+\Large
+\textbf{SVMs, random forests, boosted trees, deep nets — all unintelligible}
+\end{center}
 
 \vspace{0.5cm}
 
-\begin{exampleblock}{Why GAMs?}
+## Why GA²Ms
+
+Accurate as black-box models — but **intelligible**, **modular**, and **editable** by domain experts.
+
+
+---
+
+# Generalized Additive Models (GAMs)
+
+**Intuition:** Instead of one global equation, the model learns a separate function for each feature — then adds them up.
+
+\vspace{0.3cm}
+
+$$g(\mathbb{E}[y]) = \beta_0 + \sum_j f_j(x_j)$$
+
+\vspace{0.3cm}
+
+where $g$ is a link function and each $f_j$ is a **shape function** learned from data, with $\mathbb{E}[f_j] = 0$.
+
+\vspace{0.3cm}
+
+\begin{block}{Key Properties}
 \begin{itemize}
-  \item GAMs are both \textbf{intelligible and accurate!}
-  \item \textbf{Editable} by domain experts
+  \item Each $f_j$ can be \textbf{non-linear} — no need to manually discretize features
+  \item Contributions are \textbf{additive and independent} — each $f_j$ can be visualized separately
+  \item Logistic regression is a special case where $f_j(x_j) = w_j x_j$
 \end{itemize}
-\end{exampleblock}
+\end{block}
+
+---
+
+# GAMs: Notation
+
+$$g(\mathbb{E}[y]) = \beta_0 + \sum_j f_j(x_j)$$
+
+\vspace{0.3cm}
+
+- $g$ — **link function**: maps the expected output to the linear predictor. For binary classification: $g(p) = \log\frac{p}{1-p}$ (logit)
+- $f_j$ — **shape function**: learned from data, centered so that $\mathbb{E}[f_j] = 0$, ensuring each term has a unique, identifiable contribution.
+    - $\mathbb{E}[f_j] = 0$ The average of the shape function over the training data is zero:
+- $\beta_0$ — **baseline**: the only constant term; calibrated so that the average predicted probability equals the observed baseline rate in the training data
 
 ---
 
 # GAMs — Shape Functions (Bike Sharing)
 
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/gams_bikeshare.png}
+\includegraphics[width=0.6\columnwidth]{imgs/gams_bikeshare.png}
+
+\textbf{Shape functions learned by a GAM on a bike-sharing dataset.}
+
+Each plot shows the contribution of one feature to predicted demand (y-axis: additive score relative to baseline)
 \end{center}
+
+---
+
+# GAMs — Shape Functions (Bike Sharing)
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/gams_bikeshare.png}
+\end{center}
+
+Features shown:
+
+\fontsize{7.5pt}{6pt}
+- **Hour** (top-left) — demand peaks at 8am and 5-6pm, reflecting commute patterns;
+- **Temperature** (top-right) — demand rises with warmth, drops above ~35°C;
+- **Year** (bottom-left) — demand grew from 2011 to 2012;
+- **Working Day** (bottom-center) — slight increase on working days;
+- **Season** (bottom-right) — winter highest, spring lowest.
 
 ---
 
 # GAMs — Shape Functions (Concrete/Other)
 
+$$g(\mathbb{E}[y]) = \beta_0 + f_1(x_1) + f_2(x_2) + \cdots + f_p(x_p)$$
+
+\vspace{0.3cm}
+
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/gams_shapes.png}
+Each $f_j$ is learned freely from data — no linearity assumption required.
 \end{center}
+
+\begin{columns}
+  \begin{column}{0.48\textwidth}
+    \begin{figure}
+      \includegraphics[width=.75\textwidth]{imgs/generic_shapes.png}
+      \caption{Shape functions can take any form: linear, concave, oscillating.}
+    \end{figure}
+  \end{column}
+  \begin{column}{0.48\textwidth}
+    \begin{figure}
+      \includegraphics[width=\textwidth]{imgs/sement_shapes.png}
+      \caption{\textbf{Cement:} monotonically increasing — more cement, higher strength. \textbf{Water:} non-monotone — there is an optimal range; too much or too little reduces strength. \textbf{Age:} rapid early growth (curing process), stabilizes with a second soft peak at later ages.}
+    \end{figure}
+  \end{column}
+\end{columns}
+
 
 ---
 
-# GAMs and GA$^2$Ms — Formulas
+# From GAM to GA$^2$M
 
-\begin{block}{GAM}
-$$g(E[y]) = \beta_0 + \sum_j f_j(x_j)$$
-\end{block}
+## GAMS
 
-\vspace{0.5cm}
+$$g(\mathbb{E}[y]) = \beta_0 + \sum_j f_j(x_j)$$
 
-\begin{block}{GA$^2$M (with pairwise interactions)}
-$$g(E[y]) = \beta_0 + \sum_j f_j(x_j) + \sum_{i \neq j} f_{ij}(x_i, x_j)$$
-\end{block}
+A GAM models each feature independently — the contribution of $x_j$ to the output
+never depends on the value of any other feature.
 
-\vspace{0.5cm}
+## GA$^2$M
 
-\footnotesize
-- $g$: link function — identity (regression) or $\log(E[y] / 1-E[y])$ (classification)
-- $f_j$: shape function
+$$g(\mathbb{E}[y]) = \beta_0 + \sum_j f_j(x_j) + \sum_{i \neq j} f_{ij}(x_i, x_j)$$
+
+Adds pairwise interaction terms $f_{ij}(x_i, x_j)$,
+capturing cases where the effect of one feature depends on another.
+- First fits the best GAM, then detects and ranks all pairwise interactions in the residuals.
+- The top $k$ pairs are added.
 
 ---
 
 # Intelligibility and Accuracy
 
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/intelligibility_accuracy_table.png}
-\end{center}
+\small
+| **Model** | **Form** | **Intelligibility** | **Accuracy** |
+|---|---|---|---|
+| **Linear Model** | $y = \beta_0 + \beta_1 x_1 + \ldots + \beta_n x_n$ | +++ | + |
+| **Generalized Linear Model** | $g(y) = \beta_0 + \beta_1 x_1 + \ldots + \beta_n x_n$ | +++ | + |
+| **Additive Model** | $y = f_1(x_1) + \ldots + f_n(x_n)$ | ++ | ++ |
+| **Generalized Additive Model** | \textbf{$g(y) = f_1(x_1) + \ldots + f_n(x_n)$} | **++** | **++** |
+| **Full Complexity Model** | $y = f(x_1, \ldots, x_n)$ | + | +++ |
 
 [@lou2012intelligible]
 
 ---
 
-# Shape Functions — Learning
+# Learning Shape Functions
 
-- **Regression Splines**
-- **Trees**
-- **Ensembles of Trees**
+Shape functions $f_j$ can be represented as **splines** or **regression trees**.
+The paper uses gradient boosting with bagging of shallow trees — empirically the most accurate choice.
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 
-\begin{block}{Learning GA$^2$Ms}
-\begin{enumerate}
-  \item Represent each component as a spline or regression tree on a single/pair of features
-  \item Gradient boosting with bagging of shallow trees
-  \item Build GAM first, then detect and rank all possible pairs of interactions in the residual
-  \item Choose top $k$ pairs (determined by CV)
-\end{enumerate}
-\end{block}
+## Training GA$^2$M
+
+1. Fit the best GAM using gradient boosting on individual features
+2. Compute residuals and detect all possible pairwise interactions
+3. Rank interactions by their ability to explain the residuals
+4. Add the top $k$ pairs to the model ($k$ chosen by cross-validation)
+
+\vspace{0.3cm}
+
+Bagging (100 rounds for pneumonia) reduces overfitting and provides
+pseudo-confidence intervals for the shape plots.
 
 ---
 
@@ -237,20 +273,29 @@ Predict \textbf{probability of death (POD)} \\
 # Pneumonia Risk: Features
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/pneumonia_features.png}
+\includegraphics[width=0.95\columnwidth]{imgs/pneumonia_features.png}
 \end{center}
+
+- **C (continuous):** numeric feature — the GAM learns a full shape function $f_j(x_j)$ that can be non-linear
+- **— (binary/categorical):** takes values 0/1 — the shape function reduces to two points; presented as a bar plot for visual consistency with continuous features
 
 ---
 
 # Pneumonia Risk: AUC Results
 
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/pneumonia_auc_table.png}
-\end{center}
+| **Model** | **Pneumonia (AUC)** |
+|---|---|
+| **Logistic Regression** | 0.8432 |
+| **GAM** | 0.8542 |
+| **GA²M** | 0.8576 |
+| **Random Forests** | 0.8460 |
+| **LogitBoost** | 0.8493 |
 
-\begin{exampleblock}{Result}
-GAM (0.8542) and GA$^2$M (0.8576) \textbf{outperform Random Forests (0.8460) and LogitBoost (0.8493)}, while remaining intelligible.
-\end{exampleblock}
+- GA²M achieves the highest AUC while remaining fully intelligible.
+- The gap between models is small (<0.02).
+- **Note** that the dataset is highly imbalanced
+(only **10.86%** of patients died), which can bias AUC as an evaluation metric.
+
 
 ---
 
@@ -260,20 +305,29 @@ GAM (0.8542) and GA$^2$M (0.8576) \textbf{outperform Random Forests (0.8460) and
 \includegraphics[width=0.9\columnwidth]{imgs/ga2m_outputs_1.png}
 \end{center}
 
-\footnotesize
-\textbf{Blood Urea Nitrogen (BUN):} Normal value: 10–20. \quad 0 means not ordered.
+Shape functions learned by GA²M on the pneumonia dataset (y-axis: risk score contribution relative to baseline).
+
+- **Age:** low and flat below 50, rises sharply after 65.
+- **Asthma:** having asthma *decreases* predicted risk — a known data artifact (ICU effect).
+- **BUN (Blood Urea Nitrogen) level:** missing/low values indicate low risk; elevated levels (>30) signal kidney or cardiac complications.
+- **Cancer:** strong positive risk contribution — nearly doubles the predicted odds of death.
 
 ---
 
 # Understanding Outputs of GA$^2$M (2/2)
 
 \begin{center}
-\includegraphics[width=0.55\columnwidth]{imgs/ga2m_age_cancer.png}
+\includegraphics[width=0.3\columnwidth]{imgs/ga2m_age_cancer.png}
 \end{center}
 
-\begin{alertblock}{Insight}
-Childhood cancers are associated with \textbf{high risk of death} from pneumonia.
-\end{alertblock}
+The interaction term $f_{ij}(\text{age}, \text{cancer})$ reveals a pattern
+invisible to individual shape functions:
+
+\vspace{0.3cm}
+
+- **Cancer = 1, young patients:** highest risk (yellow) — childhood cancers are associated with high risk of death
+- **Cancer = 1, older patients:** moderate risk (orange/red) — adult cancers are serious but less acutely lethal
+- **Cancer = 0:** uniformly low risk (purple) regardless of age
 
 ---
 
@@ -302,46 +356,53 @@ Hospitals with high readmission rates are \textbf{penalized financially} (inadeq
 
 # 30-Day Readmission: AUC Results
 
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/readmission_auc_table.png}
-\end{center}
+| **Model** | **Readmission (AUC)** |
+|---|---|
+| **Logistic Regression** | 0.7523 |
+| **GAM** | 0.7795 |
+| **GA²M** | 0.7833 |
+| **Random Forests** | 0.7671 |
+| **LogitBoost** | 0.7835 |
 
-\begin{exampleblock}{Result}
-GA$^2$M (0.7833) matches LogitBoost (0.7835) and outperforms Random Forests (0.7671), while remaining fully interpretable.
-\end{exampleblock}
+- GA²M matches LogitBoost (0.7833 vs 0.7835) while remaining fully intelligible —
+on a dataset with 196K patients and 3,956 features.
+- Again, the dataset is imbalanced (**8.91%** readmission rate),
+so AUC should be interpreted with caution as it may overestimate model performance.
 
----
-
-# Patient Level Insights (1/2)
-
-\begin{center}
-\includegraphics[width=0.55\columnwidth]{imgs/patient_insights_1.png}
-\end{center}
-
-\begin{alertblock}{High Risk Patient — $p(\text{risk}) = 0.9326$}
-Lots of admissions $\cdot$ Received lot of Amoxicillin (strep/pneumonia) $\cdot$ Verapamil (hypertension)
-\end{alertblock}
 
 ---
 
-# Patient Level Insights (2/2)
+# Case Study: High Risk Patient
+
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/patient_insights_2.png}
+Top 6 shape functions sorted by risk contribution for a High Risk Patient ($p = 0.9326$)
+
+  \includegraphics[width=.70\textwidth]{imgs/patient1.png}
 \end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{$p(\text{risk}) = 0.9326$}
-Lots of admissions, Amoxicillin, Verapamil
-\end{alertblock}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{exampleblock}{$p(\text{risk}) = 0.0873$}
-Post-menopausal $\cdot$ Cancers responding well to treatment $\cdot$ Not hospitalized much
-\end{exampleblock}
-\end{column}
-\end{columns}
+\small
+- The blue line marks the patient's feature value; the number is its risk score contribution.
+- High readmission risk is driven by a history of frequent hospitalizations (40 total, 19 in the last 12 months)
+- and large doses of amoxicillin — suggesting an ongoing infection not responding to antibiotics.
+
+---
+
+# Case Study: Low Risk Patient
+
+\begin{center}
+Top 6 shape functions sorted by risk contribution for a Low Risk Patient ($p = 0.0873$)
+
+\includegraphics[width=0.70\columnwidth]{imgs/patient_insights_2.png}
+\end{center}
+
+\small
+- Post menopausal.
+- Moderate risk is driven by treatable cancers (endometrial carcinoma, non-invasive breast lesion)
+and a benign abdominal tumor — conditions that respond well to outpatient treatment.
+- Notably, inpatient and ER visit counts are low, suggesting the patient is being managed
+effectively without repeated hospitalization.
+
 
 ---
 
@@ -357,17 +418,30 @@ This structure helps us **clearly understand the model**: for each patient, we c
 
 ---
 
+# Sorting Terms by Importance
+
+- For each patient, we can compute which term contributes what risk score
+- Terms are ranked by their individual risk score contribution for that patient
+- This ranking identifies which features are driving the risk prediction for each specific patient
+
+Although the readmission model has over 4,000 terms, in practice only a small number
+are relevant per patient — **making even large models locally interpretable**.
+
+---
+
 # Feature Shaping vs. Expert Discretization
 
 \begin{columns}
 \begin{column}{0.48\textwidth}
 \begin{block}{Expert Discretization}
-Experts provide inputs by manually discretizing features, used in logistic regression.
+Experts manually convert continuous features into binary ranges
+(e.g., age 18--39, 40--54, \ldots). Used in the original logistic regression model.
 \end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
 \begin{exampleblock}{GAM Feature Shaping}
-GAMs \textbf{learn} the function shapes automatically — and outperformed expert-discretized LR.
+GAMs \textbf{learn} the function shape directly from data — no manual binning required.
+GAM with continuous features outperformed expert-discretized LR by $\sim$0.01 AUC.
 \end{exampleblock}
 \end{column}
 \end{columns}
@@ -375,7 +449,8 @@ GAMs \textbf{learn} the function shapes automatically — and outperformed exper
 \vspace{0.5cm}
 
 \begin{alertblock}{Conclusion}
-Feature shaping is \textbf{valuable} — GAMs captured non-linearities that experts missed.
+Expert discretization introduces unnecessary rigidity — GAMs can discover finer structure
+(e.g., a jump in pneumonia risk at age 67) that experts would not define by hand.
 \end{alertblock}
 
 ---
@@ -399,26 +474,15 @@ GAMs and GA$^2$Ms are intelligible — \textbf{but they are not causal!}
 
 ---
 
-# Prototype-Based Approaches
-
-\begin{center}
-\Huge Prototype-Based Approaches
-\end{center}
-
----
-
 # Deep Learning for Case-Based Reasoning through Prototypes
 
 \begin{center}
-\includegraphics[width=0.45\columnwidth]{imgs/prototypes_title.png}
+\includegraphics[width=0.95\columnwidth]{imgs/prototypes_title.png}
+
+\Large \textbf{Prototype-Based Approaches}
 \end{center}
 
-\begin{center}
-\large \textcolor{red}{Deep Learning for Case-Based Reasoning through Prototypes}
-
-\vspace{0.3cm}
-\normalsize Oscar Li, Hao Liu, Chaofan Chen, Cynthia Rudin
-\end{center}
+[@li20172017]
 
 ---
 
