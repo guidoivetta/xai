@@ -961,56 +961,170 @@ S and S' correspond to the intermediate solution sets
 
 # Local Search
 
-- ~1/3 approximation
-  - At least 1/3 of optimal solution
+- **Standard submodular maximization** gives a $1/3$ approximation — the solution is guaranteed to be at least $1/3$ of the optimal
 
-- we use a slightly different version of this algorithm
-  - Smooth local search
-  - 2/5 approximation
+- **IDS uses Smooth Local Search (SLS)**, a stronger variant that achieves a $2/5$ approximation
+  - Stochastically adds and removes rules based on estimated marginal contributions
+  - Tighter guarantee: solution is at least $2/5$ of optimal (e.g., score $\geq 40$ if optimal $= 100$)
 
 ---
 
 # Smooth Local Search
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/smooth_local_search_algorithm.png}
+\includegraphics[width=0.85\columnwidth]{imgs/smooth_local_search_algorithm.png}
 \end{center}
+
+---
+
+# Smooth Local Search (SLS): Intuition
+
+**Goal:** Find a good decision set without exploring all $2^{|\mathcal{S}|}$ possibilities.
+
+**Algorithm (simplified):**
+
+1. **Initialize:** start with an empty set $A = \emptyset$
+2. **Estimate:** for each candidate rule, estimate how much it improves the objective if added or removed
+3. **Add:** if a rule improves the objective enough → add it to $A$
+4. **Remove:** if a rule hurts the objective enough → remove it from $A$
+5. **Repeat** until no rule can be added or removed
+6. **Return** a random subset of $A$ (the "smoothing" step)
+
+**Key insight:** The smoothing step prevents getting trapped in local optima — similar in spirit to Metropolis-Hastings in BRL, but with a **formal 2/5 optimality guarantee**.
+
+---
+
+# Submodular Optimization vs. SLS
+
+| | **Standard Submodular** | **SLS** |
+|---|---|---|
+| **Function type** | Monotone | Non-monotone, non-normal |
+| **Approximation** | $1/2$ greedy | $2/5$ |
+| **Adding rules always helps?** | Yes | No (overlap can worsen objective) |
+| **Used in IDS?** | No | Yes |
+
+**Standard Submodular** is the general idea, **SLS** is one implementation.
 
 ---
 
 # Evaluation: Datasets
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/evaluation_datasets.png}
-\end{center}
+\fontsize{7.5pt}{6pt}
+| **Dataset** | **# Datapoints** | **Features** | **Classes** |
+|---|---|---|---|
+| **Bail Outcomes** | 86K | Gender, age, current offense details, past criminal record | No Risk, Failure to Appear, New Criminal Activity |
+| **Student Performance** | 21K | Gender, age, grades, absence rates & tardiness, suspension/withdrawal history (grades 6-8) | Graduated on Time, Delayed Graduation, Dropped Out |
+| **Medical Diagnosis** | 150K | Current ailments, age, BMI, gender, smoking habits, medical history, family history | Asthma, Diabetes, Depression, Lung Cancer, Rare Blood Cancer |
+
+All three datasets involve **high-stakes decisions** by domain experts — justice, education, and medicine — where interpretability is not optional.
+\normalsize
+---
+
+# Evaluating Predictive Performance - **AUC**
+
+| **Method** | **Bail** | **Student** | **Medical** |
+|---|---|---|---|
+| **IDS** | **69.78** | **75.12** | **61.19** |
+| Bayesian Decision Lists (Letham et al.) | 67.18 | 72.54 | 59.18 |
+| Classification Based on Association (Liu et al.) | 70.68 | 76.02 | 63.03 |
+| CN2 | 71.02 | 76.36 | 64.78 |
+| Decision Trees | 70.08 | 75.31 | 63.28 |
+| Gradient Boosted Trees | 71.23 | 77.18 | 64.21 |
+| Random Forests | 70.87 | 77.12 | 63.92 |
+
+## Note
+
+The paper does not report class distributions for any of the datasets. Given the high-stakes nature of the problems (justice, education, medicine), **class imbalance is likely** — results should be interpreted with **caution**, as AUC may be misleading in such settings.
+
 
 ---
 
-# Evaluating Predictive Performance
+# Evaluating Goodness of Rules on Medical Diagnosis Data
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/predictive_performance.png}
-\end{center}
 
----
+| **Method** | **Frac. Overlap** | **Frac. Uncovered** | **Avg. Rule Length** | **Num. Rules** | **Frac. Classes** |
+|---|---|---|---|---|---|
+| **IDS** | **0.09** | **0.13** | **3.17** | **12** | **1.00** |
+| BDL | 0.00 | 0.18 | 8.46 | 11 | 0.67 |
+| CBA | 0.00 | 0.14 | 8.60 | 32 | 1.00 |
+| CN2 | 0.12 | 0.14 | 9.78 | 38 | 1.00 |
 
-# Evaluating Goodness of Rules
-
-- Results on Medical Diagnosis Data
-
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/goodness_of_rules.png}
-\end{center}
+IDS achieves the best balance across all interpretability metrics: rules are **3x shorter** than baselines, cover **all 6 classes** (BDL misses 2 rare diseases), and uses far **fewer rules** than CBA and CN2. The small overlap (0.09) is a deliberate trade-off — unlike BDL and CBA whose zero overlap comes from their rigid if-then-else structure, not from interpretability design.
 
 ---
 
-# Ablation Study
+# Ablation Study: Results on Medical Diagnosis Data
 
-- Results on Medical Diagnosis Data
+\fontsize{9pt}{6pt}
+| **Method** | **AUC** | **Frac. Overlap** | **Frac. Uncov.** | **Rule Length** | **Num. Rules** | **Frac. Classes** |
+|---|---|---|---|---|---|---|
+| **Full IDS** | 61.19 | 0.09 | 0.13 | 3.17 | 12 | 1.00 |
+| **No Precision** | 51.26 | 0.09 | 0.19 | 3.19 | 12 | 1.00 |
+| **No Recall** | 53.38 | 0.10 | 0.14 | 3.18 | 11 | 1.00 |
+| **No Overlap** | 61.02 | 0.16 | 0.14 | 3.54 | 11 | 1.00 |
+| **No Conciseness** | 63.64 | 0.04 | 0.13 | 6.88 | 14 | 1.00 |
+| **No Class** | 59.28 | 0.01 | 0.15 | 3.09 | 10 | 0.83 |
+\normalsize
+Each row removes one component of the objective. **Precision and recall** drive accuracy — removing either causes a large AUC drop. **Overlap** constraints keep rules distinct — without them overlap doubles. **Conciseness** keeps rules short — without it rule length more than doubles. **Class coverage** ensures rare diseases are represented — without it one class is missed entirely.
 
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/ablation_study.png}
-\end{center}
+---
+
+# Evaluating Interpretability: User Study
+
+- **47 Stanford data mining students** randomly assigned to either IDS or BDL — never both
+- **12 questions per user:** 10 objective (true/false) + 2 descriptive (written paragraph)
+- **Objective questions:** given partial patient attributes, can you conclude the patient has a specific disease?
+- **Descriptive questions:** write a paragraph describing all characteristics of patients with a specific disease
+
+> The key challenge in descriptive questions was correctly parsing conjunctions, disjunctions, and if-then/if-then-else structure. BDL users most commonly failed by **not accounting for negations induced by preceding rules** — a direct consequence of the if-then-else structure.
+
+---
+
+# User Study Results
+
+| **Task** | **Metric** | **IDS** | **BDL** |
+|---|---|---|---|
+| **Descriptive** | Human Accuracy | 0.81 | 0.17 |
+| | Avg. Time (secs.) | 113.4 | 396.86 |
+| | Avg. # of Words | 31.11 | 120.57 |
+| **Objective** | Human Accuracy | 0.97 | 0.82 |
+| | Avg. Time (secs.) | 28.18 | 36.34 |
+
+- **Objective questions:** IDS users were 17% more accurate and 22% faster
+- **Descriptive questions:** IDS users used 74% fewer words and were 71% faster — and **4.7x more accurate** (0.81 vs 0.17)
+
+> The dramatic gap in descriptive accuracy confirms that decision lists are fundamentally harder to interpret: understanding a rule requires reasoning about **all preceding rules** simultaneously, which humans consistently fail to do correctly.
+
+---
+
+# BRL **Vs.** IDS - When to Use Each Model?
+
+| | **BRL** | **IDS** |
+|---|---|---|
+| **Structure** | Ordered if-then-else list | Unordered if-then rules |
+| **Prediction** | Probabilistic (credible intervals) | Deterministic (precision-based) |
+| **Best for** | Binary classification, medical risk scoring | Multi-class problems with rare classes |
+| **Uncertainty** | Built-in via Dirichlet-Multinomial | Not provided |
+| **Optimization** | MCMC sampling | Submodular optimization (2/5 guarantee) |
+| **Rule overlap** | Zero by construction | Minimized but allowed |
+| **Use when** | You need calibrated probabilities and credible intervals | You need equally good rules for all classes |
+
+---
+
+# General Discussion
+
+## Comparing Both Papers:
+
+- **BRL (Letham et al.):** Bayesian decision lists, probabilistic predictions, medical domain, MCMC sampling
+- **IDS (Lakkaraju et al.):** Decision sets, joint optimization of accuracy and interpretability, formal approximation guarantees, user study validation
+
+## Key Lessons:
+
+- Interpretability is **multifaceted** — sparsity, overlap, coverage, and rule length all matter
+- **Ordered vs. unordered rules** is not just a structural choice — it fundamentally affects how humans understand models
+- Both papers show that interpretability and accuracy are **not mutually exclusive**
+- Evaluating interpretability requires **both quantitative metrics and user studies**
+- The right model depends on the task: BRL excels at **uncertainty quantification**, IDS at **multi-class clarity**
 
 ---
 
