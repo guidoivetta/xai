@@ -511,22 +511,31 @@ Proposed and developed a novel network architecture for deep learning that:
 
 # Related Work: Post-hoc Explanations
 
-\begin{alertblock}{Problem with Post-hoc Approach}
-Past neural nets were designed mainly for accuracy, with post-hoc explanations added after.
+\begin{alertblock}{Problem with Post-hoc Interpretability}
+\center
+Neural networks are trained purely for accuracy; explanations are generated \textbf{after the fact}
+by a separate model — not by the network itself.
 \end{alertblock}
 
-\vspace{0.5cm}
+\vspace{0.3cm}
 
-- Build neural net first, then interpret!
-- Post-hoc explanations \textbf{may not be faithful} to the model
-- Easy to create \textbf{multiple conflicting yet convincing} explanations, none of which is correct
+- Post-hoc explanations may not reflect what the network **actually computes**
+- **Multiple conflicting yet convincing explanations** can be generated for the **same prediction**.
+- Explanations **inherit the assumptions** of the explanation model, not the original network
+
+\vspace{0.3cm}
+
+## This Paper's Proposal
+
+Build interpretability \textbf{into} the architecture — so explanations are loyal to what the network computes, with no separate modeling effort required.
+
 
 ---
 
-# Background: Autoencoder (1/3)
+# Background: Autoencoder (1/4)
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/autoencoder_1.png}
+\includegraphics[width=0.5\columnwidth]{imgs/autoencoder_1.png}
 \end{center}
 
 \begin{center}
@@ -535,11 +544,25 @@ Past neural nets were designed mainly for accuracy, with post-hoc explanations a
 
 ---
 
-# Background: Autoencoder (2/3)
+# Background: Autoencoder (2/4)
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/autoencoder_2.png}
+\includegraphics[width=0.35\columnwidth]{imgs/autoencoder_1.png}
 \end{center}
+
+\begin{center}
+\Large
+\textbf{An autoencoder is a neural network trained to compress an input into a low-dimensional latent representation and then reconstruct the original input from it.}
+\end{center}
+
+---
+
+# Background: Autoencoder (3/4)
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/autoencoder_2.png}
+\end{center}
+
 
 ---
 
@@ -548,71 +571,128 @@ Past neural nets were designed mainly for accuracy, with post-hoc explanations a
 - Constrain the number of nodes present in the hidden layer(s) of the network
   - Limiting the amount of information that can flow through the network
 - By penalizing the network according to the \textbf{reconstruction error}, the model can learn the most important attributes of the input data
+- By penalizing reconstruction error, the model is forced to retain only the most important attributes of the input in the latent representation
 
 \vspace{0.3cm}
 
-\begin{exampleblock}{Key Insight}
+## Key Insight
+
 The encoding will learn and describe \textbf{latent attributes} of the input data.
-\end{exampleblock}
 
 ---
 
 # Proposed Network Architecture
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/network_architecture.png}
+\includegraphics[width=0.80\columnwidth]{imgs/network_architecture.png}
 \end{center}
-
 \begin{center}
 \small \textit{Autoencoding}
 \end{center}
 
 ---
 
-# Autoencoder — Latent Space
+# Network Architecture: Two Components
 
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/autoencoder_latent.png}
-\end{center}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+  \begin{block}{1. Autoencoder}
+    \textbf{Encoder} $f: \mathbb{R}^p \rightarrow \mathbb{R}^q$ compresses input $\mathbf{x}$
+    into a low-dimensional latent vector $f(\mathbf{x})$.
 
-\footnotesize Input $\mathbf{x} \in \mathbb{R}^p$, encoded representation $f(\mathbf{x}) \in \mathbb{R}^q$ with $q < p$
+    \vspace{0.2cm}
+
+    \textbf{Decoder} $g: \mathbb{R}^q \rightarrow \mathbb{R}^p$ reconstructs the original input
+    $(g \circ f)(\mathbf{x}) \approx \mathbf{x}$.
+
+    \vspace{0.2cm}
+
+    The decoder also \textbf{visualizes prototypes}: given $p_j$ in latent space,
+    $g(p_j)$ produces a human-readable image.
+  \end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+  \begin{block}{2. Prototype Classifier $h$}
+    \textbf{Prototype layer $p$:} computes squared distances
+    $\|f(\mathbf{x}) - p_j\|^2$ to each of $m$ learned prototypes.
+
+    \vspace{0.2cm}
+
+    \textbf{Fully-connected layer $w$:} combines distances into
+    per-class scores $W p(f(\mathbf{x}))$.
+
+    \vspace{0.2cm}
+
+    \textbf{Softmax layer $s$:} converts scores into a probability
+    distribution over $K$ classes.
+  \end{block}
+\end{column}
+\end{columns}
+
+\vspace{0.3cm}
+
+The final prediction $(h \circ f)(\mathbf{x})$ is naturally explained:
+\textit{``classified as class $k$ because it resembles prototype $p_j$.''}
 
 ---
 
-# Prototype Layer
+# Cost Function
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/prototype_layer.png}
+The full cost function of the proposed architecture is:
 \end{center}
 
-\begin{block}{Prototype Layer Computation}
-$$\mathbf{z} = f(\mathbf{x}) \qquad p(\mathbf{z}) = \left[\|\mathbf{z} - \mathbf{p}_1\|_2^2, \quad \|\mathbf{z} - \mathbf{p}_2\|_2^2, \quad \ldots \quad \|\mathbf{z} - \mathbf{p}_m\|_2^2\right]^\top$$
-\end{block}
+$$L((f, g, h), D)  = E(h \circ f, D) + \lambda R(g \circ f, D) + \lambda_1 R_1 + \lambda_2 R_2$$
 
-\footnotesize Each node in layer $p$ computes one of the above elements.
+\small
+| **Term** | **Role** |
+|---|---|
+| $D$ | Training dataset $\{(\mathbf{x}_i, y_i)\}_{i=1}^n$ |
+| $f$ | Encoder network: $\mathbb{R}^p \rightarrow \mathbb{R}^q$ |
+| $g$ | Decoder network: $\mathbb{R}^q \rightarrow \mathbb{R}^p$ |
+| $h$ | Prototype classifier network: $\mathbb{R}^q \rightarrow \mathbb{R}^K$ |
+| $E$ | Classification accuracy (cross-entropy) |
+| $R$ | Autoencoder reconstruction fidelity |
+| $R_1$ | Prototypes close to real training examples — **realism** |
+| $R_2$ | Training examples close to some prototype — **coverage** |
+
+\begin{center}
+$\lambda, \lambda_1, \lambda_2$ balance accuracy vs. interpretability.
+In the paper, all three are set to $0.05$.
+\end{center}
 
 ---
 
-# Fully Connected Layer
+# Prototypes: Definition and Learning
 
-\begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/fully_connected.png}
-\end{center}
+A prototype $p_j \in \mathbb{R}^q$ is a vector in the latent space learned during training
+— decoded via $g(p_j)$ to produce a human-readable image.
 
-- The fully connected layer computes weighted sums of the distances: $Wp(\mathbf{z})$
-- $W$ is a $k \times m$ matrix
+\vspace{0.2cm}
 
----
+Prototypes are learned like any other network parameter: by **backpropagation**,
+minimizing the joint cost function $L$. Two regularization terms guide their placement:
 
-# Softmax Layer
+\vspace{0.2cm}
 
-\begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/softmax_layer.png}
-\end{center}
+\begin{columns}
+\begin{column}{0.48\textwidth}
+  \begin{block}{$R_1$ — Realism}
+  $$\frac{1}{m}\sum_{j=1}^{m} \min_{i} \|p_j - f(x_i)\|^2$$
+  Each prototype must be close to at least one training example
+  $\rightarrow$ decoded images look realistic.
+  \end{block}
+\end{column}
+\begin{column}{0.48\textwidth}
+  \begin{block}{$R_2$ — Coverage}
+  $$\frac{1}{n}\sum_{i=1}^{n} \min_{j} \|f(x_i) - p_j\|^2$$
+  Each training example must be close to at least one prototype
+  $\rightarrow$ prototypes cover the full input space.
+  \end{block}
+\end{column}
+\end{columns}
 
-\begin{block}{}
-The weighted sums $Wp(\mathbf{z})$ are normalized by the softmax layer to output a \textbf{probability distribution over $K$ classes}.
-\end{block}
+Where $n$ is the number of training examples and $m$ is the number of prototypes (a hyperparameter; not necessarily equal to the number of classes $K$). In the paper, $m = 15$ for MNIST ($K = 10$).
 
 ---
 
@@ -629,92 +709,6 @@ The weighted sums $Wp(\mathbf{z})$ are normalized by the softmax layer to output
 
 ---
 
-# Cost Function
-
-\begin{block}{Cross-Entropy Loss}
-$$E(h \circ f, D) = \frac{1}{n} \sum_{i=1}^{n} \sum_{k=1}^{K} -\mathbb{1}[y_i = k] \log((h \circ f)_k(\mathbf{x}_i))$$
-\end{block}
-
-\vspace{0.5cm}
-
-\begin{block}{Reconstruction Error}
-$$R(g \circ f, D) = \frac{1}{n} \sum_{i=1}^{n} \|(g \circ f)(\mathbf{x}_i) - \mathbf{x}_i\|_2^2$$
-\end{block}
-
----
-
-# Cost Function: Interpretability Regularizers
-
-\begin{block}{$R_1$: Prototypes close to training data}
-$$R_1(\mathbf{p}_1, \ldots, \mathbf{p}_m, D) = \frac{1}{m} \sum_{j=1}^{m} \min_{i \in [1,n]} \|\mathbf{p}_j - f(\mathbf{x}_i)\|_2^2$$
-\end{block}
-
-\begin{block}{$R_2$: Training data close to prototypes}
-$$R_2(\mathbf{p}_1, \ldots, \mathbf{p}_m, D) = \frac{1}{n} \sum_{i=1}^{n} \min_{j \in [1,m]} \|f(\mathbf{x}_i) - \mathbf{p}_j\|_2^2$$
-\end{block}
-
-\footnotesize
-- $R_1$: Each prototype vector should be as close as possible to \textbf{at least one training example}
-- $R_2$: Each training example should be as close as possible to \textbf{one prototype}
-
----
-
-# Full Cost Function
-
-$$L((f, g, h), D) = E(h \circ f, D) + \lambda R(g \circ f, D) + \lambda_1 R_1(\mathbf{p}_1, \ldots, \mathbf{p}_m, D) + \lambda_2 R_2(\mathbf{p}_1, \ldots, \mathbf{p}_m, D)$$
-
----
-
-# Training: Neural Network Steps
-
-1. **Define architecture**
-2. **Outline cost function**
-3. **Forward pass, compute derivatives, backpropagate, update parameters — repeat!**
-
-\vspace{0.5cm}
-
-\begin{block}{Note on min functions}
-Min functions are not technically differentiable — but in practice, packages allow it. This is essentially \textbf{gradient descent}.
-\end{block}
-
----
-
-# Backpropagation: Intuition (1/4)
-
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/backprop_1.png}
-\end{center}
-
----
-
-# Backpropagation: Intuition (2/4)
-
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/backprop_2.png}
-\end{center}
-
----
-
-# Backpropagation: Intuition (3/4)
-
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/backprop_3.png}
-\end{center}
-
----
-
-# Backpropagation: Intuition (4/4)
-
-\begin{center}
-\includegraphics[width=0.6\columnwidth]{imgs/backprop_4.png}
-\end{center}
-
-\begin{center}
-\textcolor{red}{Local gradient $\times$ upstream gradient}
-\end{center}
-
----
-
 # Results: MNIST Data
 
 \begin{center}
@@ -727,53 +721,83 @@ Test accuracy \textbf{above 99\%} and on par with SOTA. Reconstruction Error: 4.
 
 ---
 
+# Case Study 1: MNIST
+
+\begin{center}
+\textbf{Test accuracy: 99.22\%} \\ on par with a standard CNN (99.23\%); no accuracy sacrificed for interpretability
+\end{center}
+
+## Original vs. Reconstructed
+
+\begin{center}
+\includegraphics[width=.75\textwidth]{imgs/mnist_reconstructions.png}
+\end{center}
+
+**Reconstruction error: 4.22** (avg. $\approx 0.005$ per pixel) — decoder faithfully maps latent vectors to pixel space, ensuring decoded prototypes look realistic
+
+## Learned Prototypes
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/mnist_prototypes.png}
+\end{center}
+
+Multiple prototypes per class (e.g., three ``6''s) capture different writing styles —
+enabled by $R_1$ (realism) and $R_2$ (coverage).
+
+---
+
 # Learned Weight Matrix
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/weight_matrix.png}
+\includegraphics[width=0.70\columnwidth]{imgs/weight_matrix.png}
 \end{center}
+
+\small
+- Each row is a prototype $p_j$ (visualized on the left); each column is a digit class.
+The most negative weight (shaded) indicates the **visual class** of the prototype.
+- The last prototype (visual class ``2'') is an exception — it has strong negative weights for classes 7 and 8.
+
+---
+
+# Ablation Study on Cars Data
+Components are removed one by one to measure their individual contribution.
+
+\vspace{0.3cm}
+
+| **Model** | **Test Accuracy** |
+|---|---|
+| Full model (autoencoder + prototype layer) | 99.22% |
+| Prototype layer replaced by fully-connected layer | 99.24% |
+| No prototype layer, no decoder (standard CNN) | 99.23% |
+
+All three variants achieve comparable accuracy — adding the autoencoder and prototype
+layer does **not** hurt predictive performance.
+
+\begin{exampleblock}{Key Takeaway}
+Interpretability comes at virtually \textbf{no accuracy cost} — the extra terms in $L$
+simply steer the model toward a more interpretable solution among equally accurate ones.
+\end{exampleblock}
 
 ---
 
 # Ablation Study on Cars Data (1/2)
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/ablation_1.png}
+\includegraphics[width=0.7\columnwidth]{imgs/ablation_1.png}
 \end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\begin{exampleblock}{Learned Prototypes (with $R_1, R_2$)}
-Clear, recognizable car images.
-\end{exampleblock}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{Without $R_1$ and $R_2$}
-Noisy, uninterpretable prototypes.
-\end{alertblock}
-\end{column}
-\end{columns}
+- **With $R_1$ and $R_2$:** prototypes are clear, recognizable car images
+- **Without $R_1$ and $R_2$:** prototypes are noisy and uninterpretable
 
 ---
 
 # Ablation Study on Cars Data (2/2)
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/ablation_2.png}
+\includegraphics[width=0.67\columnwidth]{imgs/ablation_2.png}
 \end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{Without $R_1$}
-Noisy, unrecognizable prototypes.
-\end{alertblock}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{block}{Without $R_2$}
-Redundant prototypes (lack of diversity).
-\end{block}
-\end{column}
-\end{columns}
+- **Without $R_1$:** prototypes are noisy and unrecognizable
+- **Without $R_2$:** prototypes are redundant and lack diversity
 
 ---
 

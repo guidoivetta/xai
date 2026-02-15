@@ -32,3 +32,4 @@ variables:
     - \let\oldframetitle\frametitle
     - \renewcommand{\frametitle}[1]{\oldframetitle{\emoji{mate}~\texttt{#1~------}}}
     - \usepackage{listings}
+    - \usepackage[percent]{overpic}
