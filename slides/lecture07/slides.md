@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{wtf} XAI: LIME \\& SHAP"
+title: "\\emoji{wtf} XAI: LIME & SHAP"
 bibliography: references.bib
 
 ---
@@ -10,27 +10,27 @@ bibliography: references.bib
 
 ---
 
-# "Why Should I Trust You?" Explaining the Predictions of Any Classifier
+# Paper 1
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/lime_explanation_flow.png}
-\end{center}
-
-\begin{center}
-\footnotesize Ribeiro, Singh, Guestrin (2016) — Presented by Robin Na, Paul Liu, Zelin (James) Li
+\includegraphics[width=0.95\columnwidth]{imgs/lime_paper.png}
 \end{center}
 
 [@ribeiro2016should]
 
 ---
 
-# Define Trust
+# Define Trust - Two Notions
 
-- **Trusting a prediction:** whether a user trusts sufficiently to take some action based on it
+ML models are often used as black boxes — but humans need to understand them before acting on their outputs.
 
-\vspace{1em}
+- **Trusting a prediction:** Does this specific output make sense? 
+  *E.g., should a doctor act on this diagnosis?*
 
-- **Trusting a model:** whether a user trusts a model to behave in reasonable ways if deployed
+- **Trusting a model:** Will this model behave reasonably when deployed?
+  *E.g., does it generalize beyond the validation set?*
+
+> Both depend on how much the user understands the model's behavior.
 
 ---
 
@@ -40,91 +40,133 @@ bibliography: references.bib
 \includegraphics[width=0.85\columnwidth]{imgs/lime_explanation_flow.png}
 \end{center}
 
-\begin{block}{}
-Textual or visual artifacts to provide qualitative understanding of the relationship between instance's components and the model's prediction.
-\end{block}
+An explanation identifies **which parts of the input** drove the model's prediction — 
+and in which direction.
+
+- \emoji{green-circle.png} *sneeze*, *headache* → evidence **for** Flu  
+- \emoji{red-circle.png} *no fatigue* → evidence **against** Flu
+
+## Formally: 
+A textual or visual artifact that describes the relationship between an instance's components and the model's output.
 
 ---
 
-# Explanations as a Means to Select Model
+# Explanations as a Means to Select Model 1/2
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/model_selection.png}
+\includegraphics[width=0.750\columnwidth]{imgs/model_selection.png}
+
+\textbf{Both models predict "Atheism" correctly — but for very different reasons.}
+
 \end{center}
+
+---
+
+# Explanations as a Means to Select Model 2/2
+
+\begin{center}
+
+\textbf{Both models predict "Atheism" correctly — but for very different reasons.}
+
+\end{center}
+
+| | Algorithm 1 | Algorithm 2 |
+|---|---|---|
+| **Key words** | *GOD, mean, anyone* | *Posting, Host, Nntp* |
+| **Reason** | Semantic content \emoji{check-mark-button.png} | Email header metadata \emoji{cross-mark.png} |
+| **Will it generalize?** | Likely yes | Likely no |
+
+- Accuracy alone cannot distinguish these models.  
+- Explanations expose *why* a prediction was made — and whether to trust it.
 
 ---
 
 # Why Do We Need Trust and Interpretability?
 
-- Sometimes models can go wrong (in a way that's obvious to humans)!
+A model can have **high accuracy** and still be wrong for the right reasons.
 
-\vspace{0.5em}
+- **Data leakage:** the model learns features that are accidentally correlated 
+  with the label (e.g., patient ID predicts diagnosis). High accuracy, zero generalization.
 
-- **Data leakage:** patient ID being correlated with the target class
+- **Dataset shift / Concept drift:** training and real-world data differ — either 
+  the input distribution changes, or the relationship between inputs and labels 
+  changes over time. The model looks good on validation but fails in deployment.
 
-\vspace{0.5em}
+- **Spurious features:** the model exploits features that *work* statistically 
+  but are undesirable (e.g., clickbait signals in a recommender system).
 
-- **Dataset shift:** training data is different than the test data
-
-\vspace{0.5em}
-
-- **Exploiting features:** users may favor recommender systems that don't exploit on "clickbaits"
+> In all three cases, validation accuracy is misleading.  
+> Interpretability lets us catch these failures before they cause harm.
 
 ---
 
 # Desired Characteristics for Explainers
 
-- **Interpretable**
-- **Local fidelity:** at least locally faithful
-- **Model-agnostic:** the ability to explain any model
-- **Global perspective:** ability to explain the model not just single prediction
+- **Interpretable:** explanations must be understandable to humans, 
+  not just technically correct (e.g., no thousands of non-zero weights)
 
-\vspace{1em}
+- **Locally faithful:** must reflect how the model *actually behaves* 
+  near the instance being explained — global fidelity is often impossible
 
-## LIME as Interpretable Framework
+- **Model-agnostic:** must work as a black box, applicable to any classifier, including models that don't yet exist
 
-**Local Interpretable Model-agnostic Explanation**
+- **Global perspective:** beyond single predictions, explanations should 
+  help users understand the model as a whole
+
+## Local Interpretable Model-agnostic Explanations (LIME)
+
+A framework designed to satisfy all four criteria simultaneously.
 
 ---
 
-# LIME as Interpretable Framework
-
-## Step 1: Define LIME Framework
-*(Ensure both local fidelity and interpretability)*
+# LIME Step 1: Define LIME Framework
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/lime_formula.png}
+\textbf{Goal:} Find the simplest explanation that still accurately describes 
+the model's behavior \textit{near} the instance $x$.
 \end{center}
 
+\textbf{
 $$\xi(x) = \underset{g \in G}{\text{argmin}} \ \mathcal{L}(f, g, \pi_x) + \Omega(g)$$
+}
 
-- $\xi(x)$: an instance
-- $f$: model to be explained
-- $g \in G$: interpretable model
-- $\pi_x$: proximity measure to define locality
-- $\mathcal{L}$: measure of unfaithfulness
-- $\Omega(g)$: complexity measure
+- \textbf{$\xi(x)$} — explanation for instance $x$
+- \textbf{$g \in G$} — interpretable model (e.g., linear model)
+- \textbf{$f$} — black-box model to be explained
+- \textbf{$\mathcal{L}(f, g, \pi_x)$} — unfaithfulness of $g$ approximating $f$ locally
+- \textbf{$\pi_x$} — proximity measure that defines the local neighborhood
+- \textbf{$\Omega(g)$} — complexity of $g$ (e.g., number of non-zero weights)
+
+\begin{center}
+\normalsize
+This is a \textbf{fidelity-interpretability trade-off}: 
+minimize error locally, 
+while keeping the explanation simple enough for humans to understand.
+\end{center}
 
 ---
 
-# LIME as Interpretable Framework
+# LIME Step 2: Interpretable Data Representation
 
-## Step 2: Interpretable Data Representation
+- The black-box model operates on features that are often incomprehensible to humans 
+(e.g., embeddings, raw pixels). 
+- LIME maps these to an **interpretable representation** 
+that humans can reason about:
 
-- **Text:** binary vector indicating the presence or absence of a word
-- **Image:** binary vector indicating the presence or absence of a contiguous patch of similar pixels
-
-$$x \in \mathbb{R}^d \rightarrow x' \in \{0,1\}^{d'}$$
+  - **Text:** binary vector indicating the presence or absence of a word
+  - **Image:** binary vector indicating the presence or absence of a contiguous patch of similar pixels (superpixel)
 
 \begin{center}
+\textbf{$$x \in \mathbb{R}^d \xrightarrow{h_x} x' \in \{0,1\}^{d'}$$
+}
 \footnotesize Original Representation $\longrightarrow$ Interpretable Representation
 \end{center}
 
+where $x$ is the original instance, $x'$ is its interpretable representation, and $h_x$ is the mapping between them.
+
 ---
 
-# LIME as Interpretable Framework
-
-## Step 3: Approximate Locality-Aware $\min_g \ \mathcal{L}(f, g, \pi_x)$
+# LIME Step 3: Approximate Locality-Aware $\min_g \ \mathcal{L}(f, g, \pi_x)$
 
 **Perturbed Sample ($z'$) Sampling Procedure:**
 
