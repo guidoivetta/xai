@@ -24,7 +24,7 @@ bibliography: references.bib
 
 ML models are often used as black boxes — but humans need to understand them before acting on their outputs.
 
-- **Trusting a prediction:** Does this specific output make sense? 
+- **Trusting a prediction:** Does this specific output make sense?
   *E.g., should a doctor act on this diagnosis?*
 
 - **Trusting a model:** Will this model behave reasonably when deployed?
@@ -40,13 +40,13 @@ ML models are often used as black boxes — but humans need to understand them b
 \includegraphics[width=0.85\columnwidth]{imgs/lime_explanation_flow.png}
 \end{center}
 
-An explanation identifies **which parts of the input** drove the model's prediction — 
+An explanation identifies **which parts of the input** drove the model's prediction —
 and in which direction.
 
-- \emoji{green-circle.png} *sneeze*, *headache* → evidence **for** Flu  
+- \emoji{green-circle.png} *sneeze*, *headache* → evidence **for** Flu
 - \emoji{red-circle.png} *no fatigue* → evidence **against** Flu
 
-## Formally: 
+## Formally:
 A textual or visual artifact that describes the relationship between an instance's components and the model's output.
 
 ---
@@ -76,7 +76,7 @@ A textual or visual artifact that describes the relationship between an instance
 | **Reason** | Semantic content \emoji{check-mark-button.png} | Email header metadata \emoji{cross-mark.png} |
 | **Will it generalize?** | Likely yes | Likely no |
 
-- Accuracy alone cannot distinguish these models.  
+- Accuracy alone cannot distinguish these models.
 - Explanations expose *why* a prediction was made — and whether to trust it.
 
 ---
@@ -85,32 +85,32 @@ A textual or visual artifact that describes the relationship between an instance
 
 A model can have **high accuracy** and still be wrong for the right reasons.
 
-- **Data leakage:** the model learns features that are accidentally correlated 
+- **Data leakage:** the model learns features that are accidentally correlated
   with the label (e.g., patient ID predicts diagnosis). High accuracy, zero generalization.
 
-- **Dataset shift / Concept drift:** training and real-world data differ — either 
-  the input distribution changes, or the relationship between inputs and labels 
-  changes over time. The model looks good on validation but fails in deployment.
+- **Dataset shift / Concept drift:** training and real-world data differ — either
+  the input distribution changes/shift, or the relationship between inputs and labels
+  changes/drift over time. The model looks good on validation but fails in deployment.
 
-- **Spurious features:** the model exploits features that *work* statistically 
+- **Spurious features:** the model exploits features that *work* statistically
   but are undesirable (e.g., clickbait signals in a recommender system).
 
-> In all three cases, validation accuracy is misleading.  
+> In all three cases, validation accuracy is misleading.
 > Interpretability lets us catch these failures before they cause harm.
 
 ---
 
 # Desired Characteristics for Explainers
 
-- **Interpretable:** explanations must be understandable to humans, 
+- **Interpretable:** explanations must be understandable to humans,
   not just technically correct (e.g., no thousands of non-zero weights)
 
-- **Locally faithful:** must reflect how the model *actually behaves* 
+- **Locally faithful:** must reflect how the model *actually behaves*
   near the instance being explained — global fidelity is often impossible
 
 - **Model-agnostic:** must work as a black box, applicable to any classifier, including models that don't yet exist
 
-- **Global perspective:** beyond single predictions, explanations should 
+- **Global perspective:** beyond single predictions, explanations should
   help users understand the model as a whole
 
 ## Local Interpretable Model-agnostic Explanations (LIME)
@@ -122,7 +122,7 @@ A framework designed to satisfy all four criteria simultaneously.
 # LIME Step 1: Define LIME Framework
 
 \begin{center}
-\textbf{Goal:} Find the simplest explanation that still accurately describes 
+\textbf{Goal:} Find the simplest explanation that still accurately describes
 the model's behavior \textit{near} the instance $x$.
 \end{center}
 
@@ -139,8 +139,8 @@ $$\xi(x) = \underset{g \in G}{\text{argmin}} \ \mathcal{L}(f, g, \pi_x) + \Omega
 
 \begin{center}
 \normalsize
-This is a \textbf{fidelity-interpretability trade-off}: 
-minimize error locally, 
+This is a \textbf{fidelity-interpretability trade-off}:
+minimize error locally,
 while keeping the explanation simple enough for humans to understand.
 \end{center}
 
@@ -148,9 +148,9 @@ while keeping the explanation simple enough for humans to understand.
 
 # LIME Step 2: Interpretable Data Representation
 
-- The black-box model operates on features that are often incomprehensible to humans 
-(e.g., embeddings, raw pixels). 
-- LIME maps these to an **interpretable representation** 
+- The black-box model operates on features that are often incomprehensible to humans
+(e.g., embeddings, raw pixels).
+- LIME maps these to an **interpretable representation**
 that humans can reason about:
 
   - **Text:** binary vector indicating the presence or absence of a word
@@ -160,25 +160,61 @@ that humans can reason about:
 \textbf{$$x \in \mathbb{R}^d \xrightarrow{h_x} x' \in \{0,1\}^{d'}$$
 }
 \footnotesize Original Representation $\longrightarrow$ Interpretable Representation
+
 \end{center}
 
-where $x$ is the original instance, $x'$ is its interpretable representation, and $h_x$ is the mapping between them.
+where $x \in \mathbb{R}^d$ is the original instance with $d$ features, $x' \in \{0,1\}^{d'}$ is a binary vector of length $d'$ where each entry is $1$ if the corresponding interpretable component is \textbf{present} and $0$ if it is \textbf{absent}, and $h_x$ is the function that maps $x'$ back to the original representation.
 
 ---
 
-# LIME Step 3: Approximate Locality-Aware $\min_g \ \mathcal{L}(f, g, \pi_x)$
+# LIME Step 3: Sampling for Local Exploration 1/2
 
-**Perturbed Sample ($z'$) Sampling Procedure:**
+Since $f$ is a black box, LIME **interrogates** it: perturb, query, and fit $g$ locally.
 
-- Sample around $x'$ by drawing nonzero elements of $x'$ uniformly at random
-- The number of draws is also uniformly sampled
-- $z'$ basically has a fraction of nonzero elements of $x'$
-- Samples are weighted by $\pi_x$
+1. Start from $x'$, the interpretable representation of the instance to explain
+2. Generate perturbed samples $z'$ by randomly turning off components of $x'$
+3. Map each $z'$ back to the original space: $z = h_x(z')$
+4. Query the black-box model to get a label: $f(z)$
+5. Weight each sample by its proximity to $x$: $\pi_x(z)$
 
-$$x \rightarrow x' \rightarrow z' \rightarrow z \rightarrow f(z)$$
+$$x \xrightarrow{} x' \xrightarrow{\text{perturb}} z' \xrightarrow{h_x} z \xrightarrow{f} f(z)$$
 
 \begin{center}
-\footnotesize interpretable repr. $\to$ sampling local area $\to$ inverse (interpr. repr.) $\to$ obtain label
+
+The dataset \textbf{$\mathcal{Z} = \{(z', f(z), \pi_x(z))\}$} is then used to fit the local model $g$.
+
+\end{center}
+
+---
+
+# LIME Step 3: Sampling for Local Exploration 2/2
+
+Since $f$ is a black box, LIME cannot minimize $\mathcal{L}(f, g, \pi_x)$ analytically.
+Instead, it **interrogates** $f$: it generates perturbed samples near $x'$, queries
+the model, and uses the responses to fit $g$ locally.
+
+\small
+1. **Start from the instance:** take the review *"The movie was great and funny"*
+   → $x' = [1, 1, 1, 1, 1, 1]$
+
+2. **Randomly turn off words:** generate a masked version
+   → $z' = [0, 1, 0, 1, 0, 1]$ → *"movie great funny"*
+
+3. **Map back to original space:** reconstruct the input the model understands
+   → $z = h_x(z')$ (e.g., recompute embeddings for *"movie great funny"*)
+
+4. **Ask the black box:** what does $f$ predict for this masked input?
+   → $f(z) = 0.85$ (positive sentiment)
+
+5. **Weight by proximity:** samples closer to $x$ matter more
+   → $\pi_x(z)$ is high if few words were removed, low otherwise
+
+$$x \xrightarrow{} x' \xrightarrow{\text{perturb}} z' \xrightarrow{h_x} z \xrightarrow{f} f(z)$$
+
+\begin{center}
+
+Repeat $N$ times → fit a sparse linear model $g$ on $\mathcal{Z} = \{(z', f(z), \pi_x(z))\}$.
+
 \end{center}
 
 ---
@@ -189,9 +225,9 @@ $$x \rightarrow x' \rightarrow z' \rightarrow z \rightarrow f(z)$$
 \includegraphics[width=0.65\columnwidth]{imgs/sampling_intuition.png}
 \end{center}
 
-\begin{exampleblock}{}
+\begin{center}
 A complex decision boundary is approximated locally by a simple linear model (dashed line). Samples closer to the instance of interest (red cross) are weighted more.
-\end{exampleblock}
+\end{center}
 
 ---
 
@@ -222,11 +258,41 @@ $$\Omega(g) = \infty \mathbb{1}[\|w_g\|_0 > K]$$
 
 ---
 
+# Example: Sparse Linear Explanation \emoji{snake.png}
+
+:::: {.columns}
+
+::: {.column width="40%"}
+
+$$\xi(x) = \underset{g \in G}{\text{argmin}} \ \mathcal{L}(f, g, \pi_x) + \Omega(g)$$
+
+$$g(z') = w_g \cdot z'$$
+
+$$\pi_x(z) = \exp\!\left(-\frac{D(x,z)^2}{\sigma^2}\right)$$
+
+$$\mathcal{L}(f,g,\pi_x) = \sum_{z,z' \in \mathcal{Z}} \pi_x(z)\bigl(f(z)-g(z')\bigr)^2$$
+
+$$\Omega(g) = \infty \mathbb{1}[\|w_g\|_0 > K]$$
+
+:::
+
+::: {.column width="58%"}
+\fontsize{7.5pt}{6pt}
+!!include python: codes/sparse.py
+:::
+
+::::
+
+
+
+---
+
 # Some Results
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/some_results.png}
+\includegraphics[width=0.90\columnwidth]{imgs/some_results.png}
 \end{center}
+
 
 ---
 
