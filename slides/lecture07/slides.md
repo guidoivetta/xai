@@ -293,88 +293,179 @@ $$\Omega(g) = \infty \mathbb{1}[\|w_g\|_0 > K]$$
 \includegraphics[width=0.90\columnwidth]{imgs/some_results.png}
 \end{center}
 
+----
+
+# Global LIME: Intuition
+
+If we could explain **every instance** in the dataset, we would have a complete
+picture of how the model behaves globally.
+
+But this is clearly infeasible — datasets can have thousands of instances,
+and users have limited time and patience.
+
+## Key question:
+
+Which $B$ instances should we show the user to maximize
+their understanding of the model?
 
 ---
 
 # Gain Global Understanding of the Model
 
-## Proposal: Explain a set of individual instances
+A single explanation gives local insight — but how do we understand the model **globally**?
+The pick step selects $B$ instances to show the user, such that together they are
+maximally informative about the model's overall behavior.
 
-- The number of instances should be small (denoted by budget $B$)
-- The pick step should account for the explanations that accompany each prediction
-- Should pick a **diverse, representative set**
+- **Budget $B$:** users have limited time — we can only show $B$ explanations
+- **Explanation-aware selection:** instances are chosen based on their LIME explanations,
+  not raw data alone — looking at raw predictions is not enough
+- **Diverse and representative:** selected instances should cover as many different
+  important features as possible, avoiding redundancy
+
+> The goal: with just $B$ explanations, give the user a global picture of how the model works.
 
 ---
 
-# Submodular Pick (SP) Algorithm
+# Submodular Pick (SP) Algorithm 1/2
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/submodular_pick.png}
+\textbf{After running LIME on every $B$ instance, we organize the results into a matrix
+$\mathcal{W}_{n \times d'}$ that summarizes how important each interpretable
+feature is across all instances.}
 \end{center}
 
-$$c(V, \mathcal{W}, I) = \sum_{j=1}^{d'} \mathbb{1}_{[\exists i \in V: \mathcal{W}_{ij} > 0]} I_j \qquad \text{(submodular)}$$
+:::: {.columns}
+
+::: {.column width="48%"}
+
+\begin{center}
+\includegraphics[width=.8\columnwidth]{imgs/submodular_matrix.png}
+\end{center}
+
+:::
+
+::: {.column width="50%"}
+
+- Each **row** $i$ represents an instance $x_i$
+- Each **column** $j$ represents an interpretable feature (e.g., a word)
+- Each **cell** $\mathcal{W}_{ij} = |w_{g_j}|$ is the importance LIME assigned
+  to feature $j$ for instance $i$ — $0$ if unused
+
+From $\mathcal{W}$, the **global importance** of each feature is:
+
+$$I_j = \sqrt{\sum_{i=1}^n |\mathcal{W}_{ij}|}$$
+
+A high $I_j$ means feature $j$ is relevant across many instances.
+
+:::
+
+::::
+
+---
+
+# Submodular Pick (SP) Algorithm 2/2
+
+:::: {.columns}
+
+::: {.column width="48%"}
+
+\begin{center}
+\includegraphics[width=.99\columnwidth]{imgs/submodular_pick.png}
+\end{center}
+
+:::
+
+::: {.column width="50%"}
+
+We want to select a set $V$ of at most $B$ instances that **maximizes coverage**
+of globally important features:
+
+$$c(V, \mathcal{W}, I) = \sum_{j=1}^{d'} \mathbbm{1}_{[\exists i \in V: \mathcal{W}_{ij} > 0]} I_j$$
 
 $$\text{Pick}(\mathcal{W}, I) = \underset{V, |V| \leq B}{\text{argmax}} \ c(V, \mathcal{W}, I)$$
 
-\begin{alertblock}{}
-Submodularity has the property of diminishing returns — greedy optimization yields a near-optimal solution.
-\end{alertblock}
+$c$ is a **submodular function**: adding a new
+instance to $V$ yields diminishing returns as $V$ grows.
+
+Greedy solution: at each step, add the instance that maximally increases coverage:
+
+:::
+
+::::
 
 ---
 
-# Simulated User Experiment
+# Simulated User Experiment - Experimental Setup
 
-## Experimental Setup
+\small
+**Goal:** evaluate explanation quality across different models and methods.
 
-- Models: Decision Tree, Logistic Regression, Nearest Neighbors, SVM, RandomForest
-- Compare with **parzen**, **greedy**, and **random** procedures:
-  - *Greedy:* greedily remove features that contribute the most until prediction changes
-  - *Random:* randomly select $K$ features
-- Pick procedures: **Submodular Pick (SP)** and **Random Pick (RP)**
+**Datasets:** two sentiment analysis datasets (books and DVDs, 2000 instances each)
+— task is to classify product reviews as positive or negative.
 
----
+**Models trained:** Decision Tree, Logistic Regression, Nearest Neighbors, SVM, Random Forest
 
-# Simulated User Experiment
+## Explanation methods compared:
+\small
+- **Random:** selects $K$ features at random — minimal baseline
+- **Greedy:** removes features one by one until the prediction changes
+- **Parzen:** approximates $f$ globally with Parzen windows, explains via gradient
+- **LIME:** proposed method — local sparse linear approximation
 
-## Are explanations faithful to the method?
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
-
-- Train sparse logistic regression and decision trees (interpretable $\Rightarrow$ know gold set features)
-- Compute average fractions of gold features covered by the explanations (over all instances)
-
-\end{column}
-\begin{column}{0.48\textwidth}
+## Instance selection strategies:
+\small
+- **Random Pick (RP):** selects instances at random
+- **Submodular Pick (SP):** selects instances to maximize feature coverage
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/simulated_faithful.png}
+ \textbf{All methods produce explanations of size $K = 10$ features.}
 \end{center}
+---
 
-\end{column}
-\end{columns}
+# Simulated User Experiment - Are explanations faithful to the method?
+
+\begin{columns}
+\begin{column}{0.4\textwidth}
+
+\textbf{Key idea:} use interpretable models (sparse LR, decision trees) where we
+\textit{know} the true important features — the \textbf{gold set}. Then measure how many
+gold features each method recovers (\textbf{recall}).
 
 \begin{exampleblock}{}
 LIME achieves the highest recall of truly important features on both Books and DVDs datasets.
 \end{exampleblock}
 
----
-
-# Simulated User Experiment
-
-## Should I trust this prediction?
-
-1. Randomly select 25% of features to be untrustworthy
-2. Label predictions as untrustworthy if prediction changes when all untrustworthy features are removed
-   - For greedy and random: untrustworthy if untrustworthy features present
+\end{column}
+\begin{column}{0.6\textwidth}
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/simulated_trust.png}
+\includegraphics[width=.75\columnwidth]{imgs/simulated_faithful.png}
 \end{center}
 
-\begin{exampleblock}{}
-LIME achieves the highest average F1 of trustworthiness across all classifiers and datasets.
-\end{exampleblock}
+\end{column}
+\end{columns}
+
+---
+
+# Simulated User Experiment - Should I trust this prediction?
+\small
+- Randomly mark 25% of features as untrustworthy (simulating problematic
+features such as data leakage or spurious correlations). A prediction is labeled
+**untrustworthy** if it changes when those features are removed (the model
+was relying on them).
+- The prediction is then  untrustworthy if the problematic features appear in it with high weight.
+- We measure **F1 of trustworthiness** to evaluate whether each explanation method
+correctly identifies which predictions to trust and which to reject.
+
+\begin{center}
+\includegraphics[width=.45\columnwidth]{imgs/trust_prediction.png}
+\end{center}
+
+\begin{center}
+\small
+\textbf{LIME maintains both high precision and high recall —
+it neither over-trusts nor over-distrusts predictions.}
+\end{center}
 
 ---
 
