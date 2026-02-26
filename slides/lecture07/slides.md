@@ -469,105 +469,95 @@ it neither over-trusts nor over-distrusts predictions.}
 
 ---
 
-# Simulated User Experiment
+# Simulated User Experiment -  Can I trust this model?
 
-## Can I trust this model?
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
-
-1. Add noisy features to create spurious correlations
-2. Train two random forests:
-   - Validation accuracy within 0.1% of each other
-   - Test accuracy differs by at least 5%
-3. Mark noisy features as untrustworthy and follow a similar procedure
-
-\end{column}
-\begin{column}{0.48\textwidth}
+- 10 noisy features added: correlated with the label in train/validation, but not in test
+- Two random forests with similar validation accuracy ($< 0.1\%$ apart) but very different test accuracy ($> 5\%$ apart)
+- **Task:** can a simulated user pick the better model by inspecting $B$ explanations?
+- **SP-LIME** dominates, especially for small $B$
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/simulated_model.png}
+\includegraphics[width=.7\columnwidth]{imgs/simulated_model.png}
 \end{center}
 
-\end{column}
-\end{columns}
+
 
 ---
 
-# Evaluating with Human Subjects
+# Evaluating with Human Subjects - Experimental Setup
 
-## Experimental Setup
+Previous experiments were simulated — now we test with **real users** on Amazon Mechanical Turk.
 
-- Previous 20 newsgroups dataset (Problematic!) — contains features that do not generalize
-- Create a **new religion dataset:** 819 web pages in each of "Christianity" and "Atheism"
-- Use SVM with RBF Kernel with hyperparameters chosen by cross-validation
+- **Dataset:** 20 Newsgroups (Christianity vs. Atheism) — known to contain spurious features 
+  (headers, author names) that do not generalize
+- To measure real-world generalization, a **new religion dataset** is created: 
+  - 819 web pages per class scraped from Atheism and Christianity websites
+- Model: SVM with RBF kernel, hyperparameters tuned via cross-validation
 
 ---
 
-# Evaluating with Human Subjects
+# Evaluating with Human Subjects - Can users select the best classifier?
 
-## Can users select the best classifier?
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: {.columns}
+::: {.column width="48%"}
 
 - Train two SVMs:
   - one on problematic dataset
   - one on "cleaned" dataset
 - Recruit humans to select which algorithm will perform best
+-  The problematic model has *higher* validation accuracy (94.0% vs 88.6%), so accuracy alone would lead to the wrong choice.
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::: {.column width="48%"}
 
 \begin{center}
 \includegraphics[width=\columnwidth]{imgs/human_classifier.png}
 \end{center}
 
-\end{column}
-\end{columns}
+:::
+::::
 
-\begin{exampleblock}{}
-SP-LIME (89\%) outperforms RP-LIME (75\%), and both outperform greedy variants.
-\end{exampleblock}
+> SP-LIME (89%) outperforms RP-LIME (75%), and both outperform greedy variants.
 
 ---
 
-# Evaluating with Human Subjects
+# Evaluating with Human Subjects - Can non-experts improve a classifier?
 
-## Can non-experts improve a classifier?
+Each round: user sees $B=10$ instances with $K=10$ words per explanation 
+and marks words to remove. Model is retrained without those words.
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: {.columns}
 
-Human marks which words to remove after seeing $B=10$ instances and $K=10$ words in explanation.
+::: {.column width="50%"}
 
-\vspace{0.5em}
-- 10 subjects $\to$ train 10 classifiers
-- 5 more users $\to$ 50 classifiers
-- 5 more users $\to$ 250 classifiers
+- Round 0: 10 subjects → 10 classifiers
+- Round 1: 5 new users per classifier → 50 classifiers  
+- Round 2: 5 more users → 250 classifiers
+- Real-world accuracy measured at each round on the religion dataset
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+
+::: {.column width="50%"}
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/human_improve.png}
-\end{center}
+\includegraphics[width=.75\columnwidth]{imgs/human_improve.png}\end{center}
 
-\end{column}
-\end{columns}
+:::
 
-\begin{exampleblock}{}
-SP-LIME outperforms RP-LIME in real-world accuracy across rounds of interaction.
-\end{exampleblock}
+::::
+
+## Result
+Non-experts using LIME explanations can meaningfully improve a classifier without ever seeing the test data.
 
 ---
 
-# Evaluating with Human Subjects
+# Evaluating with Human Subjects - Do explanations lead to insights?
 
-## Do explanations lead to insights?
+**Setup:** a deliberately bad classifier is trained to predict "wolf" when there 
+is snow in the background, and "husky" otherwise — ignoring the actual animal.
 
-\begin{columns}
-\begin{column}{0.5\textwidth}
+:::: columns
+::: column
 
 1. Find pictures such that classifier predicts "wolf" if there is snow, and "husky" otherwise
 2. Ask subjects (grad students):
@@ -576,19 +566,15 @@ SP-LIME outperforms RP-LIME in real-world accuracy across rounds of interaction.
    - How do they think the model distinguishes?
 3. Showed explanations and asked again
 
-\end{column}
-\begin{column}{0.45\textwidth}
+:::
+::: column
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/husky_wolf.png}
+\includegraphics[width=.75\columnwidth]{imgs/husky_wolf.png}
 \end{center}
 
-\end{column}
-\end{columns}
-
-\begin{alertblock}{}
-After seeing explanations: trusted the bad model dropped from 10/27 to 3/27; snow identified as feature rose from 12/27 to 25/27.
-\end{alertblock}
+:::
+::::
 
 ---
 
