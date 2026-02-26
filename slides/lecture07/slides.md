@@ -626,90 +626,99 @@ Interpretable description of images via visual attention — LIME aims for a mor
 
 ---
 
-# A Unified Approach to Interpreting Model Predictions
+# Paper 2
 
 \begin{center}
-\Large Scott Lundberg and Su-In Lee
-\end{center}
-
-\vspace{1em}
-
-\begin{center}
-\textit{Presented by Max Nadeau, Max Li, and Xander Davies}
+\includegraphics[width=0.85\columnwidth]{imgs/paper2.png}
 \end{center}
 
 [@lundberg2017unified]
 
 ---
 
-# Outline
+# Additive Feature Attribution Methods (AFAMs)
 
-1. **Additive Explanations**
-   - Overview and relation to LIME
-   - LIME Desiderata
-2. **Shapley Values**
-   - Introduction to Shapley values
-   - Removing features
-3. **Approximations**
-4. **Experiments**
-5. **Extensions**
-   - Global interpretability
-   - Inner interpretability
+This paper unifies **6 previous methods** for local interpretability under a single framework.
+An AFAM explains a prediction $f(x)$ by assigning an importance $\phi_i$ to each feature $i$:
+
+\textbf{$$g(z') = \phi_0 + \sum_{i=1}^{M} \phi_i z'_i, \quad z' \in \{0,1\}^M$$}
+
+where $g$ is a linear explanation model over the interpretable representation $z'$.
 
 ---
 
-# Introduction to Additive Feature Attribution Methods
+# Additive Feature Attribution Methods (AFAMs)
 
-This paper unifies **6 previous methods** for local interpretability as **additive feature attribution methods (AFAMs)**.
+**Example: LIME for image classification**
 
-An AFAM consists of:
+\small
+- Features of $x$ are its **superpixels**
+- Removing a feature = replacing its superpixel with grey pixels
+- $y$ = the all-grey image (input with no features)
+- LIME fits $g(z') \approx f(x)$ and $g(y') \approx f(y)$ locally
+- The weights $\phi_i$ indicate how important each superpixel was for $f(x)$
 
-- An enumeration of the **features present** in $x$
-- A protocol for **"removing some features"** from $x$, defining $y$ (the "input with no features")
-- An approximation $g(x')$ of $f(x)$ and $g(y')$ of $f(y)$
-- A partition of $g(x') - g(y')$ among the features of $x$, indicating **how important each feature was** for the model's output
+## The key insight: 
+many existing methods already fit this form — 
+often without realizing they share the same underlying structure.
 
-The importance of feature $i$ is denoted $\phi_i$
-
----
-
-# LIME as an Additive Feature Attribution Method
-
-- LIME (for explaining a classification of some image $x$) is an AFAM
-- The **set of superpixels** is the set of features of $x$
-- We **remove a superpixel** (feature) by replacing its pixels with grey
-  - The image with no features is all grey
-- LIME outputs a function $g$ that approximates $f(x)$ and $f(y)$ as $g(x')$ and $g(y')$
-- $g$ provides a weighting $g_i$ for the importance of each superpixel in determining $f(x)$ — these serve as the $\phi_i$
 
 ---
 
 # DeepLIFT as an Additive Feature Attribution Method
 
-- DeepLIFT is another local interpretability method (Shrikumar et al., 2019)
-- The **set of pixels** is the set of features of $x$
-- Removing a feature consists of setting a pixel to the value of that pixel in a **reference image** (serves as $y$)
-- DeepLIFT uses $g(x') = f(x)$ and $g(y') = f(y)$ directly (no approximation)
-- DeepLIFT calculates a value $C_{\Delta x_i \Delta o}$ for each pixel $x_i$ such that $C_{\Delta x_i \Delta o} = f(x) - f(y)$
-  - Each $C_{\Delta x_i \Delta o}$ represents importance of $x_i$ to classification $f(x)$
+Instead of perturbing features randomly, DeepLIFT compares the current prediction 
+against a **reference input** $r$ (e.g., a blank or average image).
+
+- Features of $x$ are its **pixels**
+- Removing a feature = replacing pixel $x_i$ with its value in $r$
+- $\phi_0 = f(r)$ — base prediction on the reference input
+- Each $\phi_i = C_{\Delta x_i \Delta o}$ measures how much pixel $i$ contributed 
+  *relative to its reference value*
+
+DeepLIFT satisfies the **summation-to-delta** property exactly:
+
+\textbf{
+$$\sum_{i=1}^{n} C_{\Delta x_i \Delta o} = f(x) - f(r)$$}
+
+**Human mode:** The attributions sum exactly to the difference between the current prediction and the reference prediction — 
+every unit of "change" (pixel) in the output is fully accounted for by the input features.
+
+---
+
+# LIME vs DeepLIFT
+
+- Unlike LIME, DeepLIFT is not model-agnostic — it exploits the internal 
+structure of neural networks to back-propagate attribution values in a single pass, 
+without any sampling.
+
+## DeepLIFT is an AFAM: 
+
+Setting $$\phi_0 = f(r)$$ and $$\phi_i = C_{\Delta x_i \Delta o}$$ 
+makes it fit exactly the linear form $$g(z') = \phi_0 + \sum_i \phi_i z'_i$$
 
 ---
 
 # Desiderata for Additive Feature Attribution Methods
 
-Three desirable properties proposed for an AFAM:
+\begin{center}
+\textbf{Three desirable properties for an AFAM:}
+\end{center}
 
-\begin{block}{Local Accuracy}
-$g(x') = f(x)$. DeepLIFT meets this; LIME does not necessarily.
-\end{block}
+**Local Accuracy:** the attributions must fully account for the prediction —
+summing all $\phi_i$ plus the base value $\phi_0$ must recover $f(x)$ exactly.
+No part of the prediction should be left unexplained.
 
-\begin{block}{Consistency}
-For input $x$, let $x \setminus i$ denote "removing feature $i$ from $x'$". If including feature $i$ in the input always makes a bigger difference in model $f$ than in model $f'$, then the AFAM should give higher importance $\phi_i$ for model $f$ than for $f'$.
-\end{block}
+**Consistency:** if feature $i$ always contributes more in model $f$ than in model $f'$
+— regardless of what other features are present — then $\phi_i(f) \geq \phi_i(f')$.
+Intuitively: if a feature becomes more important, its attribution should not decrease.
+LIME can violate this depending on the sampling.
 
-\begin{alertblock}{Missingness}
-Described as "really just a minor book-keeping property" — we'll ignore it.
-\end{alertblock}
+**Missingness:** if a feature was not present in the original input ($x'_i = 0$),
+its attribution must be zero — you cannot credit or blame something that never existed.
+
+## Key result: 
+These three properties together determine a *unique* solution — **SHAP values**.
 
 ---
 
