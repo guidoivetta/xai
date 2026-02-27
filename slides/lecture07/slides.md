@@ -941,46 +941,86 @@ The Shapley kernel assigns more weight to very small and very large subsets comp
 
 ---
 
-# Model Agnostic: Kernel SHAP (cont.) {.fragile}
+# Kernel SHAP: Linear Approximation
 
-\here
+\small
+Instead of sampling missing features, we can assume $f$ is linear and simply
+replace each missing feature with its expected value $E[x_i]$:
 
-We can consider LIME's feature removing protocol an **approximation of SHAP values** that assumes $f$ is linear, so that $E[f(x) \mid x_S] = f(x^*)$, where:
+$$x_i^* = \begin{cases} x_i & \text{if } i \in S \\ E[x_i] & \text{otherwise} \end{cases}$$
 
-$$x_i^* = \begin{cases} x_i & \text{if } i \in S \\ E[x_i] & \text{otherwise} \end{cases} \tag{9}$$
+**Example:** $x = [\text{age}=30, \text{income}=50k, \text{debt}=10k]$, $S = \{\text{age, income}\}$
 
-- Since we can solve for $g$ in (8) as a **weighted linear regression problem**, we have a regression-based, model-agnostic estimation of SHAP values!
-- This is **more efficient** than previously, since we jointly solve for SHAP values
+Instead of sampling `debt`, we substitute $E[\text{debt}] = 15k$ directly:
+$$E[f(x) \mid x_S] \approx f([30, 50k, 15k]) = 0.75$$
+
+Since $g$ is linear and $L$ is a squared loss, all $\phi_i$ can be solved **jointly**
+via weighted linear regression — more efficient than estimating each separately.
+
+\begin{center}
+\large
+\textbf{Kernel SHAP = LIME's regression framework + Shapley kernel + mean imputation}
+\end{center}
 
 ---
 
-# Model-Specific Approximations: Linear SHAP
+# Model-Specific Approximations: Linear SHAP 1/2
 
-We can do better by looking for **model-specific approximations**.
 
-If the model is **affine** and we assume **feature independence**, feature $i$'s importance for $x$ is its difference from the mean multiplied by its weight:
+For **linear (affine) models**, SHAP values can be computed analytically —
+no sampling or regression needed.
 
-If $f(x) = \sum_{j=1}^{M} w_j x_j + b$, then:
+$$\text{\textbf{If}} \quad f(x) = \sum_{j=1}^{M} w_j x_j + b \qquad \text{\textbf{Then}} \qquad \phi_0(f, x) = b \qquad \phi_i(f, x) = w_i(x_i - E[x_i])$$
 
-$$\phi_0(f, x) = b$$
 
-$$\phi_i(f, x) = w_i (x_i - E[x_i])$$
+**Intuition:** feature $i$'s contribution is how far its value deviates from
+the average, scaled by how much the model cares about it ($w_i$).
+
+- If $x_i = E[x_i]$ → feature $i$ contributes nothing: $\phi_i = 0$
+- If $x_i > E[x_i]$ and $w_i > 0$ → positive contribution
+- If $x_i < E[x_i]$ and $w_i > 0$ → negative contribution
+
+---
+
+# Model-Specific Approximations: Linear SHAP 2/2 (Example)
+
+$f(x) = 2 \cdot \text{age} + 3 \cdot \text{income} + 5$,
+
+with:
+
+- $E[\text{age}] = 40$,
+- $E[\text{income}] = 50k$, and
+- $x = [\text{age}=30, \text{income}=60k]$:
+
+$$\phi_0 = 5, \quad \phi_{\text{age}} = 2 \cdot (30 - 40) = -20, \quad \phi_{\text{income}} = 3 \cdot (60k - 50k) = 30k$$
+
+## Local accuracy check:
+$\phi_0 + \phi_{\text{age}} + \phi_{\text{income}} = 5 - 20 + 30 = 15 = f(x)$
 
 ---
 
 # Model-Specific Approximations: Deep SHAP
 
-DeepLIFT approximates SHAP values assuming **feature independence** and the deep model is **linear**, since it:
+DeepLIFT approximates SHAP values under two assumptions:
+**feature independence** and **model linearity** (via linearization of non-linear components).
 
-1. **Linearizes** the non-linear components of a network ("heuristically chosen")
-2. **Replaces values** with a reference value, which we can consider $E[x]$ (like LIME)
+Specifically, DeepLIFT:
 
-- Currently satisfies **local accuracy** (and missingness), but **not consistency**
-- We can choose **new linearizations** which satisfy consistency
+1. **Linearizes** non-linear components of the network — but the linearization rules
+   were chosen heuristically, without theoretical justification
+2. **Replaces missing features** with a reference value, which we interpret as $E[x]$
 
-\begin{exampleblock}{}
-$\Rightarrow$ \textbf{Deep SHAP!}
-\end{exampleblock}
+This means DeepLIFT satisfies **local accuracy** and **missingness**,
+but **not consistency** — its heuristic linearizations can violate it.
+
+**Deep SHAP** fixes this by choosing linearizations that are consistent with
+Shapley values, turning DeepLIFT into a theoretically grounded approximation of SHAP.
+
+\begin{center}
+\large
+\textbf{Deep SHAP = DeepLIFT + Shapley-consistent linearizations}
+\end{center}
+
 
 ---
 
