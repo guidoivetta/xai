@@ -488,9 +488,9 @@ it neither over-trusts nor over-distrusts predictions.}
 
 Previous experiments were simulated — now we test with **real users** on Amazon Mechanical Turk.
 
-- **Dataset:** 20 Newsgroups (Christianity vs. Atheism) — known to contain spurious features 
+- **Dataset:** 20 Newsgroups (Christianity vs. Atheism) — known to contain spurious features
   (headers, author names) that do not generalize
-- To measure real-world generalization, a **new religion dataset** is created: 
+- To measure real-world generalization, a **new religion dataset** is created:
   - 819 web pages per class scraped from Atheism and Christianity websites
 - Model: SVM with RBF kernel, hyperparameters tuned via cross-validation
 
@@ -523,7 +523,7 @@ Previous experiments were simulated — now we test with **real users** on Amazo
 
 # Evaluating with Human Subjects - Can non-experts improve a classifier?
 
-Each round: user sees $B=10$ instances with $K=10$ words per explanation 
+Each round: user sees $B=10$ instances with $K=10$ words per explanation
 and marks words to remove. Model is retrained without those words.
 
 :::: {.columns}
@@ -531,7 +531,7 @@ and marks words to remove. Model is retrained without those words.
 ::: {.column width="50%"}
 
 - Round 0: 10 subjects → 10 classifiers
-- Round 1: 5 new users per classifier → 50 classifiers  
+- Round 1: 5 new users per classifier → 50 classifiers
 - Round 2: 5 more users → 250 classifiers
 - Real-world accuracy measured at each round on the religion dataset
 
@@ -553,7 +553,7 @@ Non-experts using LIME explanations can meaningfully improve a classifier withou
 
 # Evaluating with Human Subjects - Do explanations lead to insights?
 
-**Setup:** a deliberately bad classifier is trained to predict "wolf" when there 
+**Setup:** a deliberately bad classifier is trained to predict "wolf" when there
 is snow in the background, and "husky" otherwise — ignoring the actual animal.
 
 :::: columns
@@ -658,8 +658,8 @@ where $g$ is a linear explanation model over the interpretable representation $z
 - LIME fits $g(z') \approx f(x)$ and $g(y') \approx f(y)$ locally
 - The weights $\phi_i$ indicate how important each superpixel was for $f(x)$
 
-## The key insight: 
-many existing methods already fit this form — 
+## The key insight:
+many existing methods already fit this form —
 often without realizing they share the same underlying structure.
 
 
@@ -667,13 +667,13 @@ often without realizing they share the same underlying structure.
 
 # DeepLIFT as an Additive Feature Attribution Method
 
-Instead of perturbing features randomly, DeepLIFT compares the current prediction 
+Instead of perturbing features randomly, DeepLIFT compares the current prediction
 against a **reference input** $r$ (e.g., a blank or average image).
 
 - Features of $x$ are its **pixels**
 - Removing a feature = replacing pixel $x_i$ with its value in $r$
 - $\phi_0 = f(r)$ — base prediction on the reference input
-- Each $\phi_i = C_{\Delta x_i \Delta o}$ measures how much pixel $i$ contributed 
+- Each $\phi_i = C_{\Delta x_i \Delta o}$ measures how much pixel $i$ contributed
   *relative to its reference value*
 
 DeepLIFT satisfies the **summation-to-delta** property exactly:
@@ -681,20 +681,20 @@ DeepLIFT satisfies the **summation-to-delta** property exactly:
 \textbf{
 $$\sum_{i=1}^{n} C_{\Delta x_i \Delta o} = f(x) - f(r)$$}
 
-**Human mode:** The attributions sum exactly to the difference between the current prediction and the reference prediction — 
+**Human mode:** The attributions sum exactly to the difference between the current prediction and the reference prediction —
 every unit of "change" (pixel) in the output is fully accounted for by the input features.
 
 ---
 
 # LIME vs DeepLIFT
 
-- Unlike LIME, DeepLIFT is not model-agnostic — it exploits the internal 
-structure of neural networks to back-propagate attribution values in a single pass, 
+- Unlike LIME, DeepLIFT is not model-agnostic — it exploits the internal
+structure of neural networks to back-propagate attribution values in a single pass,
 without any sampling.
 
-## DeepLIFT is an AFAM: 
+## DeepLIFT is an AFAM:
 
-Setting $$\phi_0 = f(r)$$ and $$\phi_i = C_{\Delta x_i \Delta o}$$ 
+Setting $$\phi_0 = f(r)$$ and $$\phi_i = C_{\Delta x_i \Delta o}$$
 makes it fit exactly the linear form $$g(z') = \phi_0 + \sum_i \phi_i z'_i$$
 
 ---
@@ -717,44 +717,95 @@ LIME can violate this depending on the sampling.
 **Missingness:** if a feature was not present in the original input ($x'_i = 0$),
 its attribution must be zero — you cannot credit or blame something that never existed.
 
-## Key result: 
+## Key result:
 These three properties together determine a *unique* solution — **SHAP values**.
 
 ---
 
-# Cooperative Games
+# The Shapley Value Problem 1/3
 
-- Suppose we have a game with $d$ players, where each can choose whether or not to cooperate
-- Assume a **reward function** $g: \mathcal{P}([d]) \to \mathbb{R}$. If $S \subseteq [d]$ is the set of cooperating players, the group receives reward $g(S)$
-- We want to determine how much each player **"contributes"** to the reward
-  - The marginal contribution of player $i$ may depend on which other players have also chosen to cooperate
-  - $g$ does not need to be monotonic!
+Three workers collaborate to earn a reward: **carpenter (C), painter (P), salesperson (S)**.
+
+| **Coalition **| **Reward** |
+|---|---|
+| {C} | $10 |
+| {P} | $15 |
+| {S} | $5 |
+| {C, P} | $40 |
+| {C, S} | $30 |
+| {P, S} | $35 |
+| {C, P, S} | $100 |
+
+**Problem:** how much did each worker actually contribute to the $100 reward?
 
 ---
 
-# Shapley Values
+# The Shapley Value Problem 2/3
+\small
+| **Coalition **| **Reward** |
+|---|---|
+| {C} | $10 |
+| {P} | $15 |
+| {S} | $5 |
+| {C, P} | $40 |
+| {C, S} | $30 |
+| {P, S} | $35 |
+| {C, P, S} | $100 |
 
-The **Banzhaf power index** averages player $i$'s marginal contribution over all subsets:
+**Problem:** how much did each worker actually contribute to the $100 reward?
 
-$$\frac{1}{2^{d-1}} \sum_{S \subseteq [d] \setminus \{i\}} \bigl(g(S \cup \{i\}) - g(S)\bigr) \tag{1}$$
+- The contribution of each worker depends on who else is cooperating —
+the salesperson adds $60 when both C and P are present, but only $20 when only C is present.
 
-The **Shapley value** reweights marginal contributions based on the size of subset $S$:
+## Shapley answer
 
-$$\frac{1}{d} \sum_{j=0}^{d-1} \binom{d-1}{j}^{-1} \sum_{S \subseteq [d] \setminus \{i\},\, |S|=j} \bigl(g(S \cup \{i\}) - g(S)\bigr) \tag{2}$$
+Average each player's marginal contribution over all possible coalitions.
 
-Or equivalently: $\sum_{\sigma \in S_d} g(\sigma(\sigma(i))) - g(\sigma(\sigma(i)-1))$
+---
+
+# The Shapley Value Problem 3/3
+
+The value of player $i$ is:
+
+$$\phi_i = \sum_{S \subseteq [d] \setminus \{i\}} \frac{|S|!(d - |S| - 1)!}{d!} \left[ g(S \cup \{i\}) - g(S) \right]$$
+
+For the **salesperson (S)** whit $d = 3$:
+
+| Coalition $S$ | $g(S \cup \{S\}) - g(S)$ | Weight $\frac{\|S\|!(d-\|S\|-1)!}{d!}$ | Contribution |
+|---|---|---|---|
+| $\emptyset$ | $5 - 0 = 5$ | $\frac{0! \cdot 2!}{3!} = \frac{2}{6}$ | $1.67$ |
+| {C} | $30 - 10 = 20$ | $\frac{1! \cdot 1!}{3!} = \frac{1}{6}$ | $3.33$ |
+| {P} | $35 - 15 = 20$ | $\frac{1! \cdot 1!}{3!} = \frac{1}{6}$ | $3.33$ |
+| {C, P} | $100 - 40 = 60$ | $\frac{2! \cdot 0!}{3!} = \frac{2}{6}$ | $20$ |
+
+$$\phi_S = 1.67 + 3.33 + 3.33 + 20 = \mathbf{28.33}$$
+
+The weight favors large and small coalitions because there are few ways to reach them — there is only one way for $S$ to enter $\emptyset$ or $\{C,P\}$, but also only one way to enter $\{C\}$ or $\{P\}$.
 
 ---
 
 # From Games to Local Interpretability
 
-- Suppose for some input $x$, a model produces prediction $f(x)$, and we want to measure how "important" each feature was
-- We can treat the **features as players** in a cooperative game, and ask how much each contributed to the output
-- However, to prompt the model, we need to provide all input features $S$. How do we measure what the model would have predicted **if it only had access to a subset of features**?
+**Idea:** treat features as players and the model prediction $f(x)$ as the reward.
+Shapley values would then tell us how much each feature contributed to the prediction.
 
-\begin{alertblock}{}
-In other words, the function $g: \mathcal{P}([d]) \to \mathbb{R}$ is not well-defined.
-\end{alertblock}
+**Problem:** to compute marginal contributions, we need to evaluate the model
+on every possible subset of features $S$ — but the model was trained on all features at once.
+
+> *What would the model have predicted if it only had access to features $S$?*
+
+For example, if $x = [\text{age}=30, \text{income}=50k, \text{debt}=10k]$ and we want
+to evaluate using only $\{\text{age}, \text{income}\}$ — what value do we give to $\text{debt}$?
+
+\textcolor{red}{
+$$g(S) = f(x_S) \quad \text{is not well-defined}$$}
+
+The model cannot handle arbitrary patterns of missing inputs.
+
+\begin{center}
+\large
+\textbf{This is the key challenge SHAP must solve.}
+\end{center}
 
 ---
 
@@ -765,15 +816,24 @@ In other words, the function $g: \mathcal{P}([d]) \to \mathbb{R}$ is not well-de
 - However, they do **not** provide interpretability for the specific model $f$ we were working with
   - What $f$ might do without any information about the features in $[d] \setminus S$ might be very different than optimal prediction
 
+## Human mode
+
+Shapley regression values measure which features are important for predicting the target well, not which features your specific model relies on. They are useful for global feature selection, but not for explaining why $f$ made a particular prediction.
+
 ---
 
 # Feature Ablation
 
-We want to capture what our **particular** model $f$ would do if it had no access to features $[d] \setminus S$.
+We want to capture what our **particular** model $f$ would do if it had no access
+to features $[d] \setminus S$.
 
 This notion is captured by the **expectation of the model output given features $S$**:
 
 $$E[f(x) \mid x_S] \tag{3}$$
+
+We do not remove the missing features — instead we **neutralize** them by averaging
+$f$'s predictions over different possible values, sampled from their real distribution.
+The model still receives all its inputs, but the missing features no longer carry information.
 
 We can approximate this by sampling over the conditional distribution:
 
@@ -781,29 +841,91 @@ $$\frac{1}{N} \sum_{i=1}^{N} f(x^{(i)}), \quad x^{(i)} \sim x \mid x_S \tag{4}$$
 
 ---
 
+# Feature Ablation Example 1/2
+
+Suppose $x = [\text{age}=30, \text{income}=50k, \text{debt}=10k]$ and $S = \{\text{age, income}\}$.
+We want to estimate what $f$ predicts when it has no access to `debt`.
+
+Instead of removing `debt`, we sample $N$ values from its conditional distribution
+— i.e., examples in the dataset with age=30 and income=50k — and evaluate $f$ for each:
+
+- $f([30, 50k, 10k])$
+- $f([30, 50k, 5k])$
+- $f([30, 50k, 20k])$
+- $\ldots$
+
+Then we average the results. This gives us what $f$ predicts on average when it only
+knows age and income, without privileging any particular value of `debt`.
+
+---
+
+# Feature Ablation Example 2/2
+\small
+With $N = 3$ samples and $S = \{\text{age, income}\}$:
+
+\textbf{$$E[f(x) \mid x_S] \approx \frac{1}{3} \left[ f([30, 50k, 10k]) + f([30, 50k, 5k]) + f([30, 50k, 20k]) \right]$$}
+\small
+Suppose the model predicts:
+
+- $f([30, 50k, 10k]) = 0.8$
+- $f([30, 50k, 5k]) = 0.7$
+- $f([30, 50k, 20k]) = 0.6$
+
+Then:
+
+\textbf{$$E[f(x) \mid x_S] \approx \frac{0.8 + 0.7 + 0.6}{3} = \frac{2.1}{3} = 0.7$$}
+\small
+This is our estimate of what $f$ predicts when it only has access to age=30 and income=50k,
+neutralizing the effect of `debt`.
+
+---
+
 # Model Agnostic: Feature Independence
 
 - Computing SHAP values requires calculating $2^d$ differences $g(S \cup \{i\}) - g(S)$
+    - With $d = 20$ features, that amounts to over one million model evaluations — infeasible in practice.
 - One way to improve: assume **features are independent**, $\forall S$:
 
 $$E[f(x) \mid x_S] = E_{x_S | x_S}[f(x)] \approx E_{x_S}[f(x)] \tag{5}$$
 
 - We can then estimate SHAP values via sampling approximations (**the Shapley sampling values method**) which require fewer than $2^d$ difference calculations
+    - Following the previous example, we simply sample values of `debt` from the entire dataset, regardless of age or income.
 - But still requires lots of computations
 
 ---
 
-# Model Agnostic: Kernel SHAP via LIME
+# Kernel SHAP: LIME with the Right Parameters 1/2
 
-The kernel weights ($\pi_x$), loss function ($L$), and simplicity function ($\Omega$) in LIME aren't consistent with desired properties (local accuracy \& consistency). We adjust these to form the **Shapley kernel**:
+- LIME's parameters **($\pi_x$, $L$, $\Omega$)** were chosen heuristically — they work well
+in practice but **do not guarantee** local accuracy or consistency.
+- **Key insight:** there exists a unique choice of these parameters such that
+the solution to LIME's regression is exactly the SHAP values:
 
-$$\Omega(g) = 0 \tag{6}$$
+$$\Omega(g) = 0 \qquad \pi_x(z') = \frac{(M-1)}{\binom{M}{|z'|} |z'| (M - |z'|)} \qquad L(f, g, \pi_x) = \sum_{z' \in \mathcal{Z}} \left[ f_h(z') - g(z') \right]^2 \pi_x(z')$$
 
-$$\pi_x(z') = \frac{(M-1)}{\binom{M}{|z'|} |z'| (M - |z'|)} \tag{7}$$
+- **$\Omega(g) = 0$** — no regularization: SHAP values do not penalize complexity
+- **$\pi_x(z')$** — upweights very small and very large coalitions, downweights intermediate ones
+- **$L$** — standard weighted squared loss, same as LIME
 
-$$L(f, g, \pi_x) = \sum_{z' \in \mathcal{Z}} \left[ f_h(z') - g(z') \right]^2 \pi_x(z') \tag{8}$$
+---
 
-where $|z'|$ is the number of non-zero elements in $z'$.
+# Kernel SHAP: LIME with the Right Parameters 1/2
+
+$$\Omega(g) = 0 \qquad \pi_x(z') = \frac{(M-1)}{\binom{M}{|z'|} |z'| (M - |z'|)} \qquad L(f, g, \pi_x) = \sum_{z' \in \mathcal{Z}} \left[ f_h(z') - g(z') \right]^2 \pi_x(z')$$
+
+\begin{center}
+\large
+\textbf{Why this kernel?}
+\end{center}
+
+Coalitions of 1 or $M-1$ features are the most informative —
+we know exactly which feature is being added or removed. Intermediate coalitions
+are more ambiguous because many features change at once.
+
+\begin{center}
+\large
+\textbf{Kernel SHAP = LIME + Shapley kernel \\ Satisfies local accuracy and consistency by construction.}
+\end{center}
 
 ---
 
@@ -820,6 +942,8 @@ The Shapley kernel assigns more weight to very small and very large subsets comp
 ---
 
 # Model Agnostic: Kernel SHAP (cont.) {.fragile}
+
+\here
 
 We can consider LIME's feature removing protocol an **approximation of SHAP values** that assumes $f$ is linear, so that $E[f(x) \mid x_S] = f(x^*)$, where:
 
