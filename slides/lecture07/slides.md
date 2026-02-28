@@ -1026,46 +1026,65 @@ Shapley values, turning DeepLIFT into a theoretically grounded approximation of 
 
 # User Experiments
 
-- The authors run an experiment in which they tell a story about people playing a **cooperative game**, and find that **human assignments of credit align better with SHAP's assignment** than with LIME's or DeepLIFT's
+Participants were told a story about a cooperative game and asked to assign
+credit among players. **Human assignments aligned more closely with SHAP values
+than with LIME or DeepLIFT.**
 
-\vspace{1em}
 
-\begin{alertblock}{Caveat}
-This is a very different setting from attribution in neural networks, seemingly selected to make SHAP look good, so this experiment is unimpressive evidence that SHAP aligns with human intuition for NN credit assignment.
-\end{alertblock}
+## Caveat {.alert}
+This experiment uses a cooperative game setting — very different
+from real neural network attribution. It seems selected to favor SHAP,
+since SHAP values are derived directly from cooperative game theory.
+This is weak evidence that SHAP aligns with human intuition for NN predictions.
 
 ---
 
 # Class Difference Experiments
 
-\begin{columns}
-\begin{column}{0.5\textwidth}
+:::: {.columns}
+::: {.column width="48%"}
 
 - Using an image of an "8" and an MNIST classifier, the authors identified which pixels (according to SHAP, LIME, and DeepLIFT) are most important for the model's log-odds (i.e. logit difference) of 8 versus 3
 - **Removing the pixels identified by SHAP** produced larger changes in log-odds from 8 to 3 than the other methods
 
-\end{column}
-\begin{column}{0.45\textwidth}
+:::
+::: {.column width="48%"}
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/class_diff.png}
+\includegraphics[width=.8\columnwidth]{imgs/class_diff.png}
 \end{center}
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
-# Extensions: Shapley Values for the Whole Model
+# Extensions: Shapley Values for the Whole Model 1/2
 
-Rather than attributing Shapley values for a particular input $x$, we can instead attribute Shapley values for the **model's prediction over the entire input distribution**.
+So far SHAP values explain a **single prediction** $f(x)$.
+Can we explain the **model's behavior globally**?
 
-- Naively: $g(S) = E[E[f(x) \mid x_S]]$, which reduces to $E[f(x)]$ by Adam's law
-- Instead, to capture the amount of model behavior we can explain with only a subset of features, use a **symmetric loss function**:
+**Naive approach:** average SHAP values over all inputs:
+$$g(S) = E[E[f(x) \mid x_S]] = E[f(x)]$$
+This collapses to a constant by the law of total expectation — it tells us nothing about feature importance.
 
-$$g(S) = \text{Var}(E[f(x) \mid x_S])$$
+---
 
-Methods that do this include **SAGE** (Covert et al., 2020) and **Shapley Effects** (Owen, 2014).
+# Extensions: Shapley Values for the Whole Model 1/2
+
+**Better approach:** measure how much of the model's variance features in $S$ can explain:
+
+\textbf{$$g(S) = \text{Var}(E[f(x) \mid x_S])$$}
+
+- If $S$ contains **important features** → knowing $x_S$ makes predictions vary a lot → high variance
+- If $S$ contains **irrelevant features** → knowing $x_S$ barely changes predictions → variance $\approx 0$
+
+We can then apply Shapley values to $g(S)$ to fairly attribute
+**how much each feature contributes to the model's overall variance**.
+
+## Implementations
+
+**SAGE** (Covert et al., 2020) and **Shapley Effects** (Owen, 2014).
 
 ---
 
