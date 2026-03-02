@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{wtf} XAI: SmoothGrad \\& Integrated Gradients"
+title: "\\emoji{wtf} XAI: Post-hoc - SmoothGrad \\& Integrated Gradients"
 bibliography: references.bib
 
 ---
@@ -22,25 +22,27 @@ bibliography: references.bib
 
 # Motivation
 
-\begin{columns}
-\begin{column}{0.55\textwidth}
+:::: columns
+::: {.column width="48%"}
 
-- We want **post-hoc explanations of image classifiers**
+We want **post-hoc explanations of image classifiers**
 
-- *Solution*: **Sensitivity maps** (a.k.a. saliency maps, pixel attribution maps)
-  - Visual interpretation of gradient of class activation function w.r.t input image
+## *Solution*:
+
+- **Sensitivity maps** (a.k.a. saliency maps, pixel attribution maps)
+- Visual interpretation of gradient of class activation function w.r.t input image
   - Structured as grayscale image w/ dimension same as input image
-    - Brightness of pixel $\propto$ importance to classification decision
+  - Brightness of pixel $\propto$ importance to classification decision
 
-\end{column}
-\begin{column}{0.43\textwidth}
+:::
+::: {.column width="50%"}
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/motivation_gazelle.png}
+\includegraphics[width=0.45\columnwidth]{imgs/motivation_gazelle.png}
 \end{center}
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
@@ -53,7 +55,8 @@ bibliography: references.bib
 
 $$M_c(x) = \partial S_c(x)/\partial x$$
 
-- ***Intuition***: $M_c$ represents \underline{how much difference} a \underline{tiny change} in each pixel of $x$ would make to the classification score for class $c$
+- ***Intuition***: $M_c$ represents \underline{how much difference} a \underline{tiny change} in each pixel of $x$ would make to the classification score for class $c$.
+- In practice, this is done with **backpropagation** — same as during training, but instead of updating weights, we stop at the input pixels. The result is a gradient map with one value per pixel.
 
 ---
 
@@ -71,72 +74,81 @@ $$M_c(x) = \partial S_c(x)/\partial x$$
 
 # Related Work: Backpropagation
 
-\begin{columns}
-\begin{column}{0.42\textwidth}
+Smothgrad lives in the family of backpropagation-based methods for explaining neural networks.
+
+\small
+All methods propagate a signal backwards from the output to the inputs to assign importance scores to pixels — just like training, but stopping at the input. They differ in **how** they modify that signal along the way:
+
+:::: columns
+::: {.column width="30%"}
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/backprop_network.png}
+\includegraphics[width=0.60\columnwidth]{imgs/backprop_network.png}
 \end{center}
 
-\end{column}
-\begin{column}{0.56\textwidth}
+:::
+::: {.column width="70%"}
+\small
+- **Vanilla gradients** — raw gradient $\partial S_c / \partial x$, no modifications. Baseline for SmoothGrad.
+- **Integrated Gradients** — averages gradients along a path from a reference image to $x$.
+- **DeepLIFT** — propagates activation *differences* relative to a reference, instead of raw gradients.
+- **LRP** — redistributes output relevance backwards layer by layer using conservation rules.
+- **Guided Backprop / Deconvolution** — discards negative gradients through ReLUs to highlight only positive contributions.
 
-- **Key idea:** backpropagate importance through the network
-  - Vanilla gradients
-  - Layerwise relevance propagation (Bach et al.)
-  - Integrated gradients (Sundararajan et al.)
-  - DeepLIFT (Shrikumar et al.)
-  - Deconvolution (Zeiler \& Fergus, 2014)
-  - Guided Backpropagation (Springenberg et al, 2014)
+:::
+::::
 
-\end{column}
-\end{columns}
+\begin{center}
+\textbf{SmoothGrad is complementary}, not a replacement — it can be applied on top of any of these to reduce visual noise.
+\end{center}
+
 
 ---
 
 # Limitations of Sensitivity Maps
 
-- **Visually noisy**
-  - Often highlight pixels that–to a human eye–seem randomly selected
-  - *a priori*, we cannot know if this noise reflects an underlying truth about how networks perform classification, or is due to more superficial factors
-    - The SmoothGrad paper addresses this — we'll get to this soon!
+\begin{center}
+\large \textbf{Visually noisy}
+\end{center}
+
+- Often highlight pixels that–to a human eye–seem randomly selected
+- *a priori*, we cannot know if this noise reflects an underlying truth about how networks perform classification, or is due to more superficial factors
+- This is why saliency maps are typically visualized as a heatmap-like plot.
 
 \begin{center}
-\includegraphics[width=0.50\columnwidth]{imgs/motivation_gazelle.png}
+\includegraphics[width=0.50\columnwidth]{imgs/motivation_gazelle2.png}
 \end{center}
 
 ---
 
 # Theory Behind SmoothGrad: Noisy Gradients
 
-- **Key idea behind SmoothGrad:** \underline{noisy maps are due to noisy gradients}
-
-\vspace{0.5em}
-
-- Derivative of $S_c$ may fluctuate sharply at small scales
-  - Apparent noise one sees in a sensitivity map may be due to essentially meaningless local variations in partial derivatives
-
----
-
-# Noisy Gradients (cont'd)
-
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/noisy_gradients_plot.png}
+\large \textbf{Key idea:} Noisy maps are due to noisy gradients
 \end{center}
 
-- Given these rapid fluctuations, gradient of $S_c$ at any given point will be less meaningful than a local average of gradient values.
+- The derivative of $S_c$ may fluctuate sharply at small scales — networks use **ReLUs, so $S_c$ is not even continuously differentiable**.
+- *Two images that look identical to a human can have very different gradients — so the raw gradient at a single point is not a reliable importance signal.*
+- The noise you see in the map is not necessarily telling you something meaningful
+it may just be an accident of the mathematical landscape of $S_c$
+
+
+\begin{center}
+\includegraphics[width=0.62\columnwidth]{imgs/noisy_gradients_plot.png}
+\end{center}
 
 ---
 
 # SmoothGrad: Intuition
 
-- Recall that **noisy maps are due to noisy gradients**
+\begin{center}
+\large \textbf{Simple solution}
+\end{center}
 
-- **Simple solution**:
-  - take an image of interest
-  - sample similar images by adding Gaussian noise to the image
-  - take the average of the resulting sensitivity maps for each sampled image
-    - This \underline{smoothes} the gradient
+- take an image of interest
+- sample similar images by adding Gaussian noise to the image
+- take the average of the resulting sensitivity maps for each sampled image
+- This \underline{smoothes} the gradient
 
 ---
 
@@ -145,11 +157,14 @@ $$M_c(x) = \partial S_c(x)/\partial x$$
 1. Take random samples in a neighborhood of an input $x$ with added noise
 2. Average the resulting sensitivity maps
 
+\textbf{
 $$\hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$$
+}
 
 \vspace{1em}
 
-$n$ is the number of samples, and $\mathcal{N}(0, \sigma^2)$ represents Gaussian noise with standard deviation $\sigma$.
+- $n$ is the number of samples,
+- $\mathcal{N}(0, \sigma^2)$ represents Gaussian noise with standard deviation $\sigma$.
 
 ---
 
@@ -159,38 +174,40 @@ $n$ is the number of samples, and $\mathcal{N}(0, \sigma^2)$ represents Gaussian
   - Inception v3 model by Google that was trained on the ILSVRC-2013 dataset
   - Convolutional MNIST model based on the TensorFlow tutorial
 
----
-
-# Choosing Hyperparameters ($\sigma$: std. dev.)
-
-\begin{columns}
-\begin{column}{0.40\textwidth}
-
-$$\hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$$
-
-\vspace{1em}
-
-$\sigma$: the standard deviation of the Gaussian noise
-
-\end{column}
-\begin{column}{0.58\textwidth}
-
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/hyperparams_sigma.png}
+\includegraphics[width=0.55\columnwidth]{imgs/bombardino.png}
 \end{center}
 
-\end{column}
-\end{columns}
+
+---
+
+# Choosing Hyperparameters (${\sigma}$: std. dev.)
+
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/hyperparams_sigma.png}
+\end{center}
+
+:::: columns
+::: {.column width="50%"}
+\textbf{$\quad \hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$}
+:::
+::: {.column width="50%"}
+\textbf{${\sigma}$}: the standard deviation of the Gaussian noise
+:::
+::::
 
 ---
 
 # Choosing Hyperparameters ($n$: sample size)
 
+\textbf{
 $$\hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$$
+}
 
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/hyperparams_n.png}
 \end{center}
+
 
 ---
 
@@ -198,6 +215,11 @@ $$\hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$$
 
 - **Absolute Value of Gradients**
   - depends on the characteristics of dataset
+
+  \begin{center}
+\includegraphics[width=0.85\columnwidth]{imgs/abs.png}
+\end{center}
+
 - **Capping outlying values**
   - presence of few pixels that have much higher gradients than the average
   - capping to 99 percentile
@@ -208,10 +230,10 @@ $$\hat{M}_c(x) = \frac{1}{n} \sum_{1}^{n} M_c(x + \mathcal{N}(0, \sigma^2))$$
 
 ---
 
-# Qualitative Results: Visual Coherence
+# Qualitative Results: Visual Coherence 1/2
 
-\begin{definition}{}
-(Visual Coherence): Highlights are only on the object of interest, not the background
+\begin{definition}{\textbf{Visual Coherence}}
+Highlights are only on the object of interest, not the background
 \end{definition}
 
 Comparison with three gradient-based methods
@@ -222,21 +244,22 @@ Comparison with three gradient-based methods
 
 ---
 
-# Qualitative Results: Visual Coherence — Figure 5
+# Qualitative Results: Visual Coherence 2/2
 
 \begin{center}
-\includegraphics[width=0.88\columnwidth]{imgs/visual_coherence_fig5.png}
+\includegraphics[width=.88\columnwidth]{imgs/visual_coherence_fig5.png}
 \end{center}
 
 ---
 
 # Qualitative Results: Discriminativity
 
-\begin{columns}
-\begin{column}{0.40\textwidth}
+:::: columns
 
-\begin{definition}{}
-(Discriminativity): the ability to explain / distinguish separate objects without confusion
+::: {.column width="40%"}
+
+\begin{definition}{\textbf{Discriminativity}}
+the ability to explain / distinguish separate objects without confusion
 \end{definition}
 
 \vspace{0.5em}
@@ -247,15 +270,15 @@ Which properties affect the discriminativity of a given methods?
 
 - Why did GBP show the worst performance?
 
-\end{column}
-\begin{column}{0.58\textwidth}
+:::
 
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/discriminativity_fig6.png}
-\end{center}
+::: {.column width="58%"}
 
-\end{column}
-\end{columns}
+![](imgs/discriminativity_fig6.png)
+
+:::
+
+::::
 
 ---
 
@@ -342,14 +365,14 @@ Formally, suppose we have a function $F : \mathbb{R}^n \to [0,1]$ that represent
 \begin{columns}
 \begin{column}{0.48\textwidth}
 
-## Sensitivity (a)
+\textbf{Sensitivity (a)}
 
 **Definition:** When 2 inputs that differ in only one feature result in different predictions, the **differing feature** should be given a **non-zero attribution**.
 
 \end{column}
 \begin{column}{0.48\textwidth}
 
-## Invariance
+\textbf{Invariance}
 
 **Definition:** The attributions are always identical for two functionally equivalent networks.
 
@@ -362,7 +385,7 @@ $$\frac{\partial f}{\partial g} = \frac{\partial f}{\partial h} \cdot \frac{\par
 
 # Other Attribution Methods
 
-## Gradients (of the output with respect to the input)
+\textbf{Gradients (of the output with respect to the input)}
 
 - Breaks sensitivity - prediction function can flatten at the input, giving 0 gradient despite function value at the input being different from the baseline
 - Example:
@@ -375,7 +398,7 @@ $$\frac{\partial f}{\partial g} = \frac{\partial f}{\partial h} \cdot \frac{\par
 
 # Other Attribution Methods: Methods that Break Sensitivity
 
-## Methods that Break Sensitivity
+\textbf{Methods that Break Sensitivity}
 
 - DeConvNets, Guided back-propagation
 
@@ -390,7 +413,7 @@ $$\frac{\partial f}{\partial g} = \frac{\partial f}{\partial h} \cdot \frac{\par
 
 # Other Attribution Methods: Methods that Break Implementation Invariance
 
-## Methods that Break Implementation Invariance
+\textbf{Methods that Break Implementation Invariance}
 
 - DeepLift and Layer-wise relevance propagation (LRP)
 
@@ -416,7 +439,7 @@ $$\frac{\partial f}{\partial g} = \frac{\partial f}{\partial h} \cdot \frac{\par
 \begin{columns}
 \begin{column}{0.50\textwidth}
 
-## Definition
+\textbf{Definition}
 
 The **path integral** of the gradients along the **straight-line path** from the baseline $x'$ to the input $x$.
 
@@ -427,7 +450,7 @@ $$(x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial F(x' + \alpha \times (x
 \end{column}
 \begin{column}{0.48\textwidth}
 
-## New Axiom
+\textbf{New Axiom}
 
 **Completeness:** The sum of the attributions is equal to the difference of the outputs.
 
@@ -448,7 +471,7 @@ $$\sum_{i=1}^{n} \text{IntegratedGrads}_i(x) = F(x) - F(x')$$
 \begin{columns}
 \begin{column}{0.50\textwidth}
 
-## Path Methods
+\textbf{Path Methods}
 
 \begin{center}
 \includegraphics[width=0.88\columnwidth]{imgs/ig_path_methods.png}
@@ -461,7 +484,7 @@ $$\int_{\alpha=0}^{1} \frac{\partial F(\gamma(\alpha))}{\partial \gamma_i(\alpha
 \end{column}
 \begin{column}{0.48\textwidth}
 
-## Axioms
+\textbf{Axioms}
 
 \small
 - **Sensitivity (b):** If the function does not depend (mathematically) on some input, then the attribution for that input is always zero.
@@ -480,7 +503,7 @@ $$\text{Si} \ F(x, y) = F(y, x)$$
 \begin{columns}
 \begin{column}{0.48\textwidth}
 
-## Selecting a Baseline
+\textbf{Selecting a Baseline}
 
 **Two Components:**
 
@@ -495,7 +518,7 @@ $$\text{Si} \ F(x, y) = F(y, x)$$
 \end{column}
 \begin{column}{0.50\textwidth}
 
-## Computing IGs
+\textbf{Computing IGs}
 
 \small
 $$\text{IntegratedGrads}_i^{\text{approx}}(x) :=$$
@@ -562,13 +585,13 @@ $$(x_i - x'_i) \times \sum_{k=1}^{m} \frac{\partial F\!\left(x' + \frac{k}{m} \t
 
 # Conclusion and Discussion
 
-## Summary
+\textbf{Summary}
 
 - Formalizes two axioms for attribution: **sensitivity, implementation invariance**
 - Propose **integrated gradients** and argue that it is theoretically superior to other gradient-based methods (e.g. DeepLift, LRP, guided backprop, etc.)
 - Perform experiments across several domains to showcase method
 
-## Discussion Questions
+\textbf{Discussion Questions}
 
 - Are you convinced that these axioms are desirable?
 - Do you see any strengths or weaknesses in the idea of producing explanations through an integrated path?

@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{wtf} XAI: LIME & SHAP"
+title: "\\emoji{wtf} XAI: Post-hoc - LIME & SHAP"
 bibliography: references.bib
 
 ---
