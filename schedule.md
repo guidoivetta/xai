@@ -1,4 +1,4 @@
-# Cronograma 2026
+# Schedule 2026
 
 | Semana | Lunes | Jueves |
 |--------|-------|--------|
