@@ -322,19 +322,56 @@ The same smoothing procedure can be used to augment any gradient-based method.
 
 ---
 
-# Motivation and Problem Statement
+# Intuition 1/2
+
+\begin{center}
+\textbf{How much happier would an extra \$1 make you... if you already have a billion dollars?}
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.3\columnwidth]{imgs/mrcrab.png}
+\end{center}
+
+- The answer is "almost nothing" — but that doesn't mean money is unimportant.
+- This is **exactly the problem** with vanilla gradients:
+
+\begin{center}
+If the model is \textbf{already very confident}, the score function is flat at that point, and the gradient is near zero for all pixels — even the obviously important ones.
+\end{center}
+
+- The gradient is a local measure — it tells you how the function is changing right there. But if you've already reached a flat region, that local information is misleading.
+
+---
+
+# Intuition 2/2
+
+**Integrated Gradients** solves this with the same intuition you'd use in optimization to escape flat-regions:
+
+\begin{center}
+\includegraphics[width=0.30\columnwidth]{imgs/yoda.png}
+\end{center}
+
+ This way you capture the global contribution of each feature, not just its local behavior.
+
+---
+
+# Motivation and Problem Statement 1/2
 
 \begin{columns}
-\begin{column}{0.55\textwidth}
+\begin{column}{0.60\textwidth}
 
-- Feature Attribution:
-
-\begin{definition}{}
-Formally, suppose we have a function $F : \mathbb{R}^n \to [0,1]$ that represents a deep network, and an input $x = (x_1, \ldots, x_n) \in \mathbb{R}^n$. An attribution of the prediction at input $x$ relative to a baseline input $x'$ is a vector $A_F(x, x') = (a_1, \ldots, a_n) \in \mathbb{R}^n$ where $a_i$ is the contribution of $x_i$ to the prediction $F(x)$.
+\begin{definition}{\textbf{Feature Attribution}}
+\small
+\begin{itemize}
+\item $F: \mathbb{R}^n \to [0,1]$ — deep network with $n$ input features
+\item $x'$ — baseline input representing "absence of signal"
+\item $A_F(x, x') = (a_1, \ldots, a_n)$ — attribution vector, same size as input
+\item $a_i$ — contribution of feature $x_i$ to the prediction $F(x)$ relative to $x'$
+\end{itemize}
 \end{definition}
 
 \end{column}
-\begin{column}{0.43\textwidth}
+\begin{column}{0.35\textwidth}
 
 \begin{center}
 \includegraphics[width=\columnwidth]{imgs/ig_mnist_attribution.png}
@@ -343,76 +380,96 @@ Formally, suppose we have a function $F : \mathbb{R}^n \to [0,1]$ that represent
 \end{column}
 \end{columns}
 
-- Examples: in a CNN an attribution method could reveal which pixels were responsible for a certain label being picked (we saw this with LIME/SHAP)
-- Problem: attribution technique are hard to evaluate empirically - hard to separate errors from model vs errors from attribution method
-  - Ex. Gradients
-  - Baseline: black image, empty text, etc.
+\small
+- $F$ takes an image $x$ with $n$ pixels and returns a score between 0 and 1
+- An **attribution** is a vector of the same size as $x$
+- Each $a_i$ tells you how much pixel $x_i$ contributed to the final prediction
+- Everything is measured relative to a reference image $x'$ — the **baseline**
+- In other words: you distribute the output score among the input pixels, giving each one its "share of the blame"
+
+------
+
+# Motivation and Problem Statement 2/2
+
+- **Feature attribution** is a vector of the same size as the input — each $a_i$ tells you how much feature $x_i$ contributed to the prediction $F(x)$
+  - Ex. in a CNN, it reveals which pixels were responsible for a certain label being picked
+  - LIME and SHAP are the same idea.
+
+- **Problem:** attribution techniques are hard to evaluate empirically — hard to separate errors from the model vs errors from the attribution method
+  - **Solution: axiomatic approach** — define mathematical properties that every attribution method *should* satisfy
+  - Ex. Vanilla gradients *seem* reasonable but violate one of these axioms (Sensitivity) — provably, without needing experiments
+
+- **Baseline** $x'$: a design choice — a reference input representing "absence of signal"
+  - Attributions are always measured *relative* to it
+  - Ex. black image for vision, zero embedding vector for text
+  - A bad baseline leads to misleading attributions, even if the method is correct
 
 ---
 
 # Summary of Contributions
 
-- Present two axioms: **Sensitivity** and **Implementation Invariance**
-  - **Sensitivity:** For every input and baseline that differ in one feature but have different predictions then the differing feature should be given a non-zero attribution.
-  - **Implementation Invariance:** The attributions are always identical for two functionally equivalent networks.
-- 2 axioms $\to$ **integrated gradients**
-  - Overview: path integral of the gradients along the straight line path from an input x to a baseline input x'
+The paper proposes an **axiomatic approach**: instead of evaluating attribution methods empirically, define mathematical properties they *must* satisfy.
+
+- **Sensitivity:** if a feature clearly changes the prediction, its attribution cannot be zero — otherwise the method is lying. Most methods (including vanilla gradients) violate this.
+
+- **Implementation Invariance:** two networks that compute the same function should give the same attributions — attributions should not depend on irrelevant implementation details. Methods like DeepLIFT and LRP violate this.
+
+These 2 axioms guide the design of **Integrated Gradients**: average the gradients along the entire path from the baseline $x'$ to the input $x$ — satisfies both axioms, no network modification needed.
 
 ---
 
-# Two Axioms (Desiderata)
+# Why Vanilla Gradients Fail: Violating Sensitivity 1/2
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+**Key idea:** use $\partial F / \partial x$ as a proxy for feature importance.
 
-\textbf{Sensitivity (a)}
+**Problem — breaks Sensitivity:** the prediction function can flatten at the input, giving zero gradient even when the feature clearly matters.
 
-**Definition:** When 2 inputs that differ in only one feature result in different predictions, the **differing feature** should be given a **non-zero attribution**.
-
-\end{column}
-\begin{column}{0.48\textwidth}
-
-\textbf{Invariance}
-
-**Definition:** The attributions are always identical for two functionally equivalent networks.
-
-$$\frac{\partial f}{\partial g} = \frac{\partial f}{\partial h} \cdot \frac{\partial h}{\partial g}$$
-
-\end{column}
-\end{columns}
+**Example:** single ReLU network $f(x) = 1 - \text{ReLU}(1-x)$, baseline $x=0$, input $x=2$:
 
 ---
 
-# Other Attribution Methods
+# Why Vanilla Gradients Fail: Violating Sensitivity 1/1
 
-\textbf{Gradients (of the output with respect to the input)}
+**Example:** $f(x) = 1 - \text{ReLU}(1-x)$, baseline $x=0$, input $x=2$
 
-- Breaks sensitivity - prediction function can flatten at the input, giving 0 gradient despite function value at the input being different from the baseline
-- Example:
-  - Single ReLU network: $f(x) = 1 - \text{ReLU}(1 - x)$
-    - Baseline: $x = 0$, input: $x = 2$
-    - $f(0) = 0$, $f(2) = 1$
-    - Since $f$ is flat at $x = 1$, gradient gives attribution of 0 to $x$
+**Step 1: ReLU recap**
+$\text{ReLU}(z) = \max(0, z)$ — returns $z$ if positive, 0 if negative.
+
+**Step 2: Evaluate at baseline $x=0$**
+- $1 - x = 1 - 0 = 1$, $\text{ReLU}(1) = 1$, $f(0) = 1 - 1 = 0$
+
+**Step 3: Evaluate at input $x=2$**
+- $1 - x = 1 - 2 = -1$, $\text{ReLU}(-1) = 0$, $f(2) = 1 - 0 = 1$
+
+**Step 4: Gradient at $x=2$**
+- For any $x > 1$: $\text{ReLU}(1-x) = 0$ always — $f(x) = 1$, flat, derivative $= 0$
+
+
+## Sensitivity violated
+The prediction changed from 0 to 1, but the gradient says $x$ is irrelevant
+
 
 ---
 
-# Other Attribution Methods: Methods that Break Sensitivity
-
-\textbf{Methods that Break Sensitivity}
-
-- DeConvNets, Guided back-propagation
+# DeConvNets, Guided back-propagation (GBP) Also Break Sensitivity
 
 \begin{center}
-\includegraphics[width=0.78\columnwidth]{imgs/ig_break_sensitivity.png}
+\includegraphics[width=0.70\columnwidth]{imgs/ig_break_sensitivity.png}
 \end{center}
 
-- Only back-prop through a ReLU if the ReLU is turned on at the input
-  - Attribution is 0 for features with 0 gradients, despite non-zero gradient at the baseline
+\fontsize{8pt}{6pt}
+- **GBP Rule:** only backpropagate through a ReLU if it was **on** at the input.
+- **Forward pass:** ReLU zeros out negative activations — red/yellow cells in $f^l$ become 0 in $f^{l+1}$.
+- **Backward pass:** gradients are only propagated through ReLUs that were active at the input. Neurons zeroed out in the forward pass receive attribution 0 — even if their gradients in $f^{l+1}$ are non-zero.
+
+## Same root cause as vanilla gradients
+- The method only looks at the current input, not the full path from $x'$ to $x$.
+- A feature that was off at the input gets attribution 0 — even if it clearly mattered for the prediction.
 
 ---
 
 # Other Attribution Methods: Methods that Break Implementation Invariance
-
+\here
 \textbf{Methods that Break Implementation Invariance}
 
 - DeepLift and Layer-wise relevance propagation (LRP)
