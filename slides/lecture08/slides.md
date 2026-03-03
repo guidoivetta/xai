@@ -469,45 +469,42 @@ The prediction changed from 0 to 1, but the gradient says $x$ is irrelevant
 ---
 
 # Other Attribution Methods: Methods that Break Implementation Invariance
-\here
-\textbf{Methods that Break Implementation Invariance}
 
 - DeepLift and Layer-wise relevance propagation (LRP)
 
 \begin{center}
-\includegraphics[width=0.72\columnwidth]{imgs/ig_break_invariance.png}
+\includegraphics[width=0.60\columnwidth]{imgs/ig_break_invariance.png}
 \end{center}
 
-- Replace gradients with discrete gradients, use a modified form of backpropagation
-- Chain rule doesn't hold for discrete gradients (calculating gradients would be different) $\to$ breaks implementation invariance
+- Both methods **replace gradients with discrete gradients**, use a modified form of backpropagation.
+- Chain rule doesn't hold for discrete gradients (calculating gradients would be different) $\to$ breaks implementation invariance.
+- So attributions depend on internal implementation details — two functionally equivalent networks can give different attributions.
 
 ---
+
+# The Method: Integrated Gradients
+
+:::: columns
+::: {.column width="48%"}
 
 \begin{center}
-\vfill
-\Large The Method
-\vfill
-\end{center}
-
----
-
-# Integrated Gradients
-
-\begin{columns}
-\begin{column}{0.50\textwidth}
-
 \textbf{Definition}
+\end{center}
 
 The **path integral** of the gradients along the **straight-line path** from the baseline $x'$ to the input $x$.
 
-\small
+\begin{center}
+\textbf{
 $$\text{IntegratedGrads}_i(x) :=$$
-$$(x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial F(x' + \alpha \times (x-x'))}{\partial x_i} \, d\alpha$$
+$$(x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial F(x' + \alpha \times (x-x'))}{\partial x_i} \, d\alpha$$}
+\end{center}
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::: {.column width="48%"}
 
+\begin{center}
 \textbf{New Axiom}
+\end{center}
 
 **Completeness:** The sum of the attributions is equal to the difference of the outputs.
 
@@ -518,84 +515,108 @@ $$(x_i - x'_i) \times \int_{\alpha=0}^{1} \frac{\partial F(x' + \alpha \times (x
 
 $$\sum_{i=1}^{n} \text{IntegratedGrads}_i(x) = F(x) - F(x')$$
 
-\end{column}
-\end{columns}
+:::
+::::
+
+\vspace{1.5em}
+
+
+\fontsize{8pt}{6pt}
+> **"Differentiable almost everywhere"** means F can have a few points where the derivative doesn't exist (like the corners of a ReLU), but there are so few of them that they don't affect the integral. Typical neural networks satisfy this.
 
 ---
 
-# Uniqueness of Integrated Gradients
+# The Method:  Paths Methods and Uniqueness of Integrated Gradients
 
-\begin{columns}
-\begin{column}{0.50\textwidth}
+\small
+- **Paths:** Images interpolated between the baseline and the input. For example, if the baseline is a black image and the input is a photo of an elephant, the path is a sequence of images that gradually 'fade in' from black to the full image.
+- Integrated Gradients is the canonical method among **all possible** path-based attribution methods.
 
-\textbf{Path Methods}
+:::: columns
+::: {.column width="50%"}
 
 \begin{center}
-\includegraphics[width=0.88\columnwidth]{imgs/ig_path_methods.png}
+\includegraphics[width=.8\columnwidth]{imgs/ig_path_methods.png}
 \end{center}
 
-\small
+:::
+::: {.column width="50%"}
+
+\begin{center}
+\textbf{
 $$\text{PathIntegratedGrads}_i^\gamma(x) :=$$
 $$\int_{\alpha=0}^{1} \frac{\partial F(\gamma(\alpha))}{\partial \gamma_i(\alpha)} \frac{\partial \gamma_i(\alpha)}{\partial \alpha} \, d\alpha$$
+}
+\end{center}
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::::
 
-\textbf{Axioms}
+---
+
+# The Method:  Paths and why $P_2$
 
 \small
+\begin{center}
+\textbf{Axioms}
+\end{center}
+
 - **Sensitivity (b):** If the function does not depend (mathematically) on some input, then the attribution for that input is always zero.
 - **Linearity:** Attributions preserve any linearity within the network.
 $$a \times f_1 + b \times f_2$$
 - **Symmetry-Preserving:** For symmetric variables, if they have identical values in the input and identical values in the baseline, they then receive identical attributions.
 $$\text{Si} \ F(x, y) = F(y, x)$$
 
-\end{column}
-\end{columns}
+
+## Why $P_2$
+\textbf{$P_2$ (straight line) is the only path that satisfies all three axioms simultaneously} — it is the simplest, most canonical choice. 
 
 ---
 
-# Using Integrated Gradients
+# The Method: Using Integrated Gradients
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: columns
+::: {.column width="48%"}
 
+\begin{center}
 \textbf{Selecting a Baseline}
+\end{center}
+\vspace{1em}
 
-**Two Components:**
+The baseline $x'$ must satisfy two conditions:
 
-- Zero-Score: $F(x') \approx 0$
-- Conveys Absence of Signal
+- **Zero-Score:** $F(x') \approx 0$ — so attributions sum directly to the final prediction
+- **Absence of Signal:** must not contain information that could contaminate attributions
 
 **Examples:**
 
-- Object Recognition: All-black image
-- Text: All-zero input embedding vector
+- Object Recognition: all-black image
+- Text: all-zero input embedding vector
 
-\end{column}
-\begin{column}{0.50\textwidth}
-
-\textbf{Computing IGs}
-
-\small
-$$\text{IntegratedGrads}_i^{\text{approx}}(x) :=$$
-
-$$(x_i - x'_i) \times \sum_{k=1}^{m} \frac{\partial F\!\left(x' + \frac{k}{m} \times (x-x')\right)}{\partial x_i} \times \frac{1}{m}$$
-
-\end{column}
-\end{columns}
-
----
+:::
+::: {.column width="50%"}
 
 \begin{center}
-\vfill
-\Large Experimental Results
-\vfill
+\textbf{Computing IGs}
 \end{center}
+\vspace{1em}
+
+The integral is approximated with a Riemann sum over $m$ evenly-spaced points along the path:
+
+\begin{center}
+$$\text{IntegratedGrads}_i^{\text{approx}}(x) :=$$
+$$(x_i - x'_i) \times \sum_{k=1}^{m} \frac{\partial F\!\left(x' + \frac{k}{m} \times (x-x')\right)}{\partial x_i} \times \frac{1}{m}$$
+\end{center}
+
+$m \in [20, 300]$ steps is sufficient in practice. **Sanity check:** attributions should sum to $F(x) - F(x')$.
+
+:::
+::::
 
 ---
 
-# Object Recognition CNN
+# Experimental Results: Object Recognition CNN
+
 
 **Task:** Given image, predict the category of the object
 
@@ -603,11 +624,15 @@ $$(x_i - x'_i) \times \sum_{k=1}^{m} \frac{\partial F\!\left(x' + \frac{k}{m} \t
 \includegraphics[width=0.88\columnwidth]{imgs/ig_object_recognition.png}
 \end{center}
 
+- Fireboat: shows watter
+- Butterfly: Leaf
+
+
 ---
 
 # Question Classification CNN
 
-**Task:** Given question, predict what type of answer it is looking for.
+**Task:** Given question, predict what **type** of answer it is looking for.
 
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/ig_question_classification.png}
@@ -622,21 +647,6 @@ $$(x_i - x'_i) \times \sum_{k=1}^{m} \frac{\partial F\!\left(x' + \frac{k}{m} \t
 \begin{center}
 \includegraphics[width=0.88\columnwidth]{imgs/ig_machine_translation.png}
 \end{center}
-
----
-
-# Ligand Screening Graph CNN
-
-**Task:** Given molecular graph, predict whether it is active against an enzyme
-
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/ig_ligand_screening.png}
-\end{center}
-
-**Take-aways:**
-
-- More attribution to atom-pairs with bond (46%) compared to without bond (-3%)
-- Attribution can help identify degenerate features (e.g. indicate that features are not fully convolved) (?)
 
 ---
 
