@@ -13,8 +13,9 @@
 
 # Links:
 
-- [Course Program 📚 (**Tentativo**)](https://github.com/leliel12/xai/blob/2026/xai_course_program.md)
+- [Course Program 📚](https://github.com/leliel12/xai/blob/2026/xai_course_program.md)
 - [Repository 📦](https://github.com/leliel12/xai/)
+- [Schedule 🗓️](schedule.md)
 
 # Overview: 🧉
 
