@@ -93,9 +93,11 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 
 # Intuition
 
-\begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/compas_pca.png}
-\end{center}
+:::: columns
+::: column
+\includegraphics[width=\columnwidth]{imgs/compas_pca.png}
+:::
+::: column
 
 - LIME and SHAP explain predictions by **perturbing** input instances
 - These perturbations often fall **outside the real data distribution** (out-of-distribution, OOD)
@@ -104,8 +106,8 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 > **If we can detect whether a point is a perturbation or real data,
 > we can make the model behave differently on each — and fool the explainer.**
 
-[Figure: PCA projection of COMPAS data (blue) and LIME-style perturbations (red).
-The two distributions are clearly separated.]
+:::
+::::
 
 ---
 
