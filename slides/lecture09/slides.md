@@ -170,8 +170,9 @@ On real data, $\tilde{e}$ behaves like $f$. On OOD perturbations, it looks fair.
 
 ---
 
-# How hard can it be to implement this?
+# How hard can it be to implement this? \emoji{snake.png}
 
+\fontsize{8pt}{6pt}
 ```python
 # Step 1: Generate perturbations (same method as LIME/SHAP)
 X_perturbed = perturb(X)
@@ -196,8 +197,9 @@ def e(x):
 
 ---
 
-# How hard can it be to implement this?
+# How hard can it be to implement this? \emoji{snake.png}
 
+\fontsize{8pt}{6pt}
 ```python
 # Step 1: Generate perturbations (same method as LIME/SHAP)
 X_perturbed = perturb(X)
@@ -224,39 +226,66 @@ def e(x):
 
 Let's ask an AI agent to code it properly — using the scikit-learn predictor interface
 
-\emoji{link.png} [adversarial_scaffold.py](https://github.com/leliel12/xai/blob/2026/slides/lecture09/codes/adversarial_scaffold.py)
+\emoji{link.png} [adversarial_scaffold.py \emoji{snake.png}](https://github.com/leliel12/xai/blob/2026/slides/lecture09/codes/adversarial_scaffold.py) 
 
 ---
 
 # Experiment: Set-up
 
-90% training \& 10% test
+![](imgs/datasets.png)
 
-| Dataset | Size | Features | Positive Class | Sensitive Feature |
-|---|---|---|---|---|
-| COMPAS | 6172 | criminal history, demographics, COMPAS risk score, jail and prison time | High Risk (81.4%) | African-American (51.4%) |
-| Communities \& Crime | 1994 | race, age, education, police demographics, marriage status, citizenship | Violent Crime Rate (50%) | White Population (continuous) |
-| German Credit | 1000 | account information, credit history, loan purpose, employment, demographics | Good Customer (70%) | Male (69%) |
+- Biased classifier **f** makes predictions purely based on sensitive attributes (race, gender)
+- Unbiased classifier **$\psi$** uses only features uncorrelated with the sensitive attributes
 
-Biased classifier **f** makes predictions purely based on sensitive attributes (race, gender)
+## Social Biases
 
-Unbiased classifier $\psi$ uses only features uncorrelated with the sensitive attributes
+We are not looking for a flaw in the mechanics of the calculation, but for the persistence of historical patterns that arbitrarily prioritize or exclude certain groups
 
 ---
 
 # Experiment: Results — COMPAS
 
+:::: columns
+::: column
+
+- Each bar shows how often a feature appears at a given importance rank (1st, 2nd, 3rd) across test instances
+
+- **LIME:** the attack is fully successful — race disappears from all explanations in 100% of instances
+- **SHAP:** effective with 1 feature (84%), but less so with 2 — SHAP's local accuracy property
+  distributes attribution across features, making it harder to concentrate on a single decoy
+
+:::
+::: column
+
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/compas_results.png}
+\includegraphics[width=\columnwidth]{imgs/compas_results.png}
 \end{center}
+
+:::
+::::
 
 ---
 
 # Experiment: Results — Communities and Crime
 
+:::: columns
+::: column
+
+- Each bar shows how often a feature appears at a given importance rank (1st, 2nd, 3rd) across test instances
+- **LIME:** the attack succeeds in both settings — race is effectively hidden in nearly 100% of instances
+- **SHAP:** partially effective with 1 feature, but race re-emerges at lower ranks with 2 features —
+  consistent with SHAP's local accuracy constraint distributing attribution more broadly
+
+:::
+::: column
+
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/communities_results.png}
+\includegraphics[width=\columnwidth]{imgs/communities_results.png}
 \end{center}
+
+:::
+::::
+
 
 ---
 
@@ -265,6 +294,10 @@ Unbiased classifier $\psi$ uses only features uncorrelated with the sensitive at
 \begin{center}
 \includegraphics[width=0.65\columnwidth]{imgs/german_results.png}
 \end{center}
+
+- Here $\psi$ uses a **real feature** (Loan Rate % Income) instead of a synthetic uncorrelated one
+- Both LIME and SHAP attacks succeed: gender disappears from the top-3 in ~91% and ~85% of instances respectively
+- Using a real feature as a decoy produces the cleanest attack — it is more natural and harder to detect
 
 ---
 
@@ -276,15 +309,6 @@ Unbiased classifier $\psi$ uses only features uncorrelated with the sensitive at
 3. SHAP less successful when using two features $\leftarrow$ local accuracy property
    a. Distribute attributions among several features
 
-$$e(x) = \begin{cases} f(x), & \text{if } x \in \mathcal{X}_{dist} \\ \psi(x), & \text{otherwise} \end{cases}$$
-
----
-
-# Conclusions
-
-- Main contribution: A framework for converting any black-box classifier into a *scaffolded* classifier that fools perturbation-based post-hoc explanation techniques like LIME and SHAP
-- Effectiveness of this framework demonstrated on sensitive real-world data (criminal justice and credit scoring)
-- Perturbation-based post-hoc explanation techniques are not sufficient to test whether classifiers discriminate based on sensitive attributes
 
 ---
 
