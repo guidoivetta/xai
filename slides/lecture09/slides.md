@@ -336,20 +336,11 @@ We are not looking for a flaw in the mechanics of the calculation, but for the p
 # Paper 2
 
 \begin{center}
-\Large \textbf{Explanations can be manipulated and geometry is to blame}
+\includegraphics[width=0.75\textwidth]{imgs/paper2.png}
 \end{center}
-
-\vspace{0.5cm}
-
-**Authors:** Ann-Kathrin Dombrowski, Maximilian Alber, Christopher J. Anders, Marcel Ackermann, Klaus-Robert Müller, Pan Kessel
-
-**Presented by:** Chelsea (Zixi) Chen, Tessa Han, Vignav Ramesh
 
 [@dombrowski2019explanations]
 
----
-
-# Introduction
 
 ---
 
