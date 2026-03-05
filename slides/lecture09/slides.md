@@ -194,6 +194,37 @@ def e(x):
         return psi(x)
 ```
 
+---
+
+# How hard can it be to implement this?
+
+```python
+# Step 1: Generate perturbations (same method as LIME/SHAP)
+X_perturbed = perturb(X)
+
+# Step 2: Remove perturbations too close to real data
+X_ood = [x for x in X_perturbed if not too_close(x, X)]
+
+# Step 3: Build labeled dataset
+X_train = X        + X_ood
+y_train = [False]  + [True]   # False = real, True = OOD
+
+# Step 4: Train OOD detector
+is_OOD = RandomForest().fit(X_train, y_train)
+
+# Step 5: Build adversarial classifier
+def e(x):
+    if not is_OOD(x):   # real data → biased behavior
+        return f(x)
+    else:               # perturbation → innocuous behavior
+        return psi(x)
+```
+
+## Now for real!
+
+Let's ask an AI agent to code it properly — using the scikit-learn predictor interface
+
+\emoji{link.png} [adversarial_scaffold.py](https://github.com/leliel12/xai/blob/2026/slides/lecture09/codes/adversarial_scaffold.py)
 
 ---
 
