@@ -95,7 +95,9 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 
 :::: columns
 ::: column
+
 \includegraphics[width=\columnwidth]{imgs/compas_pca.png}
+
 :::
 ::: column
 
@@ -103,8 +105,10 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 - These perturbations often fall **outside the real data distribution** (out-of-distribution, OOD)
 - Key observation: OOD points are **easily distinguishable** from real data
 
-> **If we can detect whether a point is a perturbation or real data,
-> we can make the model behave differently on each — and fool the explainer.**
+\vspace{1em}
+
+**If we can detect whether a point is a perturbation or real data,
+we can make the model behave differently on each — and fool the explainer.**
 
 :::
 ::::
@@ -113,37 +117,83 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 
 # Approach: Set-up
 
-Adversary would like to deploy a biased classifier **f**!
+\begin{center}
+\large
+\textbf{Adversary would like to deploy a biased classifier $f$!}
+\end{center}
 
 - **Background:** the biased model **f** uses sensitive attributes to make critical decisions
 - **Requirement:** give access of black-box models to customers and regulators who use post-hoc explanations
 - **Goal:** hide bias of the classifier **f**
 
+\begin{flushright}
+\includegraphics[width=.8\columnwidth]{imgs/burns.png}
+\end{flushright}
+
 ---
 
 # Approach: Set-up
 
-What do we need?
+**Goal:** build an adversarial classifier $\tilde{e}$ that wraps any biased model $f$
 
-- Input: dataset sampled from real-world distribution
-- Target Product: an adversarial classifier **e**
-  - **f** is the biased model to be explained, while $\psi$ is an unbiased model
+- **Input:** dataset $X$ sampled from the real-world distribution $\mathcal{X}_{dist}$
+- **Output:** adversarial classifier $\tilde{e}$ defined as:
 
-$$e(x) = \begin{cases} f(x), & \text{if } x \in \mathcal{X}_{dist} \\ \psi(x), & \text{otherwise} \end{cases}$$
+$$\tilde{e}(x) = \begin{cases} f(x) & \text{if } x \in \mathcal{X}_{dist} \quad \text{(real data → biased behavior)} \\ \psi(x) & \text{otherwise} \quad \text{(perturbations → innocuous behavior)} \end{cases}$$
+
+where $f$ is the **biased** classifier and $\psi$ is an **unbiased** classifier
+
+## It's a Trap
+
+On real data, $\tilde{e}$ behaves like $f$. On OOD perturbations, it looks fair.
 
 ---
 
 # Approach: OOD Detection
 
-Which of the inputs belong to the real-world distribution?
+**Key question:** given input $x$, does it come from $\mathcal{X}_{dist}$ or is it a perturbation?
 
-- Build another classifier for OOD detection
-  - Assign label "False" (not OOD) to all instances in the dataset **X**
-  - Perturb all instances in **X** and assign them label "True" (OOD)
-    - Exceptions: instances too close to observations from **X**
-  - Combine data and train OOD detection classifier
+**Solution:** train a binary classifier `is_OOD(x)` using synthetic labels:
 
-$$e(x) = \begin{cases} f(x), & \text{if } x \in \mathcal{X}_{dist} \\ \psi(x), & \text{otherwise} \end{cases}$$
+| Data | Label |
+|------|-------|
+| Original instances $X$ | `False` (real data) |
+| Perturbed instances $X_p$ | `True` (OOD) — unless too close to $X$ |
+
+- Perturbations are generated the same way LIME/SHAP would generate them
+- Any off-the-shelf classifier works (authors use Random Forest)
+
+
+## Simple explained
+
+`is_OOD(x)` is the gatekeeper: it decides whether $\tilde{e}$ runs $f$ or $\psi$
+
+---
+
+# How hard can it be to implement this?
+
+```python
+# Step 1: Generate perturbations (same method as LIME/SHAP)
+X_perturbed = perturb(X)
+
+# Step 2: Remove perturbations too close to real data
+X_ood = [x for x in X_perturbed if not too_close(x, X)]
+
+# Step 3: Build labeled dataset
+X_train = X        + X_ood
+y_train = [False]  + [True]   # False = real, True = OOD
+
+# Step 4: Train OOD detector
+is_OOD = RandomForest().fit(X_train, y_train)
+
+# Step 5: Build adversarial classifier
+def e(x):
+    if not is_OOD(x):   # real data → biased behavior
+        return f(x)
+    else:               # perturbation → innocuous behavior
+        return psi(x)
+```
+
 
 ---
 
