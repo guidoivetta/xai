@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Post-hoc - SmoothGrad \\& Integrated Gradients"
+title: "\\emoji{wtf} XAI Lecture 08"
+subtitle: "Post-hoc - SmoothGrad \\& Integrated Gradients"
 bibliography: references.bib
 
 ---
@@ -569,7 +570,7 @@ $$\text{Si} \ F(x, y) = F(y, x)$$
 
 
 ## Why $P_2$
-\textbf{$P_2$ (straight line) is the only path that satisfies all three axioms simultaneously} — it is the simplest, most canonical choice. 
+\textbf{$P_2$ (straight line) is the only path that satisfies all three axioms simultaneously} — it is the simplest, most canonical choice.
 
 ---
 

@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Adversarial Attacks on Explanations"
+title: "\\emoji{wtf} XAI Lecture 09"
+subtitle: "Adversarial Attacks on Explanations"
 bibliography: references.bib
 
 ---

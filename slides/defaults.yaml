@@ -22,7 +22,7 @@ variables:
     - \setbeamerfont{bibliography entry location}{size=\footnotesize}
     - \setbeamerfont{bibliography entry note}{size=\footnotesize}
     - \usepackage{graphicx}
-    - \titlegraphic{\includegraphics[width=4cm]{../../assets/logo.jpeg}}
+    - \titlegraphic{\includegraphics[width=3.5cm]{../../assets/logo.jpeg}}
     - \newcommand{\emoji}[1]{\raisebox{-0.1ex}{\includegraphics[height=0.8em]{../emojis/#1}}}
     - \newcommand{\here}{\textbf{\textcolor{red}{\Huge HASTA ACÁ LLEGUE!}}}
     - \newcommand{\wtf}[1]{"\textbf{#1} \emoji{wtf}"}

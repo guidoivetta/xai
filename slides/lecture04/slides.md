@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Evaluating Interpretability"
+title: "\\emoji{wtf} XAI Lecture 04"
+subtitle: "Evaluating Interpretability"
 bibliography: references.bib
 ---
 

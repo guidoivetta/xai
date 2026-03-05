@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Sanity Checks for Saliency Maps \\& OpenXAI"
+title: "\\emoji{wtf} XAI Lecture 10"
+subtitle: "Sanity Checks for Saliency Maps \\& OpenXAI"
 bibliography: references.bib
 
 ---

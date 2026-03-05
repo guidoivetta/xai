@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Generalized Additive Models \\& Prototype-Based Approaches"
+title: "\\emoji{wtf} XAI Lecture 06"
+subtitle: "Generalized Additive Models \\& Prototype-Based Approaches"
 bibliography: references.bib
 
 ---

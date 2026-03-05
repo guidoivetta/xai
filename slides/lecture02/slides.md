@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Probing Further into 'Interpretability': Caveats & Challenges"
+title: "\\emoji{wtf} XAI Lecture 02"
+subtitle: "Probing Further into 'Interpretability': Caveats & Challenges"
 bibliography: references.bib
 ---
 

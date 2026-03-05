@@ -122,7 +122,7 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_9_Fooling_LIME_SHAP.pptx) | [Slides 2](slides/Lecture_9_Explanations_Manipulated.pptx) | [Slides 3](slides/Lecture_10_Adebayo_Sanity_Checks.pptx) | [Slides 4](slides/Lecture_10_Agarwal_OpenXAI.pptx) \]
+\[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf)) \]
 
 ---
 

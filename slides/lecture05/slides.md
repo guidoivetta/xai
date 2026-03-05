@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Rule Based Approaches"
+title: "\\emoji{wtf} XAI Lecture 05"
+subtitle: "Rule Based Approaches"
 bibliography: references.bib
 ---
 

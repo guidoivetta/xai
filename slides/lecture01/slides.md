@@ -1,5 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: Understanding Course Foundations and Motivations"
+title: "\\emoji{wtf} XAI Lecture 01"
+subtitle: "Understanding Course Foundations and Motivations"
 bibliography: references.bib
 
 ---
