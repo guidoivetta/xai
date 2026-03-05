@@ -14,14 +14,8 @@ bibliography: references.bib
 # Paper 1
 
 \begin{center}
-\Large \textbf{Fooling LIME and SHAP: Adversarial Attacks on Post hoc Explanation Methods}
+\includegraphics[width=0.9\columnwidth]{imgs/paper1.png}
 \end{center}
-
-\vspace{0.5cm}
-
-**Authors:** Dylan Slack, Sophie Hilgard, Emily Jia, Sameer Singh, Himabindu Lakkaraju
-
-**Presented by:** Chelsea (Zixi) Chen, Xin Tang, Prayaag Venkat
 
 [@slack2020fooling]
 
@@ -29,13 +23,13 @@ bibliography: references.bib
 
 # Motivation
 
-- ML has been applied for **critical** decision making
-  - Healthcare
-  - Criminal justice
-  - Finance
-- The decision makers must clearly **understand the model behavior** to
-  - Diagnose the error and potential biases
-  - Decide when and how much these ML models should be trusted
+- ML is increasingly used for **critical** decisions
+  - Healthcare, criminal justice, finance
+- Decision makers must **understand model behavior** to:
+  - Diagnose errors and potential biases
+  - Decide when and how much to trust these models
+- This motivates the need for **explainable AI (XAI)** tools
+  - e.g., LIME (Ribeiro et al., 2016) and SHAP (Lundberg & Lee, 2017)
 
 ---
 
@@ -53,33 +47,43 @@ bibliography: references.bib
 
 ---
 
-# Contribution: A Framework to 'Fool' the Post Hoc Explanation Method
+# Contribution: A Framework to 'Fool' Post Hoc Explanations
 
-- A novel framework that can effectively **mask the discriminatory biases** of any black box classifier
-  - Fooling the **perturbation based** post hoc explanation method
-  - LIME and SHAP
-- Allowing an adversarial entity to control and generate an arbitrary desired explanation
-- Demonstration using real-world datasets with extremely biased classifier
-- Existing post hoc explanation techniques are **NOT** sufficiently robust for ascertaining discriminatory behavior of classifiers in sensitive applications
+- A **scaffolding** framework that hides the biases of any black box classifier
+  - Targets **perturbation-based** explanation methods (LIME & SHAP)
+  - Lets an adversary craft arbitrary, innocuous-looking explanations
+- Evaluated on real-world datasets with extremely biased classifiers
+  - COMPAS, Communities & Crime, German Credit
+- **Key takeaway:** LIME and SHAP are **not robust enough** to detect
+  discriminatory behavior in adversarial settings
 
 ---
 
 # Perturbation-based Post Hoc Explanation Method
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/lime_perturbation.png}
+\includegraphics[width=0.25\columnwidth]{imgs/lime_perturbation.png}
 \end{center}
 
----
+\begin{center}
+\textbf{Preliminaries \& Background}
+\end{center}
 
-# Preliminaries \& Background
+:::: columns
+::: column
 
 $$\arg\min_{g \in \mathcal{G}} L(f, g, \pi_x) + \Omega(g)$$
 
-where the loss function $L$ is defined as:
+:::
+::: column
 
+where the loss function $L$ is defined as:
 $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 
+:::
+::::
+
+\small
 - $f$ is the original classifier and $x$ is the datapoint we want to explain
 - $g$ is the explanation we want to learn, $\Omega(g)$ is the "complexity" of $g$
 - $\pi$ is the proximity measure
@@ -92,6 +96,16 @@ $$L(f, g, \pi_x) = \sum_{x' \in X'} [f(x') - g(x')]^2 \pi_x(x')$$
 \begin{center}
 \includegraphics[width=0.65\columnwidth]{imgs/compas_pca.png}
 \end{center}
+
+- LIME and SHAP explain predictions by **perturbing** input instances
+- These perturbations often fall **outside the real data distribution** (out-of-distribution, OOD)
+- Key observation: OOD points are **easily distinguishable** from real data
+
+> **If we can detect whether a point is a perturbation or real data,
+> we can make the model behave differently on each — and fool the explainer.**
+
+[Figure: PCA projection of COMPAS data (blue) and LIME-style perturbations (red).
+The two distributions are clearly separated.]
 
 ---
 

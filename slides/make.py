@@ -121,7 +121,7 @@ def get_parser():
     argparse.ArgumentParser
         Configured argument parser with all required arguments and options:
         - archivo: Input Markdown file path (required positional argument)
-        - --sleep/-s: Seconds to wait between file checks in watch mode (default: 1.5)
+        - --sleep/-s: Seconds to wait between file checks in watch mode (default: 0.5)
         - --watch/-w: Enable continuous compilation on file changes (default: False)
         - --ignore_error/-i: Continue on Pandoc errors (default: True)
         - --cd: Change to file directory before compilation (default: True)
@@ -151,7 +151,7 @@ def get_parser():
         help="seconds to wait between checks",
         action="store",
         type=float,
-        default=1.5,
+        default=0.5,
     )
     parser.add_argument(
         "-w", "--watch", help="watch mode", action="store_true", default=False
