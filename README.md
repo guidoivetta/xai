@@ -125,6 +125,14 @@ Strong knowledge of machine learning, linear algebra, multivariable calculus, an
 \[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf)) \]
 
 ---
+---
+---
+
+# DE ACA EN ADELANTE NO ESTA LISTO EL MATERIAL
+
+---
+---
+---
 
 ## Week 6: Counterfactual Explanations (or) Algorithmic Recourse
 
