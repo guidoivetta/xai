@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{wtf} XAI Lecture 05"
+title: "\\emoji{wtf} XAI Lecture 05 (Tamed) \\emoji{rainbow} "
 subtitle: "Rule Based Approaches"
 bibliography: references.bib
 ---
