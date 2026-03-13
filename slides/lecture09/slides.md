@@ -222,11 +222,11 @@ def e(x):
         return psi(x)
 ```
 
-## Now for real!
+## Now for real! \emoji{snake.png}
 
 Let's ask an AI agent to code it properly — using the scikit-learn predictor interface
 
-\emoji{link.png} [adversarial_scaffold.py \emoji{snake.png}](https://github.com/leliel12/xai/blob/2026/slides/lecture09/codes/adversarial_scaffold.py) 
+\emoji{link.png} [adversarial_scaffold.py \emoji{snake.png}](https://github.com/leliel12/xai/blob/2026/slides/lecture09/codes/adversarial_scaffold.py)
 
 ---
 
@@ -315,11 +315,11 @@ We are not looking for a flaw in the mechanics of the calculation, but for the p
 # Related Works
 
 - Issues with post-hoc explanations:
-  - [Doshi-Velez and Kim] identify explainability of predictions as a potentially useful feature of interpretable models.
-  - [Lipton] and [Rudin] argues post-hoc explanations can be misleading and are not trustworthy for sensitive applications.
-  - [Ghorbani et al.] and [Mittelstadt et al.] identified further weaknesses of post-hoc explanations.
+  - **Doshi-Velez and Kim** identify explainability of predictions as a potentially useful feature of interpretable models.
+  - **Lipton** and **Rudin** argues post-hoc explanations can be misleading and are not trustworthy for sensitive applications.
+  - **Ghorbani et al.** and **Mittelstadt et al.** identified further weaknesses of post-hoc explanations.
 - Adversarial explanations
-  - [Dombrowski et al.] and [Heo et al.] show how to change saliency maps in arbitrary ways by imperceptibly changing inputs.
+  - **Dombrowski et al.** and **Heo et al.** show how to change saliency maps in arbitrary ways by imperceptibly changing inputs.
 
 ---
 
@@ -346,122 +346,134 @@ We are not looking for a flaw in the mechanics of the calculation, but for the p
 
 # Motivation
 
-\begin{columns}
-\begin{column}{0.55\textwidth}
-- Understand and verify aspects of ML models
-- Aid decision making in high-stakes scenarios
-\end{column}
-\begin{column}{0.43\textwidth}
-$\longrightarrow$ \textcolor{red}{\textbf{Reliable}} explanations of models!
-\end{column}
-\end{columns}
+- Explanation methods aim to make ML models more **trustworthy** and **interpretable**
+  - Understand and verify model behavior
+  - Aid decision making in high-stakes scenarios (healthcare, criminal justice)
+- This requires **reliable** explanations
 
-\vspace{1cm}
+## Can we always trust model explanations?
 
-\begin{center}
-Can we always trust model explanations?
-\end{center}
+This paper shows **the answer is no** — explanations can be manipulated arbitrarily
+with imperceptible input perturbations, while keeping the model's output unchanged.
 
 ---
 
-# Summary / Contribution
+# Summary / Contribution 1/2
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-- Manipulate explanations!
-- Provide a theoretical understanding of such nonrobustness and derive a bound
-- Introduce smoothing to increase explanation robustness!
+::: columns
+:::: column
 
-\vspace{0.5cm}
+- Manipulate explanations! \emoji{smiling-face-with-horns.png}
+- Provide a theoretical understanding of such nonrobustness and derive a bound \emoji{thinking-face.png}
+- Introduce smoothing to increase explanation robustness! \emoji{smiling-face-with-sunglasses.png}
 
-$$\|h(p) - h(p_0)\| \leq |\lambda_{max}| \, d_g(p, p_0) \leq \beta C \, d_g(p, p_0)$$
-\end{column}
-\begin{column}{0.48\textwidth}
+
+::::
+:::: column
+
+![](imgs/dog_manipulation.png){width=95%}
+
+::::
+:::
+
+## The key insight of the entire paper
+
+The gradient is highly sensitive to small input changes — like a model that memorizes instead
+of generalizing, it **overfits** to each point on the manifold and changes drastically between neighbors.
+
+---
+
+# Summary / Contribution 2/2
+
+
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/dog_manipulation.png}
+\includegraphics[width=0.35\columnwidth]{imgs/dog_manipulation.png}
 \end{center}
-\end{column}
-\end{columns}
+
+The bound makes this precise: the change in explanation is proportional to the **curvature** of the manifold:
+
+$$\|h(p) - h(p_0)\| \leq |\lambda_{max}| \, d_g(p, p_0)$$
+
+- $|\lambda_{max}|$ — curvature: how severely the gradient overfits locally
+- $d_g(p, p_0)$ — geodesic distance: how far apart the two inputs truly are on the manifold
 
 ---
 
 # Background + Related Work
 
-- Interpretation of Neural Networks is Fragile [@ghorbani2019interpretation]
-  - Complex decision boundary
-- The (un)reliability of saliency methods [Kindermans et al.]
-  - Input invariance
-- Sanity checks for saliency maps [Adebayo et al.]
-  - Randomization test
+- **Interpretation of Neural Networks is Fragile** — Ghorbani et al. (2019)
+  - Small input perturbations cause unstructured, unpredictable changes in explanation maps
 
-\vspace{0.5cm}
+- **The (Un)reliability of Saliency Methods** — Kindermans et al.
+  - Explanations should be invariant to constant input shifts — many methods fail this basic test
 
-- Fairwashing Explanations with Off-Manifold Detergent [Anders et al.]
-  - Low-dimensional data manifold vs. High-dimensional embedding space
+- **Sanity Checks for Saliency Maps** — Adebayo et al.
+  - Randomizing network weights should destroy explanations — surprisingly, some methods are insensitive
 
----
-
-# Methodology
+- **Fairwashing with Off-Manifold Detergent** — Anders et al.
+  - Biased models can hide their behavior by exploiting the gap between the true data manifold
+    and the high-dimensional embedding space
 
 ---
 
-# Notation
+# Methodology -  Notation
 
-- Neural network $g : \mathbb{R}^d \to \mathbb{R}^K$ with relu non-linearities
-- Classifies input image $x$ into $K$ categories, predicted class $k = \arg\max_i g(x)_i$
-- Explanation map: $h : \mathbb{R}^d \to \mathbb{R}^d$
+## Model
 
-\vspace{0.5cm}
+A neural network $g : \mathbb{R}^d \to \mathbb{R}^K$ with ReLU non-linearities
 
-- Target map: $h^t \in \mathbb{R}^d$
-- Manipulated image: $x_{adv} = x + \delta x$
+- Predicted class: $k = \arg\max_i \, g(x)_i$
+- Explanation map: $h : \mathbb{R}^d \to \mathbb{R}^d$ — assigns a relevance score to each pixel
+
+## Goal of the attack:
+
+Given input $x$, find a manipulated image $x_{adv} = x + \delta x$ such that:
+
+1. $h(x_{adv}) \approx h^t$ — explanation matches an arbitrary target map
+2. $g(x_{adv}) \approx g(x)$ — network output stays unchanged
+3. $\|\delta x\| \ll 1$ — perturbation is imperceptible
 
 ---
 
 # Properties of Manipulated Image
 
-1. The output of the network stays approximately constant, i.e. $g(x_{adv}) \approx g(x)$.
+The attack constructs $x_{adv} = x + \delta x$ satisfying three conditions simultaneously:
 
-2. The explanation is close to the target map, i.e. $h(x_{adv}) \approx h^t$.
+1. **Prediction unchanged:** $g(x_{adv}) \approx g(x)$ — the model still outputs the same class with the same confidence
 
-3. The norm of the perturbation $\delta x$ added to the input image is small, i.e. $\|\delta x\| = \|x_{adv} - x\| \ll 1$ and therefore not perceptible.
+2. **Explanation hijacked:** $h(x_{adv}) \approx h^t$ — the explanation now shows whatever the attacker wants, regardless of the true model behavior
+
+3. **Perturbation imperceptible:** $\|\delta x\| \ll 1$ — the modified image looks identical to the original
 
 ---
 
-# Explanation Methods
+# The Explanation Methods Under Attack
 
-\begin{columns}
-\begin{column}{0.02\textwidth}
-\rotatebox{90}{\footnotesize Gradient-based}
-\end{column}
-\begin{column}{0.96\textwidth}
-- **Vanilla gradients:** $h(x) = \frac{\partial g}{\partial x}(x)$
+## Gradient-based
+
+- **Vanilla Gradients:** $h(x) = \frac{\partial g}{\partial x}(x)$
   - Quantifies how infinitesimal perturbations in each pixel change the prediction
-- **Gradient $\times$ Input:** $h(x) = x \odot \frac{\partial g}{\partial x}(x)$
-  - For linear models, this measure gives the exact contribution of each pixel to the prediction
-- **Integrated Gradients:** $h(x) = (x - \bar{x}) \odot \int_0^1 \frac{\partial g(\bar{x} + t(x-\bar{x}))}{\partial x} \mathrm{d}t$
-\end{column}
-\end{columns}
+- **Gradient × Input:** $h(x) = x \odot \frac{\partial g}{\partial x}(x)$
+  - For linear models, gives the exact contribution of each pixel to the prediction
+- **Integrated Gradients:** $h(x) = (x - \bar{x}) \odot \int_0^1 \frac{\partial g(\bar{x} + t(x - \bar{x}))}{\partial x} \, dt$
+  - Accumulates gradients along the path from a baseline $\bar{x}$ to the input $x$
 
-\begin{columns}
-\begin{column}{0.02\textwidth}
-\rotatebox{90}{\footnotesize Propagation-based}
-\end{column}
-\begin{column}{0.96\textwidth}
-- **Guided Backpropagation**
-- **Layer-wise Relevance Propagation**
-- **Pattern Attribution**
-  - Standard backpropagation upon element-wise multiplication of the weights with learned patterns
-\end{column}
-\end{columns}
+## Propagation-based
+
+- **Guided Backpropagation (GBP):** gradient explanation with negative components zeroed out during backprop
+- **Layer-wise Relevance Propagation (LRP):** propagates relevance scores backwards through the network layers
+- **Pattern Attribution (PA):** standard backpropagation with weights scaled by learned patterns
 
 ---
 
-# Manipulation Method
+# Manipulation Method 1/3
 
+\begin{center}
 Obtain manipulated images by optimizing the loss function:
+\end{center}
 
-$$\mathcal{L} = \|h(x_{adv}) - h^t\|^2 + \gamma \|g(x_{adv}) - g(x)\|^2$$
+\textbf{
+    $$\mathcal{L} = \|h(x_{adv}) - h^t\|^2 + \gamma \|g(x_{adv}) - g(x)\|^2$$}
 
 \vspace{0.3cm}
 
@@ -472,80 +484,236 @@ with respect to $x_{adv}$ using gradient descent
 \footnotesize
 - $h(x_{adv})$: manipulated explanation map
 - $h^t$: target map
-- $\gamma$: weighting hyperparameter
+- $\gamma$: weighting hyperparameter (free parameter)
 - $g(x_{adv})$: network output (manipulated input)
 - $g(x)$: network output (original input)
 
 ---
 
+# Manipulation Method 2/3
+
+\begin{center}
+Obtain manipulated images by optimizing the loss function:
+\end{center}
+
+\textbf{
+    $$\mathcal{L} = \|h(x_{adv}) - h^t\|^2 + \gamma \|g(x_{adv}) - g(x)\|^2$$}
+
+\vspace{0.3cm}
+
+- **First term:** penalizes deviation from the target map $h^t$ — the optimizer wants the explanation to match exactly what the attacker chose
+- **Second term:** penalizes any change in the network output — the optimizer wants the prediction to stay identical
+- **$\gamma$:** controls the trade-off
+  - Large $\gamma$ → preserving the prediction takes priority
+  - Small $\gamma$ → manipulating the explanation takes priority, even at the cost of slightly changing the output
+
+
+---
+
+# Manipulation Method 3/3
+
+\begin{center}
+Obtain manipulated images by optimizing the loss function:
+\end{center}
+
+:::: columns
+::: column
+
+\textbf{
+    $$\mathcal{L} = \|h(x_{adv}) - h^t\|^2 + \gamma \|g(x_{adv}) - g(x)\|^2$$}
+
+:::
+::: column
+
+\begin{center}
+\includegraphics[width=.6\columnwidth]{imgs/dog_manipulation2.png}
+\end{center}
+
+:::
+::::
+
+\begin{center}
+\large
+\textbf{
+Find an image that looks identical to the original, predicts the same class, but whose explanation says whatever the attacker wants.}
+\end{center}
+
+
+---
+
 # Manipulation Method: Softplus Trick
 
-- The gradient w.r.t. the input $\nabla h(x)$ of the explanation often depends on the vanishing second derivative of the relu non-linearities. This causes problems during optimization:
+\small
+To minimize $\mathcal{L}$ with gradient descent, we need to compute the gradient of the loss with respect to $x_{adv}$.
+But that gradient involves the second derivative of the network:
 
-$$\partial_{x_{adv}} \|h(x_{adv}) - h^t\|^2 \propto \frac{\partial h}{\partial x_{adv}} = \frac{\partial^2 g}{\partial x_{adv}^2} \propto \text{relu}'' = 0$$
+\textbf{
+$$\partial_{x_{adv}} \|h(x_{adv}) - h^t\|^2 \propto \frac{\partial h}{\partial x_{adv}} = \frac{\partial^2 g}{\partial x^2_{adv}} \propto \text{relu}'' = 0$$}
 
-\vspace{0.5cm}
+:::: columns
+::: column
 
-- \textcolor{primarygreen}{\textbf{Solution:}} replace relu with softplus
+ReLU has second derivative exactly zero everywhere — there is no signal for the optimizer to follow.
 
-$$\text{softplus}_\beta(x) = \frac{1}{\beta} \log(1 + e^{\beta x})$$
+**Solution:** replace ReLU with softplus during optimization:
+
+\textbf{
+$$\text{softplus}_\beta(x) = \frac{1}{\beta} \log(1 + e^{\beta x})$$}
+
+:::
+::: column
+
+
+\begin{center}
+\includegraphics[width=.55\columnwidth]{imgs/dog3.png}
+\end{center}
+
+:::
+::::
+
+**Softplus is a smoothed version of ReLU**, nearly identical for large $\beta$, but with a well-defined second derivative. Once optimization is complete, $x_{adv}$ is tested on the original ReLU network.
 
 ---
 
-# Experiments
+# Experiments: Setup
 
----
+- 100 randomly selected images per explanation method
+- Model: **VGG-16** pre-trained on ImageNet
 
-# Experimental Setup
+**For each run:**
 
-- Apply algorithm to 100 randomly selected images for each explanation method
-- Use VGG-16 network pre-trained on ImageNet
-- For each run, randomly select two images from the test set:
-  - One of the two images is used to generate a target explanation map
-  - The other image is perturbed by the algorithm with the goal of replicating the target using a few thousand iterations of gradient descent
+1. Pick two random test images
+2. Use the first to generate a **target explanation map** $h^t$
+3. Perturb the second with gradient descent until its explanation matches $h^t$
 
-\vspace{0.5cm}
+\vspace{1em}
 
-- Comparable results obtained for ResNet-18, AlexNet, and Densenet-121 + CIFAR-10 dataset
+\begin{center}
+Results are consistent across \textbf{ResNet-18, AlexNet, DenseNet-121} and the \textbf{CIFAR-10} dataset
+\end{center}
 
 ---
 
 # Results: Visual Comparison
 
+\small
+
+
+:::: columns
+::: {.column width="60%"}
+
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/explanation_methods_visual.png}
+\includegraphics[width=.98\columnwidth]{imgs/explanation_methods_visual.png}
 \end{center}
+
+:::
+::: {.column width="40%"}
+
+**The attack is applied to a dog image using the cat's explanation as target $h^t$, across all six explanation methods.**
+
+- **Manipulated Map** closely matches the **Target Map** in every row — the attack succeeds for all methods
+- **Perturbed Image** is visually identical to the original — the perturbation $\delta x$ is imperceptible
+- The red box highlights what the user actually sees: a normal image with a completely fabricated explanation
+
+\textbf{A user inspecting any of these explanations would have no way of detecting the manipulation.}
+
+:::
+::::
 
 ---
 
-# Results: Quantitative Metrics
+# Results: Quantitative Metrics 1/2
+
+:::: columns
+::: {.column width="60%"}
 
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/similarities_boxplot.png}
+\includegraphics[width=0.65\columnwidth]{imgs/similarities_boxplot.png}
 \end{center}
+
+:::
+::: {.column width="40%"}
+
+**Similarity between manipulated explanation and target $h^t$:**
+
+- MSE near zero ($\times 10^{-9}$), SSIM in $[0.75, 0.9]$, PCC in $[0.8, 0.95]$ across all methods
+- The manipulated explanation closely matches the target in every case
+
+> The attack consistently achieves its goal across all 6 explanation methods.
+
+**Note:** GBP shows higher variance than the rest, suggesting it is slightly harder to attack consistently, but the attack still succeeds.
+
+:::
+::::
 
 ---
 
-# Theoretical Analysis
+# Results: Quantitative Metrics 2/2
+
+:::: columns
+::: {.column width="60%"}
+
+\begin{center}
+\includegraphics[width=0.65\columnwidth]{imgs/similarities_boxplot2.png}
+\end{center}
+
+:::
+::: {.column width="40%"}
+
+
+**Similarity between perturbed image and original:**
+
+- MSE near zero ($\times 10^{-3}$), SSIM in $[0.9, 0.98]$, PCC in $[0.995, 0.999]$ across all methods
+- The perturbed image is virtually indistinguishable from the original
+
+> The attack is invisible to the human eye — while the explanation says whatever the attacker wants.
+
+:::
+::::
 
 ---
 
-# Intuition
-
-\textcolor{primarygreen}{Why} are explanations vulnerable and unreliable?
-
-\textcolor{primarygreen}{Large curvature} of the NN output manifold!
+# Theoretical Analysis Intuition
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/curvature_intuition.png}
+\textbf{Why Are Explanations Vulnerable?}
+
+Because of the large curvature of the neural network's output manifold.
 \end{center}
 
+:::: columns
+::: {.column width="50%"}
+
+The decision boundary of a ReLU network is piecewise linear — full of sharp kinks. A tiny perturbation $+\delta$ moves $x_t$ to $x_t + \delta$ along the boundary, but the gradient $\nabla_x L$ can change direction drastically:
+
+- \textbf{At $x_t$}: the gradient points downward
+- \textbf{At $x_t + \delta$}: the gradient points left
+
+:::
+::: {.column width="50%"}
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/curvature_intuition.png}
+\end{center}
+\tiny
 [@ghorbani2019interpretation]
+:::
+::::
+
+\begin{center}
+Two nearly identical inputs — completely different explanations. \\
+\textbf{This is the geometric root of the vulnerability.}
+\end{center}
 
 ---
 
 # Theoretical Bound
 
+\begin{center}
+% "Frame" interno más pequeño usando minipage
+
+\begin{minipage}{0.5\textwidth}
+\fontsize{7.pt}{6pt}
 \begin{block}{Theorem 1}
 Let $g : \mathbb{R}^d \to \mathbb{R}$ be a network with $\text{softplus}_\beta$ non-linearities and $\mathcal{U}_\epsilon(p) = \{x \in \mathbb{R}^d; \|x - p\| < \epsilon\}$ an environment of a point $p \in S$ such that $\mathcal{U}_\epsilon(p) \cap S$ is fully connected. Let $g$ have bounded derivatives $\|\nabla g(x)\| \geq c$ for all $x \in \mathcal{U}_\epsilon(p) \cap S$. It then follows for all $p_0 \in \mathcal{U}_\epsilon(p) \cap S$ that
 
@@ -553,28 +721,65 @@ $$\|h(p) - h(p_0)\| \leq |\lambda_{max}| \, d_g(p, p_0) \leq \beta C \, d_g(p, p
 
 where $\lambda_{max}$ is the principle curvature with the largest absolute value for any point in $\mathcal{U}_\epsilon(p) \cap S$ and the constant $C > 0$ depends on the weights of the neural network.
 \end{block}
+\end{minipage}
+\end{center}
+
+\fontsize{11.pt}{9pt}
+**In Plain English**
+
+- Two inputs that produce the **same prediction** can have very different explanations
+- The difference is not arbitrary — it is bounded by the **curvature** of the output manifold
+- High curvature means the explanation can change drastically with a tiny perturbation
+- The curvature is controlled by $\beta$: **smaller $\beta$ → flatter manifold → more stable explanations**
+- The theorem does not just explain *why* explanations are fragile — it tells us exactly *what to fix*
 
 ---
 
 # Robustness via Smoothing
 
-\begin{columns}
-\begin{column}{0.5\textwidth}
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/smoothing_illustration.png}
-\end{center}
-\end{column}
-\begin{column}{0.48\textwidth}
-$$\text{softplus}_\beta(x) = \frac{1}{\beta} \log(1 + e^{\beta x})$$
 
-Replacing relu with softplus reduces the curvature $\to$ more robust explanations
+\textbf{Idea:} replace ReLU with softplus$_\beta$ to smooth the sharp kinks of the output manifold
+\fontsize{12.pt}{7pt}
+\textbf{$$\text{softplus}_\beta(x) = \frac{1}{\beta} \log(1 + e^{\beta x})$$}
+
+\end{center}
+
+\begin{columns}
+\begin{column}{0.35\textwidth}
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/smoothing_illustration.png}
+\end{center}
+
+\end{column}
+
+\begin{column}{0.65\textwidth}
+
+\begin{itemize}
+    \item \textbf{Unsmoothed (ReLU):} the manifold is piecewise linear — full of kinks where the gradient
+    changes direction abruptly, even between neighboring points
+    \item \textbf{Smoothed (softplus):} the manifold becomes a smooth curve — nearby points now have
+    similar gradients, and therefore similar explanations
+    \item The model itself is \textbf{not modified} — smoothing is only applied during the explanation process
+\end{itemize}
+
 \end{column}
 \end{columns}
+
+\begin{block}{}
+\begin{center}
+Smaller $\beta$ $\rightarrow$ smoother manifold $\rightarrow$ harder to manipulate the explanation
+\end{center}
+\end{block}
 
 ---
 
 # Smoothing: Connections to SmoothGrad
 
+\begin{center}
+\begin{minipage}{0.5\textwidth}
+\fontsize{10.pt}{9pt}
 \begin{block}{Theorem 2}
 For a one-layer neural network $g(x) = \text{relu}(w^T x)$ and its $\beta$-smoothed counterpart $g_\beta(x) = \text{softplus}_\beta(w^T x)$, it holds that
 
@@ -582,21 +787,47 @@ $$\mathbb{E}_{\epsilon \sim p_\beta}[\nabla g(x - \epsilon)] = \nabla g_{\frac{\
 
 where $p_\beta(\epsilon) = \frac{\beta}{(e^{\beta\epsilon/2} + e^{-\beta\epsilon/2})^2}$.
 \end{block}
+\end{minipage}
+\end{center}
 
 \vspace{0.5cm}
 
-- \textbf{SmoothGrad} $\equiv$ **$\beta$-smoothing**
-- $\epsilon_i \approx \mathcal{N}(0, \sigma)$ with variance $\sigma = \log(2) \frac{\sqrt{2\pi}}{\beta}$
+Both methods make explanations more robust by **averaging out** the sharp kinks of the manifold, they just do it differently:
+
+- **SmoothGrad:** adds random noise to the input many times and averages the resulting gradients
+- **$\beta$-smoothing:** replaces ReLU with softplus — mathematically equivalent, but in a single pass
+
+> Same robustness, $50\times$ cheaper to compute.
 
 ---
 
 # Robustness Experiments
 
+:::: columns
+::: {.column width="60%"}
+
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/robustness_exp1.png}
+\includegraphics[width=\columnwidth]{imgs/robustness_exp1.png}
 \end{center}
 
-\footnotesize Figure 4. $\beta$-smoothing makes explanations more robust.
+:::
+::: {.column width="40%"}
+\fontsize{11.pt}{9pt}
+
+- **Red line:** correlation between the manipulated explanation and the target $h^t$ — drops as $\beta$ decreases
+- **Green line:** correlation between the manipulated explanation and the original $h(x)$ — rises as $\beta$ decreases
+- **The crossing point** marks where the attack stops working — around $\beta \approx 3$
+
+- **Image grids:** with ReLU the attack succeeds perfectly; with softplus $\beta = 5$ it weakens;
+  with softplus $\beta = 0.8$ the manipulated map is virtually identical to the original — the attack is defeated
+
+:::
+::::
+
+\begin{center}
+\textbf{Reducing $\beta$ recovers the true explanation and destroys the manipulation,
+without modifying the model itself}
+\end{center}
 
 ---
 
@@ -606,15 +837,15 @@ where $p_\beta(\epsilon) = \frac{\beta}{(e^{\beta\epsilon/2} + e^{-\beta\epsilon
 \includegraphics[width=0.85\columnwidth]{imgs/robustness_exp2.png}
 \end{center}
 
-\footnotesize Figure 5. $\beta$-smoothing 1) makes explanations more robust, 2) is comparable to SmoothGrad, 3) has a faster runtime than SmoothGrad.
+## $\beta$-smoothing
+
+1. Makes explanations more robust.
+2. Is comparable to SmoothGrad.
+3. Has a faster runtime than SmoothGrad.
 
 ---
 
-# Conclusion
-
----
-
-# Critique
+# Conclusion - Critique
 
 ## Strengths
 

@@ -127,6 +127,14 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 \[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf)) \]
 
 ---
+---
+---
+
+# DE ACA EN ADELANTE NO ESTA LISTO EL MATERIAL
+
+---
+---
+---
 
 ## Week 6: Counterfactual Explanations (or) Algorithmic Recourse
 
