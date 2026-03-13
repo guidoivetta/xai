@@ -101,7 +101,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Lecture 7](slides/lecture07/slides.pdf) | \[ [Lecture 8](slides/lecture08/slides.pdf)) \]
+\[ [Lecture 7](slides/lecture07/slides.pdf) | \[ [Lecture 8](slides/lecture08/slides.pdf) \]
 
 
 ---
@@ -124,7 +124,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf)) \]
+\[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf) \]
 
 ---
 ---

@@ -14,34 +14,22 @@ bibliography: references.bib
 # Paper 1
 
 \begin{center}
-\Large \textbf{Sanity Checks for Saliency Maps}
+\includegraphics[width=0.9\columnwidth]{imgs/paper1.png}
 \end{center}
 
-\vspace{0.5cm}
-
-**Authors:** Julius Adebayo, Justin Gilmer, Michael Muelly, Ian Goodfellow, Moritz Hardt, Been Kim
-
 [@adebayo2018sanity]
-
----
-
-# Overview
-
-- Feature Attribution / Saliency Maps Setup
-- Overview of Sanity Checks for Saliency Maps
-- Follow-up work
-- Parting thoughts / Q\&A
 
 ---
 
 # Feature Attributions / Saliency Maps
 
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/bird_saliency.png}
+\textbf{What parts of the input are 'most important' for the model prediction?}
 \end{center}
 
+
 \begin{center}
-\textbf{What parts of the input are 'most important' for the model prediction?}
+\includegraphics[width=0.9\columnwidth]{imgs/bird_saliency.png}
 \end{center}
 
 ---
@@ -49,12 +37,10 @@ bibliography: references.bib
 # Identifying Shortcuts
 
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/husky_shortcut.png}
+\includegraphics[width=0.75\columnwidth]{imgs/husky_shortcut.png}
 \end{center}
 
-\begin{center}
-\small Model relying on snow to identify Huskies $\Rightarrow$ Collect additional data to fix the bug.
-\end{center}
+A **shortcut** is a specific type of bias — the model learns a spurious correlation that works well on training data but fails to generalize. Instead of learning the relevant feature (the dog), it learns an easier, correlated signal (the snow).
 
 ---
 
@@ -64,7 +50,9 @@ bibliography: references.bib
 
 $$F : \mathbb{R}^d \to \mathbb{R}^c \quad \text{Model}$$
 $$\rule{6cm}{0.4pt}$$
-$$F_i : \mathbb{R}^d \to \mathbb{R} \quad \textcolor{red}{\text{class specific logit}}$$
+$$F_i : \mathbb{R}^d \to \mathbb{R} \quad \textbf{\text{class specific logit}}$$
+
+An attribution method produces a map $E: \mathbb{R}^d \to \mathbb{R}^d$ of the same shape as the input, where each value $E_j(x)$ indicates how much dimension $j$ contributed to the prediction of class $i$.
 
 ---
 
@@ -77,21 +65,57 @@ $$\nabla_x F_i(x) \in \mathbb{R}^d$$
 - Same dimension as the input
 - Gradient w.r.t. **Input** for class **Logit** $i$
 
+**Intuitively**, $\nabla_x F_i(x)$ answers: 
+
+\begin{center}
+\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?} 
+\end{center}
+
+Large values indicate dimensions the model is most sensitive to near $x$.
+
+
+[@baehrens2010explain; @simonyan2014deep]
+
+---
+
+# Input-Gradient / Saliency / Gradient - Demo
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/imputgrad.png}
+\end{center}
+
+**Intuitively**, $\nabla_x F_i(x)$ answers: 
+
+\begin{center}
+\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?} 
+\end{center}
+
+Large values indicate dimensions the model is most sensitive to near $x$.
+
+
 [@baehrens2010explain; @simonyan2014deep]
 
 ---
 
 # Integrated Gradients
 
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/intgrad.png}
+\end{center}
+
 $$(x - \tilde{x}) \times \int_{\alpha=0}^{1} \frac{\partial F(\tilde{x} + \alpha \times (x - \tilde{x}))}{\partial x}$$
 
-Path integral: 'sum' of interpolated gradients from \textcolor{red}{\textbf{Baseline input}} $\tilde{x}$ to $x$.
+**Path integral:** 'sum' of interpolated gradients from \textcolor{red}{\textbf{Baseline input}} $\tilde{x}$ to $x$.
 
 [@sundararajan2017axiomatic]
 
 ---
 
 # SmoothGrad
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/smothgrad.png}
+\end{center}
 
 $$\frac{1}{N} \sum_{i}^{N} \nabla_{(x+\epsilon)} F_i(x + \epsilon)$$
 
@@ -103,21 +127,51 @@ Average of gradients computed on input $x$ perturbed with \textcolor{red}{\textb
 
 # Guided Backprop: "Modified Backprop"
 
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/guidedgrad.png}
+\end{center}
+
+\vspace{1em}
+
 \begin{columns}
-\begin{column}{0.55\textwidth}
-activation:
+\begin{column}{0.32\textwidth}
+\small activation:
 $$f_i^{l+1} = \text{relu}(f_i^l) = \max(f_i^l, 0)$$
-
-backpropagation:
-$$R_i^l = (f_i^l > 0) \cdot R_i^{l+1}, \quad R_i^{l+1} = \frac{\partial f^{out}}{\partial f_i^{l+1}}$$
-
-guided backpropagation:
-$$R_i^l = (f_i^l > 0) \cdot \boxed{(R_i^{l+1} > 0)} \cdot R_i^{l+1}$$
 \end{column}
-\begin{column}{0.43\textwidth}
-\small Additional gate: only backpropagate \textbf{positive} relevance signals
+\begin{column}{0.32\textwidth}
+\small backpropagation:
+$$R_i^l = (f_i^l > 0) \cdot R_i^{l+1}, \quad R_i^{l+1} = \frac{\partial f^{out}}{\partial f_i^{l+1}}$$
+\end{column}
+\begin{column}{0.32\textwidth}
+\small guided backpropagation:
+$$R_i^l = (f_i^l > 0) \cdot \boxed{(R_i^{l+1} > 0)} \cdot R_i^{l+1}$$
+
 \end{column}
 \end{columns}
+
+\vspace{0.5em}
+Additional gate: only backpropagate \textbf{positive} relevance signals
+
+---
+
+# Are Saliency Maps Reliable?
+
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/trustsalienci.png}
+\end{center}
+
+Both maps are produced by the **same method** on the **same input** — but one comes 
+from a trained model and the other from a **randomly initialized** network.
+
+- **Left:** explanation from a **trained** model.
+- **Right:** explanation from a **randomly initialized** model.
+
+Can you tell which is which?
+
+> Visual inspection alone is not a reliable criterion for evaluating saliency methods.
+
+
 
 ---
 
@@ -147,14 +201,6 @@ $$R_i^l = (f_i^l > 0) \cdot \boxed{(R_i^{l+1} > 0)} \cdot R_i^{l+1}$$
 
 ---
 
-# Recap: Which Method Should You Use?
-
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/methods_overview.png}
-\end{center}
-
----
-
 # 'Sanity Checks'
 
 Intuitive 'principles' that an attribution method should satisfy.
@@ -170,27 +216,29 @@ Intuitive 'principles' that an attribution method should satisfy.
 
 # Sensitivity to Model Parameters
 
-If the parameter settings change of model changes, the saliency map should change.
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/sensehp.png}
+\end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-- \textbf{Model 1}: trained normally
-- \textbf{Model 2}: randomly initialized (or randomized top layers)
-- Saliency maps should \textbf{differ} between models
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{alertblock}{Key Question}
-Does the explanation actually depend on the learned model weights?
-\end{alertblock}
-\end{column}
-\end{columns}
+If the parameter settings of the model change, the saliency map should change.
+
+- **Model 1**: trained normally
+- **Model 2**: randomly initialized (or randomized top layers)
+- Saliency maps should **differ** between models
+
 
 ---
 
-# Sensitivity to Model Parameters: Cascading Randomization
+# Sensitivity: Cascading Randomization
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/cascading_randomization.png}
+\includegraphics[width=0.75\columnwidth]{imgs/cascading_randomization.png}
+\end{center}
+
+\begin{center}
+\textbf{
+A method that looks the same regardless of the model's parameters 
+cannot be explaining what the model learned.}
 \end{center}
 
 ---
@@ -205,13 +253,26 @@ Does the explanation actually depend on the learned model weights?
 
 # Modified BackProp Approaches
 
+:::: {.columns}
+::: {.column width="55%"}
+
 \begin{center}
 \includegraphics[width=0.9\columnwidth]{imgs/modified_backprop.png}
 \end{center}
 
-\begin{alertblock}{Key Finding}
-These modified backprop methods \textbf{converge to a rank-1 matrix}! The product of a sequence of non-negative matrices (non-orthogonal columns) converges to a rank-1 matrix (Theorem 1 in Sixt et al. 2020 [@sixt2020explanations]).
-\end{alertblock}
+:::
+::: {.column width="43%"}
+
+Backprop-based methods that modify gradients at each layer collapse to a
+**rank-1 matrix** — their output is dominated by the **input structure**,
+not by the model's learned weights.
+
+**This is why these methods still produce recognizable maps even when the
+model is completely random: they are recovering the input, not explaining the model.**
+
+*(Sixt et al. 2020, Theorem 1)*
+:::
+::::
 
 ---
 
@@ -226,27 +287,33 @@ These modified backprop methods \textbf{converge to a rank-1 matrix}! The produc
 # Some Takeaways
 
 - Identified certain classes of feature attribution methods that are **invariant to higher layer weights**
-- 'Sanity Checks' are actually 'weak' requirements, i.e., does **not** tell you whether a method is effective
+- 'Sanity Checks' are actually **weak** requirements, i.e., does **not** tell you whether a method is effective
 
 ---
 
-# Some Objections
+# Some Objections 1/2
 
-Causal reframing suggests that sanity checks results might be **task specific**.
+\begin{center}
+\large
+Causal reframing suggests that sanity checks results might be \textbf{task specific}.
+\end{center}
 
-\begin{block}{Revisiting Sanity Checks for Saliency Maps}
-Gal Yona, Daniel Greenfeld — Weizmann Institute of Science / Jether Energy Research
-\end{block}
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{imgs/objection1.png}
+\end{center}
 
-\begin{block}{On the Relationship Between Explanation and Prediction: A Causal View}
-Amir-Hossein Karimi, Krikamol Muandet, Simon Kornblith, Bernhard Schölkopf, Been Kim
-\end{block}
+---
 
-Where you choose to perform randomization matters, and perhaps the **weight randomization is not the best approach**.
+# Some Objections 2/2
 
-\begin{block}{Shortcomings of Top-Down Randomization-Based Sanity Checks for Evaluations of Deep Neural Network Explanations}
-Alexander Binder, Leander Weber, Sebastian Lapuschkin, Grégoire Montavon, Klaus-Robert Müller, Wojciech Samek
-\end{block}
+\begin{center}
+\large
+Where you choose to perform randomization matters, and perhaps the \textbf{weight randomization is not the best approach}.
+\end{center}
+
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{imgs/objection2.png}
+\end{center}
 
 ---
 
@@ -254,42 +321,29 @@ Alexander Binder, Leander Weber, Sebastian Lapuschkin, Grégoire Montavon, Klaus
 
 Beyond faithfulness, it is unclear whether these feature attribution methods are effective for **model debugging**.
 
-\begin{block}{Do Feature Attribution Methods Correctly Attribute Features?}
-Yilun Zhou, Serena Booth, Marco Tulio Ribeiro, Julie Shah — MIT CSAIL / Microsoft Research
-\end{block}
-
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/modified_backprop.png}
+\includegraphics[width=0.9\columnwidth]{imgs/objection3.png}
 \end{center}
 
 ---
 
 # More Recent Observations
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\textbf{Do Input Gradients Highlight Discriminative Features?}
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/objection4.png}
+\end{center}
 
-Harshay Shah, Prateek Jain, Praneeth Netrapalli — Microsoft Research India
-
-- BlockMNIST: label determined by top block
-- Standard gradients highlight non-discriminative features
-\end{column}
-\begin{column}{0.48\textwidth}
-\textbf{Rethinking the Role of Gradient-based Attribution Methods for Model Interpretability}
-
-Suraj Srinivas, François Fleuret — Idiap Research Institute / University of Geneva
-
-- $\ell_2$ Robust training $\to$ more discriminative gradient maps
-\end{column}
-\end{columns}
+\small
+- **BlockMNIST:** each image has two blocks — the discriminative one is fixed by class position. A good saliency method should focus on the correct block.
+- **Key finding:** saliency quality depends not only on the attribution method, but also on **how the model was trained** — robustly trained models produce cleaner, more discriminative gradients.
 
 ---
 
 # Parting Thoughts
 
 \begin{exampleblock}{}
-Feature attribution is still important for applications, however, additional work is needed to characterize the properties of DNN model training that will result in 'gradients' that capture discriminative signals.
+\Large
+Feature attribution is still important for applications, however, additional work is needed to characterize the properties of DeepNN model training that will result in 'gradients' that capture discriminative signals.
 \end{exampleblock}
 
 ---
