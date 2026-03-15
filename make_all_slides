@@ -6,7 +6,7 @@ trap "cd '$original_dir'" EXIT
 for dir in lecture[0-9][0-9]; do
     file="$dir/slides.md"
     if [ -f "$file" ]; then
-        python make.py "$file"
+        python make2.py "$file"
     fi
 done
 

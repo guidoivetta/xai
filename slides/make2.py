@@ -37,11 +37,22 @@ import sh
 from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
+SYNTAX_HIGHLIGHT = [
+    "pygments",
+    "tango",
+    "espresso",
+    "zenburn",
+    "kate",
+    "monochrome",
+    "breezedark",
+    "haddock",
+]
 
 PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
     t="beamer",
     d="../defaults.yaml",
     filter="pandoc-citeproc",
+    highlight_style="../sh_style.theme",
     verbose=True,
 )
 
@@ -178,12 +189,8 @@ def get_parser():
     parser.add_argument(
         "-w", "--watch", help="watch mode", action="store_true", default=False
     )
-    parser.add_argument(
-        "-i", "--ignore_error", action="store_false", default=True
-    )
-    parser.add_argument(
-        "-v", "--verbose", action="store_true", default=False
-    )
+    parser.add_argument("-i", "--ignore_error", action="store_false", default=True)
+    parser.add_argument("-v", "--verbose", action="store_true", default=False)
     parser.add_argument(
         "--debounce",
         help="seconds to wait after a change before recompiling (default: 0.3)",
@@ -205,7 +212,9 @@ def main():
     # Resolve absolute paths
     lecture_dir = os.path.abspath(os.path.dirname(original_path)) or os.getcwd()
     slides_file = os.path.basename(original_path)
-    parent_dir = os.path.dirname(lecture_dir)  # where defaults.yaml / disclaimer.tex live
+    parent_dir = os.path.dirname(
+        lecture_dir
+    )  # where defaults.yaml / disclaimer.tex live
 
     abs_slides = os.path.join(lecture_dir, slides_file)
     abs_output = os.path.join(lecture_dir, slides_file.replace(".md", ".pdf"))

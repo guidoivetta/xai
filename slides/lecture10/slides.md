@@ -3,6 +3,7 @@ title: "\\emoji{wtf} XAI Lecture 10"
 subtitle: "Sanity Checks for Saliency Maps \\& OpenXAI"
 bibliography: references.bib
 
+
 ---
 
 # Disclaimer
@@ -65,10 +66,10 @@ $$\nabla_x F_i(x) \in \mathbb{R}^d$$
 - Same dimension as the input
 - Gradient w.r.t. **Input** for class **Logit** $i$
 
-**Intuitively**, $\nabla_x F_i(x)$ answers: 
+**Intuitively**, $\nabla_x F_i(x)$ answers:
 
 \begin{center}
-\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?} 
+\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?}
 \end{center}
 
 Large values indicate dimensions the model is most sensitive to near $x$.
@@ -84,10 +85,10 @@ Large values indicate dimensions the model is most sensitive to near $x$.
 \includegraphics[width=0.75\columnwidth]{imgs/imputgrad.png}
 \end{center}
 
-**Intuitively**, $\nabla_x F_i(x)$ answers: 
+**Intuitively**, $\nabla_x F_i(x)$ answers:
 
 \begin{center}
-\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?} 
+\textit{"if I perturb input dimension $j$ slightly, how much does the predicted score for class $i$ change?}
 \end{center}
 
 Large values indicate dimensions the model is most sensitive to near $x$.
@@ -161,7 +162,7 @@ Additional gate: only backpropagate \textbf{positive} relevance signals
 \includegraphics[width=0.75\columnwidth]{imgs/trustsalienci.png}
 \end{center}
 
-Both maps are produced by the **same method** on the **same input** — but one comes 
+Both maps are produced by the **same method** on the **same input** — but one comes
 from a trained model and the other from a **randomly initialized** network.
 
 - **Left:** explanation from a **trained** model.
@@ -237,7 +238,7 @@ If the parameter settings of the model change, the saliency map should change.
 
 \begin{center}
 \textbf{
-A method that looks the same regardless of the model's parameters 
+A method that looks the same regardless of the model's parameters
 cannot be explaining what the model learned.}
 \end{center}
 
@@ -348,27 +349,11 @@ Feature attribution is still important for applications, however, additional wor
 
 ---
 
-# Exploring the Explanation Landscape
-
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/explanation_landscape.png}
-\end{center}
-
-\begin{center}
-\Large How do we \textbf{\underline{evaluate}} the \textcolor{red}{\textbf{reliability}} of state-of-the-art explanation methods?
-\end{center}
-
----
-
 # Paper 2
 
 \begin{center}
-\Large \textbf{OpenXAI: Towards a Transparent Evaluation of Model Explanations}
+\includegraphics[width=0.9\columnwidth]{imgs/paper2.png}
 \end{center}
-
-\vspace{0.5cm}
-
-**Authors:** Chirag Agarwal et al.
 
 [@agarwal2022openxai]
 
@@ -383,63 +368,138 @@ Feature attribution is still important for applications, however, additional wor
 
 ---
 
-# Applications of Saliency Methods
+# Applications of Saliency Methods 1/2
+
+:::: columns
+::: {.column width="60%"}
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/applications_collage.png}
+\includegraphics[width=.9\columnwidth]{imgs/applications_collage.png}
 \end{center}
 
-\small Natural images, MRI brain scans, Text, Videos, Audio, Chest X-rays, Detecting biases
+:::
+::: {.column width="40%"}
+
+\small
+Saliency methods are used across a wide range of data modalities —
+the question of how to evaluate them is relevant in all of these settings.
+
+- **Natural images** — highlighting relevant regions in a scene
+- **MRI / medical imaging** — localizing diagnostically relevant areas
+- **Text** — identifying influential words or tokens
+- **Video** — attributing predictions to specific frames or regions
+- **Audio** — localizing relevant time-frequency patterns in spectrograms
+
+:::
+::::
 
 ---
 
-# Reliability Pillars
+# Applications of Saliency Methods 2/2
+
+:::: columns
+::: {.column width="60%"}
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/reliability_pillars.png}
+\includegraphics[width=.9\columnwidth]{imgs/applications_collage2.png}
 \end{center}
 
-\begin{center}
-\footnotesize C. Agarwal, M. Zitnik, H. Lakkaraju, Probing GNN Explainers: A Rigorous Theoretical and Empirical Analysis of GNN Explanation Methods, AISTAT
-\end{center}
+:::
+::: {.column width="40%"}
+
+\small
+In high-stakes domains, unreliable explanations can have serious consequences.
+
+- **Medical diagnosis** — a model predicts Pneumonia (85%), but is it
+  looking at the right region of the X-ray?
+- **Detecting biases** — a horse classifier was found to rely on a
+  **photographer's watermark** rather than the animal itself.
+
+> A visually compelling explanation is not necessarily a correct one —
+> this is precisely what makes evaluation frameworks like OpenXAI necessary.
+
+:::
+::::
+
+---
+
+# How Do We Evaluate the Reliability of Explanation Methods?
+
+A reliable explanation method should satisfy three key properties (pillars):
+
+- **Faithful** — the explanation accurately reflects the model's true behavior.
+- **Stable** — similar inputs should produce similar explanations.
+- **Fair** — explanation quality should not vary across demographic groups.
 
 ---
 
 # Pillar 1: Faithfulness
 
-\begin{definition}{}
-An explanation is faithful if it accurately captures which features the model uses to make its prediction.
+\begin{center}
+\textbf{An explanation is faithful if it accurately reflects the model's true behavior.}
+\end{center}
 
-$$\text{faithfulness}(e, f, x) = \text{corr}\left(e_i(x),\; \Delta f_i(x)\right)$$
+- **Intuitively:** if we hide the features the explanation marks as unimportant,
+the model's prediction should not change much.
 
-where $\Delta f_i(x)$ measures the change in model output when feature $i$ is masked.
-\end{definition}
+- **Definition.** Given an input $x$ and its explanation $E_x$:
+
+  \textbf{$$\frac{1}{N} \sum_N \| f(x) - f(t(E_x, x)) \|_2$$}
+
+  where \textbf{$t(E_x, x)$} masks the features deemed unimportant by \textbf{$E_x$}.
+
+  A **lower value** indicates higher faithfulness.
+
 
 ---
 
 # Pillar 2: Stability
 
-\begin{definition}{}
-An explanation is stable (robust) if similar inputs receive similar explanations — small perturbations to $x$ should not drastically change $e(x)$.
-\end{definition}
-
 \begin{center}
-\includegraphics[width=0.5\columnwidth]{imgs/pillar2_stability.png}
+\textbf{An explanation is \textbf{stable} if similar inputs produce similar explanations.}
 \end{center}
 
-\footnotesize C. Agarwal et al., Rethinking Stability for Attribution-based Explanations, Oral presentation @ ICLR 2022 PAIR\^{}2Struct workshop.
+:::::::::::::: {.columns}
+::: {.column width="50%"}
+
+
+- **Intuitively:** a small perturbation to the input $x$ should not drastically
+change what the explanation highlights.
+
+- **Definition.** Given an input $x$ and a perturbed counterpart $x'$,
+the explanation $E_x$ is stable if:
+
+  \textbf{$$D(E_x, E_{x'}) \leq \delta$$}
+
+  where \textbf{$D$} measures the distance between the two explanations and
+  \textbf{$\delta$} is a small tolerance threshold.
+
+:::
+::: {.column width="50%"}
+
+\begin{center}
+\includegraphics[width=.95\columnwidth]{imgs/pillar2_stability.png}
+\end{center}
+
+:::
+::::::::::::::
 
 ---
 
 # Pillar 3: Counterfactual Fairness
 
-\begin{definition}{}
-An explanation is counterfactually fair if members of different demographic groups receive explanations of comparable quality.
+\begin{center}
+\textbf{An explanation is fair if changing a protected attribute only affects the explanation to the extent that it affects the model's prediction.}
+\end{center}
 
-$$\text{PGU} = \mathbb{E}_{x \sim \text{majority}}[\Delta f(x, e)] - \mathbb{E}_{x \sim \text{minority}}[\Delta f(x, e)]$$
-\end{definition}
+- **Intuitively:** if the model treats two individuals the same regardless of their protected attribute, their explanations should also be the same.
 
-\footnotesize J. Dai et al., Fairness via Explanation Quality: Evaluating Disparities in the Quality of Post hoc Explanations, AIES 2022.
+- **Definition.** Given a feature vector $x$ and its protected attribute
+perturbation $x^S$, an explanation $E_x$ preserves counterfactual fairness if:
+
+  \textbf{$$D(E_x, E_{x^S}) \propto f(x) - f(x^S)$$}
+
+  The difference between explanations should be **proportional** to the difference in predictions. If the model's output didn't change,the explanation shouldn't change either.
 
 ---
 
@@ -449,9 +509,19 @@ $$\text{PGU} = \mathbb{E}_{x \sim \text{majority}}[\Delta f(x, e)] - \mathbb{E}_
 \Huge How do we \textbf{\underline{pick}} an explanation method from the XAI landscape?
 \end{center}
 
+. . .
+
+**Short answer:** it depends. **Longer answer:** it really depends.
+
+**The XAI landscape offers dozens of methods** — but there is no universal
+winner. The best method depends on your model, your data, and what
+"reliable" means in your specific context.
+
 ---
 
 # OpenXAI
+
+**This is exactly what OpenXAI is for:**
 
 - OpenXAI provides an **automated end-to-end pipeline** that simplifies and standardizes the evaluation of post hoc explanation methods
 - OpenXAI promotes **transparency and reproducibility** in benchmarking explanation methods
@@ -474,43 +544,55 @@ $$\text{PGU} = \mathbb{E}_{x \sim \text{majority}}[\Delta f(x, e)] - \mathbb{E}_
 
 ---
 
-# XAI Ready Dataloaders and Models
+# XAI-Ready Dataloaders and Models
 
+OpenXAI includes 7 real-world datasets (finance, healthcare, criminal justice)
+and a synthetic data generator — all preprocessed and ready to use out of the box.
 ```python
 from openxai import Dataloader
 loader_train, loader_test = Dataloader.return_loaders(
-    data_name='german', download=True)
+    data_name='german',
+    download=True,
+)
 inputs, labels = iter(loader_test).next()
 ```
 
-\vspace{0.5cm}
-
-OpenXAI provides pre-trained models for readily benchmarking explanation methods.
+Pre-trained models (ANNs and logistic regression) are also available,
+so you can start benchmarking explanation methods without training anything yourself.
 
 ```python
 from openxai import LoadModel
 model = LoadModel(data_name='german', ml_model='ann')
 ```
 
+
 ---
 
 # OpenXAI Explainers
 
-OpenXAI provides ready-to-use implementations of six state-of-the-art feature attribution methods.
+OpenXAI provides ready-to-use implementations of six state-of-the-art
+feature attribution methods: LIME, SHAP, Vanilla Gradients,
+Gradient $\times$ Input, SmoothGrad, and Integrated Gradients.
 
 ```python
 from openxai import Explainer
 exp_method = Explainer(method='LIME')
-explanations = exp_method.get_explanations(
-    model, X=inputs, y=labels)
+explanations = exp_method.get_explanations(model, X=inputs, y=labels)
 ```
 
-\vspace{0.5cm}
+This makes it easy to swap methods and compare their outputs
+under identical conditions.
+
+---
+
+# OpenXAI Explainers - API
+
+Any custom method can be integrated by extending the `Explainer` class
+and implementing a single method:
 
 ```python
 @abstractmethod
-def get_explanations(self, model, X: torch.Tensor,
-                     y: torch.Tensor):
+def get_explanations(self, model, X: torch.Tensor, y: torch.Tensor):
     """
     Generate explanations for given input/s.
     Parameters: model, X (m x n tensor), y (labels)
@@ -527,31 +609,60 @@ OpenXAI provides implementations and ready-to-use APIs for a set of **22 quantit
 
 ```python
 from openxai import Evaluator
-metric_evaluator = Evaluator(inputs, labels, model,
-                             explanations)
+metric_evaluator = Evaluator(inputs, labels, model, explanations)
 score = metric_evaluator.eval(metric='RIS')
 ```
 
 ---
 
-# OpenXAI's Leaderboard
+# OpenXAI's Leaderboard 1/2
+
+OpenXAI provides a public leaderboard to compare explanation methods
+across datasets, models, and evaluation metrics — making it easy to
+identify which method works best for a given setting.
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/openxai_leaderboard.png}
+\includegraphics[width=0.99\columnwidth]{imgs/openxai_leaderboard.png}
 \end{center}
+
+---
+
+# OpenXAI's Leaderboard 2/2
+
+\begin{center}
+\includegraphics[width=0.85\columnwidth]{imgs/openxai_leaderboard.png}
+\end{center}
+
+\fontsize{10pt}{9pt}
+The table shows **faithfulness metrics** for six methods on the **German Credit** dataset:
+
+- **FA, RA, SA, SRA, PRA, RC** — agreement between explanation and ground truth.
+- **PGI / PGU** — prediction gap when masking important / unimportant features.
+
+**Key observation:** gradient-based methods consistently outperform SHAP —
+but this may not hold across all settings.
 
 ---
 
 # Exploring the Landscape Using OpenXAI
 
-- LIME produces more faithful (+24.9%) explanations
-- Across all real-world datasets, SmoothGrad achieves **63.2% higher RRS** values
-
 \begin{center}
 \includegraphics[width=0.7\columnwidth]{imgs/openxai_landscape.png}
 \end{center}
 
-\small PGU metric for Majority vs. Minority groups — SmoothGrad shows largest fairness gap.
+\small
+No single method wins on all dimensions:
+
+- **LIME** produces more faithful explanations (+24.9%).
+- **SmoothGrad** achieves 63.2% higher stability (RRS) — but shows the
+  **largest fairness gap** between majority and minority groups.
+
+The chart shows PGU scores by demographic group. A gap between majority (red)
+and minority (purple) indicates unequal explanation quality across groups.
+
+\begin{center}
+\textbf{A method that is faithful and stable may still be unfair}
+\end{center}
 
 ---
 
@@ -560,9 +671,9 @@ score = metric_evaluator.eval(metric='RIS')
 - How to benchmark different **non-perturbation-based** explanation methods?
 
 - Benchmarking explanations on **other modalities**:
-  - Vision (Quantus)
-  - NLP (e-ViL)
-  - Graphs (GraphXAI)
+  - Vision (Quantus): [https://quantus.readthedocs.io/en/latest/](https://quantus.readthedocs.io/en/latest/)
+  - NLP (e-ViL): [https://github.com/maximek3/e-ViL](https://github.com/maximek3/e-ViL)
+  - Graphs (GraphXAI): [https://github.com/mims-harvard/GraphXAI](https://github.com/mims-harvard/GraphXAI)
 
 \footnotesize C. Agarwal et al., Evaluating Explainability for Graph Neural Networks, Nature Scientific Data'2023
 
