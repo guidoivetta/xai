@@ -710,18 +710,6 @@ Where $n$ is the number of training examples and $m$ is the number of prototypes
 
 ---
 
-# Results: MNIST Data
-
-\begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/mnist_results.png}
-\end{center}
-
-\begin{exampleblock}{Performance}
-Test accuracy \textbf{above 99\%} and on par with SOTA. Reconstruction Error: 4.22
-\end{exampleblock}
-
----
-
 # Case Study 1: MNIST
 
 \begin{center}
