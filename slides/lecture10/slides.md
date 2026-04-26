@@ -165,8 +165,8 @@ Additional gate: only backpropagate \textbf{positive} relevance signals
 Both maps are produced by the **same method** on the **same input** — but one comes
 from a trained model and the other from a **randomly initialized** network.
 
-- **Left:** explanation from a **trained** model.
-- **Right:** explanation from a **randomly initialized** model.
+- **Top:** explanation from a **trained** model.
+- **Bottom:** explanation from a **randomly initialized** model.
 
 Can you tell which is which?
 
