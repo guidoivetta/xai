@@ -427,6 +427,10 @@ These 2 axioms guide the design of **Integrated Gradients**: average the gradien
 
 **Example:** single ReLU network $f(x) = 1 - \text{ReLU}(1-x)$, baseline $x=0$, input $x=2$:
 
+\begin{center}
+\includegraphics[width=0.40\columnwidth]{imgs/whyvanillafail.png}
+\end{center}
+
 ---
 
 # Why Vanilla Gradients Fail: Violating Sensitivity 1/1
