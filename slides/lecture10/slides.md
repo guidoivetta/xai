@@ -689,6 +689,26 @@ and minority (purple) indicates unequal explanation quality across groups.
 
 ---
 
+# Should You Use OpenXAI Today?
+
+| Aspect | Assessment |
+|---|---|
+| Conceptual framework |  Still valid and well-cited |
+| Metrics coverage |  Comprehensive (faithfulness, stability, fairness) |
+| Active maintenance | Limited since 2022–2023 |
+| Compatibility | May lag behind current SHAP/LIME versions |
+
+**Alternatives worth knowing:**
+
+- **Quantus** — actively maintained, strong on faithfulness & robustness metrics
+- **Captum** (PyTorch) — deep integration with neural networks
+- **CARLA** — focused on counterfactual explanations
+
+**Bottom line:**
+OpenXAI is a solid reference for *understanding evaluation methodology*, but for hands-on projects, consider more actively maintained tools.
+
+---
+
 \begin{center}
 \Huge Thank You!
 \end{center}
