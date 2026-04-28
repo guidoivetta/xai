@@ -127,14 +127,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 \[ [Lecture 9](slides/lecture09/slides.pdf) | \[ [Lecture 10](slides/lecture10/slides.pdf) \]
 
 ---
----
----
 
-# DE ACA EN ADELANTE NO ESTA LISTO EL MATERIAL
-
----
----
----
 
 ## Week 6: Counterfactual Explanations (or) Algorithmic Recourse
 
@@ -153,9 +146,16 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_11_Wachter_Algorithmic_Recourse.pptx) | [Slides 2](slides/Lecture_11_Karimi_Causal_Recourse.pptx) | [Slides 3](slides/Lecture_12_ROAR.pptx) | [Slides 4](slides/Lecture_12_PROBE.pptx) \]
+\[ [Lecture 11](slides/lecture11/slides.pdf) | \[ [Lecture 10](slides/lecture12/slides.pdf) \]
 
 
+---
+---
+
+# DE ACA EN ADELANTE NO ESTA LISTO EL MATERIAL
+
+
+---
 ---
 
 ## Week 7: Attention and Concept Based Explanations
