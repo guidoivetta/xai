@@ -17,45 +17,41 @@ bibliography: references.bib
 \includegraphics[width=0.9\columnwidth]{imgs/paper1_title.png}
 \end{center}
 
-\vfill
-\footnotesize Paper by: Sandra Wachter, Brent Mittelstadt, \& Chris Russell
-
 [@wachter2017counterfactual]
 
 ---
 
 # Introduction + Motivation
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
-
 **EU General Data Protection Regulation (2018)**
+
+:::: columns
+::: {.column width="48%"}
 
 - "the toughest privacy and security law in the world"
 - Article 13-14, regarding automated decision-making: "meaningful information about the logic involved"
 - Recital 71: "the right to obtain an explanation of the decision reached and to challenge the decision"
 
-\end{column}
-\begin{column}{0.45\textwidth}
+:::
+::: {.column width="50%"}
 
 \begin{alertblock}{4 Key Problems}
-1. Not legally binding
-2. Only applicable in limited cases
-3. Explainability is technically very challenging
-4. Competing interests of data controllers, subjects, etc.
+\begin{enumerate}
+\item Not legally binding
+\item Only applicable in limited cases
+\item Explainability is technically very challenging
+\item Competing interests of data controllers, subjects, etc.
+\end{enumerate}
 \end{alertblock}
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
 # Unconditional Counterfactual Explanations
 
-## Authors propose
-
-\begin{columns}
-\begin{column}{0.60\textwidth}
+**Authors propose**
 
 - **3 aims for explanations**
   - Inform and help the subject understand "why"
@@ -66,40 +62,33 @@ bibliography: references.bib
   - Overcome challenges w.r.t. current interpretability work
   - Can bridge the gap between interests of data subjects and data controllers
 
-\end{column}
-\begin{column}{0.37\textwidth}
+\vspace{1em}
+\begin{center}
+\huge
+\textbf{Do you buy this?}
+\end{center}
 
-\begin{exampleblock}{Do you buy this?}
-\end{exampleblock}
 
-\end{column}
-\end{columns}
 
 ---
 
 # Unconditional Counterfactual Explanations
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
 
 - **Definition:**
   - A statement of how the world would have to be different for a desirable outcome to occur
-  - **Because** of features $\{x_1, x_2\}$, $x$'s outcome was label $y_1$
-  - **If** $x = \{x_1 + \delta_1, x_2 + \delta_2\}$, **then** $y_2$.
+  - **Because** of features $\{x_1, x_2\}$, $x$'s outcome was label $y_1$  
+  **If** $x = \{x_1 + \delta_1, x_2 + \delta_2\}$, **then** $y_2$.
 - **Example:**
-  - "You were denied a loan because your annual income was \$30000. If your income has been \$45000, you would have been offered a loan"
+  - "You were denied a loan **because** your annual income was \$30000.   
+  **If** your income has been \$45000, **you would have been offered a loan**"
 
-\end{column}
-\begin{column}{0.45\textwidth}
 
-\begin{block}{Notes}
+## Notes
+
 - No one \textbf{unique} CF
 - Need to consider \textbf{actionability} (mutability of variables)
 - Providing \textbf{several diverse} CFEs may be more useful than simply the closest/shortest one
-\end{block}
-
-\end{column}
-\end{columns}
 
 ---
 
@@ -114,33 +103,29 @@ bibliography: references.bib
 
 # Background: Historic Context of Knowledge
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
-
 - In order to know something, it is not enough to simply **believe** that it is true: rather, you must also have a good **reason** for believing it
 - If $q$ were false, $S$ would not believe $p$
 
-\end{column}
-\begin{column}{0.45\textwidth}
 
-\begin{alertblock}{Note}
+## Note
+
 - This statement only describes $S$'s \textbf{beliefs}, which might not reflect reality
 - This statement can be made without knowledge of the \textbf{causal relationship} between $p$ and $q$
 - Q: who is $S$? The user? The model? Us?
-\end{alertblock}
 
-\end{column}
-\end{columns}
+
 
 ---
 
 # Background: Previous Explanations in AI/ML
 
-- Previously: providing insight into the internal state of an algorithm, human-understandable approximations of the algorithm
+- **Previously:** providing insight into the internal state of an algorithm, human-understandable approximations of the algorithm
+
 - Three-way tradeoff between:
   1. quality of approximation
   2. ease of understanding the function
   3. size of the domain for which the approximation is valid
+
 - **CFEs:**
   - Minimal amount of information
   - Require no understanding of internal logic of model
@@ -149,159 +134,156 @@ bibliography: references.bib
 
 ---
 
-# Background: Adversarial Perturbations
+# Background: Adversarial Perturbations (not the same)
 
-- Small changes to a given image can result in the image being assigned to a different class
-- Very similar to CFEs but the changes aren't necessarily sparse
-- Often not human perceptible
-  - Authors propose that this is because the new images lie outside the "real-image" manifold
-  - Emphasize the importance of solutions/CFEs being *possible* as well as close
-  - Further research into structure of high-D data is structured before CFEs can be useful/reliable in those domains
+* **Shared Mechanism:** Both find the minimal change ($\delta$) to flip a prediction: $f(x + \delta) = y'$.
+* **The Contrast:**
+    * **Adversarial:** Invisible, targets pixels, intended to **deceive**.
+    * **Counterfactual:** *Sparse*, targets features, intended to **inform**.
+* **The "Manifold" Requirement:**
+    * Mathematical changes must be **plausible** in the real world.
+    * GDPR requires explanations to be "meaningful," not just possible.
+* **Key Insight:** A CFE is an adversarial attack with a **human-centric purpose**.
 
 ---
 
 # Background: Causality and Fairness
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
-
-- Can provide evidence that models/decisions are affected by protected attributes
-- If CFEs change one's race, the treatment of that individual is dependent on race
-
-\end{column}
-\begin{column}{0.45\textwidth}
-
-\begin{exampleblock}{Discussion}
-Is the converse true?
-\end{exampleblock}
-
-\end{column}
-\end{columns}
+* **Bias Detection:** CFEs act as an audit tool; they reveal if a decision is based on protected attributes (e.g., race, gender, age).
+* **Counterfactual Fairness:** If the "shortest path" to a loan approval requires changing your race or gender, the model is demonstrably discriminatory.
+* **Evidence of Disparate Treatment:** CFEs provide a "smoking gun" for auditors without needing to inspect the model's internal weights.
+* **The Converse Question:** If a model is biased, will the CFE *always* change a protected attribute? 
+    * *Warning:* Bias often hides in "proxies" (e.g., ZIP code as a proxy for race).
 
 ---
 
 # Summary of Contributions
 
-- Highlights the difficulties with conveying the inner workings of modern ML algorithms to users
-  - Complexity
-  - Lack of utility (except for "builders")
-- Introduces an algorithmic approach to counterfactuals
-  - Rooted in adversarial machine learning
-- Connects counterfactuals to the GDPR
-  - Demonstrates advantages over other interpretability methods from a policy perspective
+**Core argument:** explaining automated decisions does not require opening the black box.
+
+| Contribution | Key point |
+|---|---|
+| Complexity of ML explanations | Internal logic is too complex to convey to lay users |
+| Counterfactual approach | Rooted in adversarial ML; no model internals required |
+| GDPR alignment | CFEs satisfy transparency goals better than local approximations |
+
+> **Bottom line:** CFEs shift the focus from *how the model works*
+> to *what would need to change* --- actionable, model-agnostic, and legally compatible.
 
 ---
 
 # Approach: Counterfactual Optimization
 
-$$\arg\min_{x'} \max_{\lambda} \; \lambda(f_w(x') - y')^2 + d(x_i, x')$$
+\begin{center}
+\large
+\textbf{$$\arg\min_{x'} \max_{\lambda} \; \lambda(f_w(x') - y')^2 + d(x_i, x')$$}
+\end{center}
 
-- **Minimize:**
-  - Squared error with desired (counterfactual) label
-  - Distance to perturbed point
-- **While maximizing** weight on squared error term
-  - We want to have the prediction change more than we want the point to be close
-  - Iteratively: solve for $x'$, then maximize $\lambda$
-- **Settings:**
-  - Tabular Data
-  - Regression
+> **In plain terms:** find the closest point to $x_i$ that flips the prediction to $y'$.
+
+| Symbol | Meaning |
+|--------|---------|
+| $x'$ | Counterfactual point (what we optimize) |
+| $\lambda$ | Weight balancing target vs. proximity |
+| $\lambda(f_w(x') - y')^2$ | Penalizes missing the target label |
+| $d(x_i, x')$ | Penalizes distance from factual point |
+| $\max_\lambda$ | Forces label flip to dominate over proximity |
+
+**Procedure:** alternate --- optimize $x'$, then increase $\lambda$ until constraint is satisfied.
 
 ---
 
 # Approach: Distance Metrics
 
-$$d(x, x') = \sum_{k \in F} \frac{||x_{i,k} - x'_k||_p}{N}$$
+$$d(x, x') = \sum_{k \in F} \frac{\|x_{i,k} - x'_k\|_p}{N_k}$$
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+\begin{center}
+\textbf{In plain terms:} sum of per-feature differences, normalized so all features are comparable.
+\end{center}
 
-**Norms**
+| Term | Meaning |
+|------|---------|
+| $x_{i,k} - x'_k$ | Change in feature $k$ |
+| $\|\cdot\|_p$ | $\ell_1$ (sparse changes) or $\ell_2$ (smooth changes) |
+| $N_k$ | Normalizing factor --- makes features comparable |
 
-$$|x_{i,k} - x'_k|$$
+**Two normalizing choices:**
 
-$$(x_{i,k} - x'_k)^2$$
+1. $N_k = \text{MAD}_k = \text{median}_{j}\bigl(|X_{j,k} - \text{median}_l(X_{l,k})|\bigr)$
+2. $\qquad N_k = \text{std}_{j}(x_{j,k})$
 
-\end{column}
-\begin{column}{0.48\textwidth}
 
-**Normalizing Factors**
+---
 
-$$MAD_k := \text{median}_{j \in P}(|X_{j,k} - \text{median}_{l \in P}(X_{l,k})|)$$
+# Experimental Results: LSAT 1/3
 
-$$\text{std}_{j \in P}(x_{j,k})$$
+**Setup:** predict law school admission score from $\{$GPA, LSAT, Race$\}$ using a black-box model.
+\vfill 
 
-\end{column}
-\end{columns}
+**Goal:** 
+
+- For each below-average student, find the *minimal change* that brings their score to $y' = 0$ (population mean).  
+- *population mean*The minimum score to be considered an average candidate.
+
+
+\vfill
+
+## Key question: 
+Does the choice of distance metric produce
+fair, realistic, and actionable counterfactuals?
 
 ---
 
 # Experimental Results: LSAT
 
-$$d(x_i, x') \propto \sum_{k \in F} (x_{i,k} - x'_k)^2$$
-
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/lsat_l2.png}
-\end{center}
-
-\footnotesize Table 1 - Unnormalized L2 \quad\quad Table 2 - Normalised L2
-
----
-
-# Experimental Results: LSAT (L1)
-
-$$d(x_i, x') = \sum_{k \in F} \frac{|x_{i,k} - x'_k|}{MAD_k}$$
-
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/lsat_l1.png}
-\end{center}
-
-\footnotesize Table 3 - Normalised L1
+:::: {.columns}
+::: {.column width="55%"}
+![](imgs/lsat_l2.png)
+:::
+::: {.column width="45%"}
+- Without normalization, the optimizer freely modifies Race ($-1.0$, $0.9$), producing impossible counterfactuals.
+- MAD normalization makes changing Race relatively costly, keeping it fixed across all CFEs.
+- Distance metric choice is not a technical detail --- it directly determines fairness and plausibility of recommendations.
+:::
+::::
 
 ---
 
 # Experimental Results: Discussion
 
-- **Realistic (or achievable) counterfactual values**
-  - Clipping and Clamping
-- **Counterfactual Targets**
-  - LSAT: Avg. Grade 0
-    - Students would want to know how to improve their average grade
-  - PIMA: Risk Score of 0.5
-    - Patients would want to know how to achieve a lower risk score
+1. **Two practical design decisions for realistic CFEs:**
+
+| Technique | Purpose |
+|-----------|---------|
+| Clipping | Truncate CFE values to observed data range |
+| Clamping | Force categorical variables to valid values |
+
+2. **We need reasobales counterfactual targets:**
+
+| Dataset | Target $y'$ | Interpretation |
+|---------|-------------|----------------|
+| LSAT | $0$ | Reach population average score |
+| PIMA | $0.5$ | Cross from high to low diabetes risk |
+
+> **Note:** the choice of $y'$ is not neutral --- it encodes
+> a normative judgment about what counts as a "desirable" outcome.
 
 ---
 
 # Explanations and The GDPR
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
+**GDPR Recital 71** requires that automated decisions include:
+the right to obtain an explanation and to challenge the decision.
 
-**GDPR Requirements: Recital 71**
+| Requirement | CFE response |
+|-------------|-------------|
+| Intelligible explanation | Simple "if-then" statements |
+| No black-box exposure | CFEs depend only on external facts, not model internals |
+| No trade secret violation | No algorithm details disclosed |
+| Individual-level insight | Tailored to each data subject's situation |
 
-- Implement suitable safeguards against automated decision-making
-- Include specific information to the data subject and the right to obtain human intervention
-  - To express their point of view
-  - To challenge the decision
-  - To obtain an *explanation* of the decision reached after such assessment
-
-\end{column}
-\begin{column}{0.45\textwidth}
-
-\begin{block}{}
-- Does not require opening the "black box" to explain the internal logic of decision-making systems
-- Does not explicitly define requirements for explanations of automated decision-making
-\end{block}
-
-\end{column}
-\end{columns}
-
----
-
-# Counterfactual Explanations and The GDPR
-
-- Legislators wanted to clarify that some type of explanation can voluntarily be offered after a decision has been made
-- Many aims for explanations are feasible
-- Emphasis of GDPR is on protections and rights for individuals
+> **Bottom line:** CFEs do not require opening the black box ---
+> they satisfy GDPR goals while protecting data controllers' interests.
 
 ---
 
@@ -318,96 +300,77 @@ $$d(x_i, x') = \sum_{k \in F} \frac{|x_{i,k} - x'_k|}{MAD_k}$$
 \centering Possible mechanism to meet the explicit requirements and background aims of the GDPR
 \end{alertblock}
 
----
-
-# Broader Possibilities with the Right of Access
-
-\footnotesize Art 15.
-
-- Confirm whether or not personal data used
-- Provide information available after a decision has been made
-- Avoid disclosing personal data of other data subjects
-- Balance interest of the subject and controller
-  - Potential to contravene trade secrets or intellectual property rights
-
-\begin{exampleblock}{Counterfactuals}
-- Data of other data subjects or detailed information about the algorithm does not need to be disclosed
-- Disclose only the influence of select external facts and variables on a specific decision
-- Less likely to infringe on trade secrets or privacy
-\end{exampleblock}
-
----
-
-# Understanding Through Counterfactuals
-
-\footnotesize Art 12(1)
-
-- Requires information to be conveyed in a "concise, transparent, intelligible and easily accessible form"
-- CFEs align with this requirement by providing simple "if-then" statements
-- CFEs provide greater insight into the data subject's personal situation as opposed to an overview tailored to a general audience
-
-\vfill
-\begin{block}{}
-\centering Minimally burdensome and disruptive technique to understand the rationale of specific decisions
-\end{block}
 
 ---
 
 # Legal Information Gaps on Contesting Decisions
+
+**The GDPR leaves critical gaps for individuals seeking to contest automated decisions:**
 
 - **Art. 16**
   - Data subject has the right to correct inaccurate data used to make a decision, but does not need to be informed of which data the decision depended
 - **Art. 22**
   - Data subjects do not need to be informed of their right *not* to be subject to an automated decision
 
----
+## CFEs close these gaps: 
 
-# Contesting Through Counterfactuals
-
-- Lead to greater protection for the data subject than currently envisioned by the GDPR
-- Align with Article 29 Working Party
-  - Understanding decisions + knowing legal basis is essential for contesting decisions
-- Reduce burden on data subject
-  - Understand most influential data (instead of vetting all collected data)
-  - Compact way to convey dependencies
+By revealing which features were most influential,
+they give individuals the information needed to meaningfully contest a decision.
 
 ---
 
 # Explanations to Alter Future Decisions
 
-- **GDPR**
-  - Explanations not explicitly mentioned as a guide to altering behavior to receive a desired automated decision
-- **Article 29 Working Party**
-  - Provide suggestions on how to improve habits and receive better outcome
-- **Counterfactual explanations**
-  - Can address the impact of changes to more than one variable on a model's output at the same time
-  - Can be used in a contractual agreement between data controllers and data subjects
+**The third goal of explanations:** not just to understand or contest,
+but to guide the individual toward a better outcome.
+
+| Source | Position |
+|--------|----------|
+| GDPR | Silent --- does not explicitly require forward-looking explanations |
+| Art. 29 Working Party | Recommends suggestions on how to improve outcomes |
+| CFEs | Naturally satisfy this goal --- show *what to change* and *by how much* |
+
+> **Key advantage:** CFEs can address the impact of changing
+> multiple variables simultaneously, producing realistic and actionable recourse paths.
 
 ---
 
-# Discussion
-
-\begin{columns}
-\begin{column}{0.52\textwidth}
-
-- **Who do these explanations serve?**
-  - Developers, Data subjects, and Lawmakers
-- **Do you think they are misinterpreted?**
-  - Causality
-  - Optimizing for sparsity may not reflect reality
-- **Priors and desired outcomes**
-
-\end{column}
-\begin{column}{0.45\textwidth}
+# Empirical Evidence: Yacoby et al. (2020)
 
 \begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/judges_paper.png}
+\includegraphics[width=0.6\columnwidth]{imgs/yacoby.png}
 \end{center}
 
-\end{column}
-\end{columns}
+**Setup:** 8 U.S. state court judges evaluated criminal risk assessments
+accompanied by CFEs.
 
-[@yacoby2020if]
+**Example CFE shown to judges:** *"If this defendant had stable employment, the system would have classified them as low risk."*
+
+**Finding:** CFEs did not change judicial decisions because:
+
+1. Misinterpretation: Judges see it as a claim about the defendant, not the model.
+2. Irrelevance: Once understood, judges find it irrelevant to the case.
+
+**Implication:** CFEs can be legally compliant and mathematically correct
+yet fail entirely in practice due to user misinterpretation.
+
+---
+
+# Discussion: Limitations of CFEs (Wachter et al.)
+
+**Who do these explanations actually serve?**
+
+- **Developers:** debugging and model improvement
+- **Data subjects:** recourse and contestation
+- **Lawmakers:** accountability and compliance
+
+**Two sources of misinterpretation:**
+
+- **Causality:** CFEs describe model behavior, not real-world causal effects
+- **Sparsity bias:** mathematically minimal changes may be unrealistic or unachievable
+
+> **Takeaway:** CFEs tell you *where to go*, not *how to get there* ---
+> this gap motivates Karimi et al.'s causal recourse framework.
 
 ---
 
