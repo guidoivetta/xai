@@ -649,23 +649,51 @@ accounting for the fact that actions propagate through the causal structure of t
 
 # Algorithmic Recourse via Minimal Interventions: Formalism
 
-$$A^* \in \underset{A}{\arg\min} \; \text{cost}(A; x^F) \quad \text{s.t.} \quad h(x^{\text{SCF}}) \neq h(x^F), \quad x^{\text{SCF}} = F_A(F^{-1}(x^F)), \quad x^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}$$
+:::: columns
+::: {.column width="40%"}
 
-\begin{alertblock}{Proposition}
-- $A^{\text{CFE}}$: Counter Factual Explanation-based action
-- $A^*$: Minimal Intervention Solution
+$$\begin{aligned}
+A^* \in \underset{A}{\arg\min} \; &\text{cost}(A; \mathbf{x}^F) \\
+\text{s.t.} \quad &h(\mathbf{x}^{\text{SCF}}) \neq h(\mathbf{x}^F) \\
+&\mathbf{x}^{\text{SCF}} = F_A(F^{-1}(\mathbf{x}^F)) \\
+&\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}
+\end{aligned}$$
 
-$$\text{cost}(A^*; x^F) \leq \text{cost}(A^{\text{CFE}}; x^F)$$
-\end{alertblock}
+:::
+::: {.column width="60%"}
+
+**Proposition:**
+
+- $A^{\text{CFE}}$: recourse action derived from nearest counterfactual explanation
+- $A^*$: recourse action from MINT
+
+$$\text{cost}(A^*; \mathbf{x}^F) \leq \text{cost}(A^{\text{CFE}}; \mathbf{x}^F)$$
+:::
+::::
+
+## In plain English
+MINT always finds a recourse action that is at least as cheap as the CFE-based recommendation ---
+and strictly cheaper whenever features are causally dependent.
 
 ---
 
 # Algorithmic Recourse via Minimal Interventions: MINT
 
-- **Recourse through Minimal Interventions (MINT) idea:**
-  - Required: that we can compute structural counterfactual of an individual in the world given *any* feasible action
-  - Focus on the case where the SCM is an additive noise model
-  - $\Rightarrow$ Abduction-action-prediction technique (Pearl et al.) to compute $x^{\text{SCF}}$: $F_A(F^{-1}(x^F))$
+**Core requirement:** ability to compute $x^{\text{SCF}} = F_A(F^{-1}(x^F))$
+for *any* feasible action $A \in \mathcal{F}$.
+
+**Tractability assumption:** SCM is an additive noise model (ANM):
+$$X_i := f_i(\text{pa}_i) + U_i$$
+
+**Solution:** Abduction-Action-Prediction (Pearl et al.):
+
+- **Abduction:** infer $U$ from observed $x^F$ via $F^{-1}(x^F)$
+- **Action:** modify SCM according to $\text{do}(\{X_i := a_i\}_{i \in I})$
+- **Prediction:** propagate through modified SCM to obtain $x^{\text{SCF}}$
+
+## In plain English
+ANMs make $F$ invertible, enabling exact computation of the
+structural counterfactual for any action --- which is what MINT needs to solve the optimization.
 
 ---
 
