@@ -163,7 +163,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 ### Readings
 
 - Mullenbach et. al., 2018, [Explainable Prediction of Medical Codes from Clinical Text](https://www.aclweb.org/anthology/N18-1100.pdf)
-Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/1902.10186)
+- Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/1902.10186)
 - Bau and Zhou et. al., 2017, [Network Dissection: Quantifying Interpretability of Deep Visual Representations](http://netdissect.csail.mit.edu/final-network-dissection.pdf)
 - Kim et. al., 2018, [Interpretability Beyond Feature Attribution: Quantitative Testing with Concept Activation Vectors](https://arxiv.org/abs/1711.11279)
 
