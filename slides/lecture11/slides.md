@@ -77,10 +77,10 @@ bibliography: references.bib
 
 - **Definition:**
   - A statement of how the world would have to be different for a desirable outcome to occur
-  - **Because** of features $\{x_1, x_2\}$, $x$'s outcome was label $y_1$  
+  - **Because** of features $\{x_1, x_2\}$, $x$'s outcome was label $y_1$
   **If** $x = \{x_1 + \delta_1, x_2 + \delta_2\}$, **then** $y_2$.
 - **Example:**
-  - "You were denied a loan **because** your annual income was \$30000.   
+  - "You were denied a loan **because** your annual income was \$30000.
   **If** your income has been \$45000, **you would have been offered a loan**"
 
 
@@ -152,7 +152,7 @@ bibliography: references.bib
 * **Bias Detection:** CFEs act as an audit tool; they reveal if a decision is based on protected attributes (e.g., race, gender, age).
 * **Counterfactual Fairness:** If the "shortest path" to a loan approval requires changing your race or gender, the model is demonstrably discriminatory.
 * **Evidence of Disparate Treatment:** CFEs provide a "smoking gun" for auditors without needing to inspect the model's internal weights.
-* **The Converse Question:** If a model is biased, will the CFE *always* change a protected attribute? 
+* **The Converse Question:** If a model is biased, will the CFE *always* change a protected attribute?
     * *Warning:* Bias often hides in "proxies" (e.g., ZIP code as a proxy for race).
 
 ---
@@ -218,17 +218,17 @@ $$d(x, x') = \sum_{k \in F} \frac{\|x_{i,k} - x'_k\|_p}{N_k}$$
 # Experimental Results: LSAT 1/3
 
 **Setup:** predict law school admission score from $\{$GPA, LSAT, Race$\}$ using a black-box model.
-\vfill 
+\vfill
 
-**Goal:** 
+**Goal:**
 
-- For each below-average student, find the *minimal change* that brings their score to $y' = 0$ (population mean).  
+- For each below-average student, find the *minimal change* that brings their score to $y' = 0$ (population mean).
 - *population mean*The minimum score to be considered an average candidate.
 
 
 \vfill
 
-## Key question: 
+## Key question:
 Does the choice of distance metric produce
 fair, realistic, and actionable counterfactuals?
 
@@ -312,7 +312,7 @@ the right to obtain an explanation and to challenge the decision.
 - **Art. 22**
   - Data subjects do not need to be informed of their right *not* to be subject to an automated decision
 
-## CFEs close these gaps: 
+## CFEs close these gaps:
 
 By revealing which features were most influential,
 they give individuals the information needed to meaningfully contest a decision.
@@ -377,11 +377,9 @@ yet fail entirely in practice due to user misinterpretation.
 # Paper 2
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/paper2_title.png}
+\includegraphics[width=0.95\columnwidth]{imgs/paper2_title.png}
 \end{center}
 
-\vfill
-\footnotesize By Kamiri, Schölkopf, and Valera
 
 [@karimi2021algorithmic]
 
@@ -389,51 +387,58 @@ yet fail entirely in practice due to user misinterpretation.
 
 # Algorithmic Recourse
 
-\begin{columns}
-\begin{column}{0.52\textwidth}
+:::: {.columns}
+::: {.column width="52%"}
 
 - Increasingly algorithms are used to make consequential decisions for individuals
 - Recourse: "*Systematic process of reversing unfavorable decisions made by algorithms and bureaucracies*"
   - Promoting **agency** and **trust**
 
-\end{column}
-\begin{column}{0.45\textwidth}
-
+\vspace{1cm}
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/loan_approval.png}
+\includegraphics[width=0.8\columnwidth]{imgs/compass.png}
 \end{center}
 
-\end{column}
-\end{columns}
+:::
+::: {.column width="48%"}
+
+\begin{center}
+\includegraphics[width=0.75\columnwidth]{imgs/loan_approval.png}
+\end{center}
+
+:::
+::::
 
 ---
 
 # Paper's Main Contributions
 
-1. **Insufficiencies of previous problem formulations**
-   - $\rightarrow$ Motivates causal approach to recourse
-2. **Structural Causal Model approach to recourse**
-3. **Discuss examples motivated by real-world problems and future directions**
+
+**Starting point:** CFEs tell you *where to go* but not *how to get there*.
+
+- **Contribution 1 --- Critique:** formalize the insufficiencies of CFE-based recourse,
+  showing it fails when features are causally dependent.
+
+- **Contribution 2 --- Framework:** propose Recourse through Minimal Interventions (MINT),
+  grounding recourse in Structural Causal Models (SCMs).
+
+- **Contribution 3 --- Validation:** demonstrate MINT on synthetic and real-world settings,
+  achieving up to 65% cost reduction over CFE-based approaches.
+
+## Key shift:
+From finding the nearest counterfactual *instance*
+to finding the minimal cost *action set* that achieves recourse.
 
 ---
 
 # Nearest Counterfactual Explanations
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+\begin{center}
+\includegraphics[width=0.70\columnwidth]{imgs/nearest_cfe.png}
+\end{center}
 
 - For a person with features $\mathbf{x}^F$ who was denied a loan, find the "nearest neighbor" $\mathbf{x}$ who was granted a loan
 - Difference between $\mathbf{x}^F$ and $\mathbf{x}$ is an "explanation" for the loan denial for $\mathbf{x}^F$
-
-\end{column}
-\begin{column}{0.48\textwidth}
-
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/nearest_cfe.png}
-\end{center}
-
-\end{column}
-\end{columns}
 
 ---
 
@@ -452,27 +457,45 @@ $$\mathbf{x}^{*\text{CFE}} \in \underset{\mathbf{x}}{\arg\min} \; \text{dist}(\m
 # Why Are CFEs Not Ideal for Recourse?
 
 \begin{center}
-\Large Counterfactual Explanations provide \textbf{understanding} but do not necessarily lead to optimal \textbf{action recommendations}
+CFEs provide \textbf{understanding} but do not necessarily lead to optimal \textbf{action recommendations}.
 \end{center}
 
+\vfill
+
+- **Problem 1 --- Cost of actions (Ustun et al. 2019):**
+    - CFEs assume all feature changes have equal and constant cost.
+    - Example: going from \$0 to \$100k salary costs the same as \$800k to \$900k.
+- **Problem 2 --- Causal blindness (Karimi et al. 2021):**
+    - CFEs ignore downstream effects of actions on causally dependent features.
+    - Example: increasing salary by 14% automatically raises bank balance by 30% of that amount ---
+    CFEs miss this and recommend a costlier intervention.
+
+\vfill
+
+## Bottom line:
+Acting on a CFE in the real world may be
+suboptimal, infeasible, or simply wrong.
+
 ---
 
-# Why Are CFEs Not Ideal for Recourse?
+# Accounting for the "Cost" of Actions (Ustun et al. 2019)
 
-1. Don't account for person's difficulty or "cost" of changing dimensions of $\mathbf{x}^F$ (addressed by Ustun et al.)
+**Key insight:** not all feature changes are equally easy --- recourse should minimize
+*effort*, not just *distance*.
 
-2. Don't account for downstream "causal" impact of taking actions (addressed by this work)
+$$\begin{aligned}
+\delta^* \in \underset{\delta}{\arg\min} \; &\text{cost}(\delta; \mathbf{x}^F) \\
+\text{s.t.} \quad &h(\mathbf{x}^{\text{CFE}}) \neq h(\mathbf{x}^F) \\
+&\mathbf{x}^{\text{CFE}} = \mathbf{x}^F + \delta \\
+&\mathbf{x}^{\text{CFE}} \in \mathcal{P}, \quad \delta \in \mathcal{F}
+\end{aligned}$$
 
----
+## In plain English:
 
-# Accounting for the "Cost" of Actions (Ustun et al.)
+Find the cheapest set of changes $\delta$ to apply to $\mathbf{x}^F$
+such that the prediction flips, the result is plausible $(\mathcal{P})$,
+and the actions are feasible $(\mathcal{F})$ --- e.g., cannot reduce age or change race.
 
-$$\delta^* \in \underset{\delta}{\arg\min} \; \text{cost}(\delta; \mathbf{x}^F) \quad \text{s.t.} \quad h(\mathbf{x}^{\text{CFE}}) \neq h(\mathbf{x}^F),$$
-$$\mathbf{x}^{\text{CFE}} = \mathbf{x}^F + \delta, \quad \mathbf{x}^{\text{CFE}} \in \mathcal{P}, \quad \delta \in \mathcal{F}$$
-
-- $\delta^*$ restricted to the set of "feasible changes"
-- Consider linear impact of changes $\delta$
-- Non-trivial to choose costs that reflect people's true objective functions
 
 [@ustun2019actionable]
 
@@ -480,7 +503,12 @@ $$\mathbf{x}^{\text{CFE}} = \mathbf{x}^F + \delta, \quad \mathbf{x}^{\text{CFE}}
 
 # Insufficiencies of Ustun et al. Formulation
 
-$$\delta^* \in \underset{\delta}{\arg\min} \; \text{cost}(\delta; \mathbf{x}^F) \quad \text{s.t.} \quad h(\mathbf{x}^{\text{CFE}}) \neq h(\mathbf{x}^F)$$
+$$\begin{aligned}
+\delta^* \in \underset{\delta}{\arg\min} \; &\text{cost}(\delta; \mathbf{x}^F) \\
+\text{s.t.} \quad &h(\mathbf{x}^{\text{CFE}}) \neq h(\mathbf{x}^F) \\
+&\mathbf{x}^{\text{CFE}} = \mathbf{x}^F + \delta \\
+&\mathbf{x}^{\text{CFE}} \in \mathcal{P}, \quad \delta \in \mathcal{F}
+\end{aligned}$$
 
 1. **Marginal cost of changing a feature is constant**
    - **Example:** Cost of going from salary \$0 to \$100k equals cost to go from salary \$800k to \$900k
@@ -491,10 +519,10 @@ $$\delta^* \in \underset{\delta}{\arg\min} \; \text{cost}(\delta; \mathbf{x}^F) 
 
 ---
 
-# Actions as Interventions: Structural Causal Model (SCM)
+# Actions as Interventions: Structural Causal Model (SCM) 1/2
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: columns
+::: {.column width="48%"}
 
 **Setup**
 
@@ -505,82 +533,117 @@ $$\delta^* \in \underset{\delta}{\arg\min} \; \text{cost}(\delta; \mathbf{x}^F) 
 - $A$ ($\Pi \rightarrow \Pi$): structural interventions, i.e. transformations between SCMs
   - of the form $A := \text{do}(\{X_i := a_i\}_{i \in I})$
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::: {.column width="48%"}
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/scm_diagram.png}
-\end{center}
+![](imgs/scm_diagram.png)
 
-- $M$: true world model
-- observation: $M_1 \neq M_2 \neq M_3$
+:::
+::::
 
-\end{column}
-\end{columns}
+---
+
+# Actions as Interventions: Structural Causal Model (SCM) 2/2
+
+:::: columns
+::: {.column width="48%"}
+
+- **$\mathcal{M}$ (real world):** $X_2$ depends on $X_1$ --- causal edge exists.
+- **$\mathcal{M}_1$ (intervene on $X_1$):** set $X_1 = a_1$, edge remains --- changing salary drags bank balance along.
+- **$\mathcal{M}_2$ (intervene on $X_2$):** set $X_2 = a_2$, edge is severed --- bank balance forced independently of salary.
+- **$\mathcal{M}_3$ (intervene on both):** set $X_1 = a_1$, $X_2 = a_2$ --- fully independent world. This is what CFEs assume, hence suboptimal.
+
+
+:::
+::: {.column width="48%"}
+
+![](imgs/scm_diagram.png)
+
+:::
+::::
+
+## The key observation
+$\mathcal{M}_1 \neq \mathcal{M}_2 \neq \mathcal{M}_3$ --- each intervention produces a different post-intervention world with different consequences.
 
 ---
 
 # Actions as Interventions: Structural Counterfactuals
 
 \begin{center}
-\textit{What will individual $x^F$'s feature vector be after the individual performs action set $A$ in world $M$?}
+\textbf{If individual $x^F$ performs action set $A$ in world $\mathcal{M}$,
+what will their new feature vector be?}
 \end{center}
 
-\vspace{0.5cm}
+**Assumptions:**
+- No hidden confounders (true SCM known)
+- $F$ is invertible
 
-**Assumptions:** (1) no hidden confounders (true SCM), (2) full access to invertible $F$
+**Two-step procedure:**
 
-**Idea:** once we know $F$, $X$ (endogenous variables) can be uniquely determined given $U$ (exogenous variables)
-
-Compute $F^{-1}(x^F)$
-
-\begin{block}{}
-\centering Takeaway: we can compute any structural counterfactual query for individual $x^F$:
+1. **Abduction** --- $F^{-1}(x^F)$: Infer exogenous variables $U$ from observed features
+2. **Prediction** --- $F_A(U)$: Propagate action $A$ through the causal graph
 
 $$x^{\text{SCF}} = F_A(F^{-1}(x^F))$$
-\end{block}
+
+## In plain English
+First figure out *who this person is* (their latent $U$),
+then compute *what happens to them* after the action, respecting all causal dependencies.
 
 ---
 
 # Limitations of CFE-Based Recourse: Formalism
 
-**Setup:** $x^F$ (individual features), $\delta^*$ action recommendation (Ustun et al. solution),
-$I$ (set of indices of acted-upon observed variables: $I = \{i \mid \delta^*_i \neq 0\}$)
+**Setup:**
 
-\vspace{0.5cm}
+- $x^F$: factual individual (current features)
+- $\delta^*$: action recommendation from Ustun et al.
+- $I = \{i \mid \delta^*_i \neq 0\}$: set of features to be changed
 
-**Definition** (CFE-Based Actions): a set of structural interventions $A^{\text{CFE}} := \text{do}(\{X_i := x^F_i + \delta^*\}_{i \in I})$
+**Definition (CFE-based actions):**
+$A^{\text{CFE}} := \text{do}(\{X_i := x^F_i + \delta^*_i\}_{i \in I})$
 
-**Proposition:** $A^{\text{CFE}} \rightarrow x^{\text{SCF}} = x^{*\text{CFE}} := x^F + \delta^*$ (i.e. recourse is guaranteed) **if and only if** $I$'s descendants $= \{\}$.
+**Proposition:** $A^{\text{CFE}}$ guarantees recourse **if and only if** the descendants of $I$ in $G$ are empty.
 
-**Corollary:** if the true world $M$ is independent—if all the observed features are root-nodes of $G$—then CFE-based actions always guarantee recourse.
+**Corollary:** if all features are root-nodes of $G$ (independent world), CFE-based actions always guarantee recourse.
+
+---
+
+# Limitations of CFE-Based Recourse: Formalism In plain English
+
+- **Definition:** force each feature in $I$ to its counterfactual value.
+- **Proposition:** CFEs only guarantee recourse if changing $X_i$ does not drag any other variable along.
+- **Corollary:** CFEs always work in a fully independent world --- exactly the world they implicitly assume, and one that rarely exists in practice
 
 ---
 
 # Algorithmic Recourse via Minimal Interventions: Setup
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: columns
+::: {.column width="40%"}
 
-\begin{block}{Formulation}
-$$A^* \in \underset{A}{\arg\min} \; \text{cost}(A; \mathbf{x}^F)$$
-$$\text{s.t.} \quad h(\mathbf{x}^{\text{SCF}}) \neq h(\mathbf{x}^F)$$
-$$\mathbf{x}^{\text{SCF}} = \mathbb{F}_A(\mathbb{F}^{-1}(\mathbf{x}^F))$$
-$$\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}$$
-\end{block}
+$$\begin{aligned}
+A^* \in \underset{A}{\arg\min} \; &\text{cost}(A; \mathbf{x}^F) \\
+\text{s.t.} \quad &h(\mathbf{x}^{\text{SCF}}) \neq h(\mathbf{x}^F) \\
+&\mathbf{x}^{\text{SCF}} = \mathbb{F}_A(\mathbb{F}^{-1}(\mathbf{x}^F)) \\
+&\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}
+\end{aligned}$$
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::: {.column width="60%"}
 
-**Remarks**
+**Remarks:**
 
-- ~~finding minimal shift of features~~ $\rightarrow$ finding minimal cost action set that yields favorable label
-- $A^* \in \mathcal{F}$ = set of feasible actions with minimally costly recourse
-- $\text{cost}(\square; x^F)$: $\mathcal{F} \times X \rightarrow \mathbb{R}_+$
-- $\square^{\text{SCF}} \neq \square^{\text{CFE}}$ (from Ustun et al.)!
+- $A^* \in \mathcal{F}$: optimal action set within feasible interventions
+- $\text{cost}(\cdot\,; \mathbf{x}^F): \mathcal{F} \times X \rightarrow \mathbb{R}_+$: user-specified action cost
+- $\mathbf{x}^{\text{SCF}} = \mathbb{F}_A(\mathbb{F}^{-1}(\mathbf{x}^F))$: structural counterfactual respecting causal dependencies
+- $\mathbf{x}^{\text{SCF}} \neq \mathbf{x}^{\text{CFE}}$: the resulting instance differs from Ustun et al.'s solution
 
-\end{column}
-\end{columns}
+:::
+::::
+
+## In plain English
+No longer ask *"what point should I reach?"* but *"what actions should I take?"* ---
+accounting for the fact that actions propagate through the causal structure of the world.
 
 ---
 
@@ -608,12 +671,10 @@ $$\text{cost}(A^*; x^F) \leq \text{cost}(A^{\text{CFE}}; x^F)$$
 
 # Abduction-Action-Prediction to Obtain $x^\text{SCF}$
 
-\begin{columns}
-\begin{column}{0.45\textwidth}
+:::: columns
+::: {.column width="45%"}
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/abduction_diagram.png}
-\end{center}
+![](imgs/abduction_diagram.png)
 
 $\{U_i\}^4_{i=1}$: mutually independent, exogenous
 
@@ -621,8 +682,8 @@ $\{f_i\}^4_{i=1}$: structural equations
 
 $x = [x_1^F, x_2^F, x_3^F, x_4^F]^T$: observed factual features
 
-\end{column}
-\begin{column}{0.52\textwidth}
+:::
+::: {.column width="52%"}
 
 1. **Abduction:** compute exogenous variables
    - $u_1 = x_1^F$, $u_2 = x_2^F$, $u_3 = x_3^F - f_3(x_1^F, x_2^F)$, $u_4 = x_4^F - f_4(x_3^F)$
@@ -635,26 +696,26 @@ $x = [x_1^F, x_2^F, x_3^F, x_4^F]^T$: observed factual features
    - $x_1^{\text{SCF}} := [1 \in I] \cdot a_1 + [1 \notin I] \cdot u_1$
    - $x_3^{\text{SCF}} := [3 \in I] \cdot a_3 + [3 \notin I] \cdot (f_3(x_1^{\text{SCF}}, x_2^{\text{SCF}}) + u_3)$
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
 # General Formulation and Solving the Optimization Problem
 
-\begin{columns}
-\begin{column}{0.50\textwidth}
+:::: columns
+::: {.column width="50%"}
 
-\begin{block}{General Formulation}
+**General Formulation**
+
 $$A^* \in \underset{A}{\arg\min} \; \text{cost}(A; \mathbf{x}^F)$$
 $$\text{s.t.} \quad h(\mathbf{x}^{\text{SCF}}) \neq h(\mathbf{x}^F)$$
 $$x_i^{\text{SCF}} = [i \in I] \cdot (x_i^F + \delta_i)$$
 $$+ [i \notin I] \cdot (x_i^F + f_i(\mathbf{pa}_i^{\text{SCF}}) - f_i(\mathbf{pa}_i^F))$$
 $$\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}$$
-\end{block}
 
-\end{column}
-\begin{column}{0.47\textwidth}
+:::
+::: {.column width="47%"}
 
 **Remarks**
 
@@ -663,33 +724,29 @@ $$\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}$$
 - $f_i(\mathbf{pa}_i^{\text{SCF}})$: counterfactual values of $x_i$'s parents
 - new closed-form expression for $F_{A^*}(F^{-1}(x^F))$ $\rightarrow$ use optimization methods
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
 # Experimental Setup
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: columns
+::: {.column width="48%"}
 
-\begin{center}
-\textbf{Synthetic setting:}
+**Synthetic setting:**
 
 Generate data following causal generative process
-\end{center}
 
-\end{column}
-\begin{column}{0.48\textwidth}
+:::
+::: {.column width="48%"}
 
-\begin{center}
-\textbf{Real-world setting:}
+**Real-world setting:**
 
 Use existing German credit dataset to learn structural causal model equations, by fitting a linear regression
-\end{center}
 
-\end{column}
-\end{columns}
+:::
+::::
 
 \vspace{0.5cm}
 \begin{center}
@@ -700,17 +757,15 @@ Cost for both is $\ell_1$ norm over normalized feature change
 
 # Experimental Setup: Synthetic Setting
 
-\begin{columns}
-\begin{column}{0.45\textwidth}
+:::: columns
+::: {.column width="45%"}
 
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/synthetic_scm.png}
-\end{center}
+![](imgs/synthetic_scm.png)
 
-\footnotesize \textbf{Causal Generative Process}
+**Causal Generative Process**
 
-\end{column}
-\begin{column}{0.52\textwidth}
+:::
+::: {.column width="52%"}
 
 $U_1 \sim \$10000 \cdot \text{Poisson}(10)$, $U_2 \sim \$2500 \cdot N(0,1)$
 
@@ -718,8 +773,8 @@ $$X_1 := U_1$$
 $$X_2 := f_2(X_1) + U_2, \quad X_2 := \frac{3}{10} \cdot X_1 + U_2$$
 $$\hat{Y} = h(X_1, X_2), \quad h = \text{sgn}(X_1 + 5 \cdot X_2 - \$225000)$$
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
@@ -741,42 +796,40 @@ $$\hat{Y} = h(X_1, X_2), \quad h = \text{sgn}(X_1 + 5 \cdot X_2 - \$225000)$$
 \includegraphics[width=0.55\columnwidth]{imgs/synthetic_results2.png}
 \end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+:::: columns
+::: {.column width="48%"}
 $\mathbf{x}^{*\text{SCF}}$ further dist from $\mathbf{x}^F$ than $\mathbf{x}^{*\text{CFE}}$
-\end{column}
-\begin{column}{0.48\textwidth}
-\textbf{BUT}
+:::
+::: {.column width="48%"}
+**BUT**
 
 $\text{cost}(\delta^*; x^F) \approx 2\, \text{cost}(A^*; x^F)$
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
 # Experimental Setup: Real-World Setting
 
-\begin{columns}
-\begin{column}{0.45\textwidth}
+:::: columns
+::: {.column width="45%"}
 
-\begin{center}
-\includegraphics[width=0.95\columnwidth]{imgs/realworld_scm.png}
-\end{center}
+![](imgs/realworld_scm.png)
 
-\footnotesize \textbf{Structural Causal Model}
+**Structural Causal Model**
 
-\end{column}
-\begin{column}{0.52\textwidth}
+:::
+::: {.column width="52%"}
 
 $$X_1 := U_1, \quad X_2 := U_2$$
 $$X_3 := f_3(X_1, X_2) + U_3$$
 $$X_4 := f_4(X_3) + U_4$$
 $$\hat{Y} = h(\{X_i\}^4_{i=1})$$
 
-\footnotesize $h$ can be logistic regression or decision tree
+$h$ can be logistic regression or decision tree
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
@@ -808,8 +861,8 @@ Averaged over 50 test individuals, $39 \pm 24\%$ and $65 \pm 8\%$ decrease in co
 
 # Future Work: Extended Kinds of Interventions
 
-\begin{columns}
-\begin{column}{0.45\textwidth}
+:::: columns
+::: {.column width="45%"}
 
 **Forms**
 
@@ -823,8 +876,8 @@ $$x_i^{\text{SCF}} = [i \in I] \cdot \delta_i + (x_i^F + f_i(\mathbf{pa}_i^{\tex
 - Karimi et al. assumes action = intervention on endogenous variable
 - **Fat-hand/non-atomic:** confounded/correlated interventions
 
-\end{column}
-\begin{column}{0.52\textwidth}
+:::
+::: {.column width="52%"}
 
 **Feasibility**
 
@@ -834,8 +887,8 @@ Can encode as constraints to amend to $A \in \mathcal{F}$
 - **Mutable but non-actionable:** $[i \notin I] = 1$ is sufficient
 - **Actionable and mutable:** contingent on (a) pre-intervention value of variable (b) pre-intervention value of other variables (c) post-intervention value of variable (d) post-intervention value of other variables
 
-\end{column}
-\end{columns}
+:::
+::::
 
 ---
 
