@@ -731,59 +731,31 @@ $x = [x_1^F, x_2^F, x_3^F, x_4^F]^T$: observed factual features
 
 # General Formulation and Solving the Optimization Problem
 
-:::: columns
-::: {.column width="50%"}
+![](imgs/general_formulation_.png)
 
-**General Formulation**
-
-$$A^* \in \underset{A}{\arg\min} \; \text{cost}(A; \mathbf{x}^F)$$
-$$\text{s.t.} \quad h(\mathbf{x}^{\text{SCF}}) \neq h(\mathbf{x}^F)$$
-$$x_i^{\text{SCF}} = [i \in I] \cdot (x_i^F + \delta_i)$$
-$$+ [i \notin I] \cdot (x_i^F + f_i(\mathbf{pa}_i^{\text{SCF}}) - f_i(\mathbf{pa}_i^F))$$
-$$\mathbf{x}^{\text{SCF}} \in \mathcal{P}, \quad A \in \mathcal{F}$$
-
-:::
-::: {.column width="47%"}
-
-**Remarks**
-
-- $x_i^F + \delta_i$: intervention
-- $f_i(\mathbf{pa}_i^F)$: factual values of $x_i$'s parents
-- $f_i(\mathbf{pa}_i^{\text{SCF}})$: counterfactual values of $x_i$'s parents
-- new closed-form expression for $F_{A^*}(F^{-1}(x^F))$ $\rightarrow$ use optimization methods
-
-:::
-::::
+## Resume 
+This closed-form expression makes MINT tractable: downstream causal effects 
+are computed analytically, turning recourse into a standard optimization problem.
 
 ---
 
 # Experimental Setup
 
-:::: columns
-::: {.column width="48%"}
+| | Synthetic | Real-world |
+|---|---|---|
+| **Data** | Generated from known causal process | German credit dataset |
+| **SCM** | Ground truth available | Learned via linear regression |
+| **Advantage** | Full causal control | Realistic dependencies |
 
-**Synthetic setting:**
+**Cost function (both settings):** $\ell_1$ norm over normalized feature changes.
 
-Generate data following causal generative process
-
-:::
-::: {.column width="48%"}
-
-**Real-world setting:**
-
-Use existing German credit dataset to learn structural causal model equations, by fitting a linear regression
-
-:::
-::::
-
-\vspace{0.5cm}
-\begin{center}
-Cost for both is $\ell_1$ norm over normalized feature change
-\end{center}
+## In plain English
+Synthetic data lets us verify MINT against a known causal ground truth;
+real-world data tests whether MINT remains effective when the SCM must be learned.
 
 ---
 
-# Experimental Setup: Synthetic Setting
+# Experimental Setup: Synthetic Setting 1/2
 
 :::: columns
 ::: {.column width="45%"}
@@ -795,10 +767,16 @@ Cost for both is $\ell_1$ norm over normalized feature change
 :::
 ::: {.column width="52%"}
 
-$U_1 \sim \$10000 \cdot \text{Poisson}(10)$, $U_2 \sim \$2500 \cdot N(0,1)$
+$$\begin{aligned}
+U_1 \sim \$10000 \cdot \text{Poisson}(10), \\ 
+U_2 \sim \$2500 \cdot \mathcal{N}(0,1)
+\end{aligned}$$
 
-$$X_1 := U_1$$
-$$X_2 := f_2(X_1) + U_2, \quad X_2 := \frac{3}{10} \cdot X_1 + U_2$$
+$$\left.\begin{aligned}
+X_1 &:= U_1 \\
+X_2 &:= f_2(X_1) + U_2, \quad X_2 := \frac{3}{10} \cdot X_1 + U_2
+\end{aligned}\right\} \mathcal{M}$$
+
 $$\hat{Y} = h(X_1, X_2), \quad h = \text{sgn}(X_1 + 5 \cdot X_2 - \$225000)$$
 
 :::
@@ -806,34 +784,87 @@ $$\hat{Y} = h(X_1, X_2), \quad h = \text{sgn}(X_1 + 5 \cdot X_2 - \$225000)$$
 
 ---
 
-# Experimental Results: Synthetic Setting
+# Experimental Setup: Synthetic Setting 2/2
 
+\vspace{1em}
 \begin{center}
-\small [annual salary, bank balance]
+\includegraphics[width=.40\textwidth]{imgs/zoom_out.png}
 \end{center}
+
+Three key things:
+
+1. **The causal structure:** $X_1$ (salary) causes $X_2$ (bank balance) --- **there is an edge between them. This is exactly what CFEs ignore.**
+
+2. Bank balance is $X_2 = \frac{3}{10} X_1 + U_2$ --- 30% of salary is automatically saved. If salary changes, bank balance changes.
+
+3. **The classifier:** $h = \text{sgn}(X_1 + 5 \cdot X_2 - \$225000)$ --- loan is approved when $X_1 + 5 \cdot X_2 \geq \$225000$. Bank balance has weight 5, so a small salary increase drags the balance along and may be sufficient to cross the threshold.
+
+
+
+---
+
+# Experimental Results: Synthetic Setting 1/3
 
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/synthetic_results1.png}
 \end{center}
 
+
 ---
 
-# Experimental Results: Synthetic Setting (cont.)
-
-\begin{center}
-\includegraphics[width=0.55\columnwidth]{imgs/synthetic_results2.png}
-\end{center}
+# Experimental Results: Synthetic Setting 2/3
 
 :::: columns
 ::: {.column width="48%"}
-$\mathbf{x}^{*\text{SCF}}$ further dist from $\mathbf{x}^F$ than $\mathbf{x}^{*\text{CFE}}$
+
+\begin{center}
+\includegraphics[width=\textwidth]{imgs/synthetic_results1.png}
+\end{center}
+
 :::
-::: {.column width="48%"}
+::: {.column width="52%"}
+
+- **CFE (Ustun et al.):** $\delta^* = [\$0, +\$5000]^T$ --- increase bank balance directly to $\$30000$,
+  ignoring causal structure. Result: $x^{*\text{CFE}} = [\$75000, \$30000]^T$.
+
+- **MINT (Karimi et al.):** $A^* = \text{do}(X_1 := X_1^F + \$10000)$ --- increase salary by $\$10000$;
+  bank balance rises automatically to $\$28000$ via $X_2 = \frac{3}{10} X_1 + U_2$.
+  Result: $x^{*\text{SCF}} = [\$85000, \$28000]^T$.
+
+:::
+::::
+
+## Resume
+
+Both achieve loan approval, but MINT exploits causal structure
+to recommend a single, actionable intervention.
+
+---
+
+# Experimental Results: Synthetic Setting 3/3
+
+:::: columns
+::: {.column width="40%"}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/synthetic_results2.png}
+\end{center}
+
+:::
+::: {.column width="50%"}
+
+$\mathbf{x}^{*\text{SCF}}$ further dist from $\mathbf{x}^F$ than $\mathbf{x}^{*\text{CFE}}$
+
 **BUT**
 
 $\text{cost}(\delta^*; x^F) \approx 2\, \text{cost}(A^*; x^F)$
 :::
 ::::
+
+## Key Insight
+
+Proximity in feature space $\neq$ cost of actions --- CFE finds the geometrically closest point
+but requires a costly intervention, while MINT finds a farther point achieved with a single
+cheap action by exploiting the causal structure.
 
 ---
 
@@ -844,28 +875,38 @@ $\text{cost}(\delta^*; x^F) \approx 2\, \text{cost}(A^*; x^F)$
 
 ![](imgs/realworld_scm.png)
 
-**Structural Causal Model**
+
 
 :::
 ::: {.column width="52%"}
 
-$$X_1 := U_1, \quad X_2 := U_2$$
-$$X_3 := f_3(X_1, X_2) + U_3$$
-$$X_4 := f_4(X_3) + U_4$$
-$$\hat{Y} = h(\{X_i\}^4_{i=1})$$
+\vspace{2em}
+$$
+\left.\begin{array}{rl}
+X_1 &:= U_1 \\
+X_2 &:= U_2 \\
+X_3 &:= f_3(X_1, X_2) + U_3 \\
+X_4 &:= f_4(X_3) + U_4
+\end{array}\right\} \mathcal{M}
+$$
+
+$$
+\hat{Y} = h\!\left(\{X_i\}_{i=1}^{4}\right)
+$$
 
 $h$ can be logistic regression or decision tree
+\vfill
 
 :::
 ::::
 
+\begin{center}
+\textbf{Structural Causal Model}
+\end{center}
+
 ---
 
 # Experimental Results: Real-World Setting
-
-\begin{center}
-\small [gender, age, credit given, credit repayment duration]
-\end{center}
 
 \begin{center}
 \includegraphics[width=0.75\columnwidth]{imgs/realworld_results1.png}
@@ -882,53 +923,85 @@ $h$ can be logistic regression or decision tree
 \begin{center}
 \textbf{42\% decrease in cost} using Karimi et al.'s formulation
 
-Averaged over 50 test individuals, $39 \pm 24\%$ and $65 \pm 8\%$ decrease in cost, for $h$ as logistic regression and decision tree, respectively
+\textbf{Averaged over 50 test individuals}, $39 \pm 24\%$ and $65 \pm 8\%$ decrease in cost, for $h$ as logistic regression and decision tree, respectively
 \end{center}
 
 ---
 
 # Future Work: Extended Kinds of Interventions
 
-:::: columns
-::: {.column width="45%"}
+Current MINT makes three simplifying assumptions.
+The following slides relax each one toward more realistic recourse:
 
-**Forms**
+1. **Forms** --- how does the intervention affect the causal graph?
+2. **Scopes** --- how many variables does the intervention touch?
+3. **Feasibility** --- which variables can be intervened upon?
 
-- **Structural/hard** (actions in Karimi et al.): unconditionally sever all edges incident on intervened node
-- **Additive/soft:** do not sever incident edges
+---
 
-$$x_i^{\text{SCF}} = [i \in I] \cdot \delta_i + (x_i^F + f_i(\mathbf{pa}_i^{\text{SCF}}) - f_i(\mathbf{pa}_i^F))$$
+# Future Work: Forms of Intervention
 
-**Scopes**
+*How does the intervention affect the causal graph?*
 
-- Karimi et al. assumes action = intervention on endogenous variable
-- **Fat-hand/non-atomic:** confounded/correlated interventions
+- **Hard/structural** (current MINT): severs all edges incident on the intervened node ---
+  the variable is fully decoupled from its parents.
+- **Soft/additive:** pushes the variable in a direction but preserves parental influence ---
+  downstream dependencies remain active.
 
-:::
-::: {.column width="52%"}
+$$x_i^{\text{SCF}} = [i \in I] \cdot \delta_i + (x_i^F + f_i(\text{pa}_i^{\text{SCF}}) - f_i(\text{pa}_i^F))$$
 
-**Feasibility**
+## In plain English
+Hard interventions say "force salary to \$85k regardless of anything."
+Soft interventions say "nudge salary up by \$10k, letting other factors still play a role."
 
-Can encode as constraints to amend to $A \in \mathcal{F}$
+---
 
-- **Immutable:** closed under ancestral relationships
-- **Mutable but non-actionable:** $[i \notin I] = 1$ is sufficient
-- **Actionable and mutable:** contingent on (a) pre-intervention value of variable (b) pre-intervention value of other variables (c) post-intervention value of variable (d) post-intervention value of other variables
+# Future Work: Scopes of Intervention
 
-:::
-::::
+*How many variables does the intervention touch?*
+
+- **Atomic** (current MINT): intervene on one endogenous variable at a time.
+- **Fat-hand/non-atomic:** correlated interventions on multiple variables simultaneously.
+
+## In plain English
+Getting a better job may simultaneously raise salary, working hours, and commute costs
+in a correlated way --- atomic interventions cannot capture this.
+
+---
+
+# Future Work: Feasibility of Intervention
+
+*Which variables can be intervened upon?*
+
+- **Immutable:** cannot change, nor can any ancestor (e.g., age, race).
+- **Mutable but non-actionable:** can change only as a downstream effect, not directly
+  (e.g., credit score as a consequence of paying debt).
+- **Actionable and mutable:** can be intervened upon, subject to constraints on
+  pre/post-intervention values of itself and other variables.
+
+## In plain English
+Not all features are equally actionable --- feasibility constraints encode
+what is realistically possible for a given individual.
 
 ---
 
 # Future Work: Current Limitations
 
-\begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/limitations.png}
-\end{center}
+**Core limitation:** MINT requires the true causal model of the world $\mathcal{M}$.
 
-- **Reliance on true causal model of the world**
-  - True for any approach suggesting actions to be performed in the real world
-  - Study potential inefficiencies from partial/imperfect causal model
+This raises two open questions:
+
+- **Is this unavoidable?** Any approach that recommends actions to be performed
+  in the real world must make some assumption about how the world works ---
+  MINT makes this assumption explicit.
+
+- **What happens with an imperfect SCM?** If $\mathcal{M}$ is only partially known
+  or misspecified, the recommended actions may be suboptimal or fail to achieve recourse ---
+  studying these inefficiencies is left as future work.
+
+## In plain English
+MINT trades the black-box opacity of CFEs for a new requirement:
+knowing the causal structure of the world --- which is hard, but at least honest.
 
 ---
 

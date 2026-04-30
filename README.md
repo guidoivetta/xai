@@ -146,7 +146,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Lecture 11](slides/lecture11/slides.pdf) | \[ [Lecture 10](slides/lecture12/slides.pdf) \]
+\[ [Lecture 11](slides/lecture11/slides.pdf) | \[ [Lecture 12](slides/lecture12/slides.pdf) \]
 
 
 ---
