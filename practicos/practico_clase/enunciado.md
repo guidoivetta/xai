@@ -1,33 +1,34 @@
-# Práctico: Preparación y Dictado de una Clase
+# 🎓 Práctico: Preparación y Dictado de una Clase
 
-## Objetivo
+## 🎯 Objetivo
 
-El objetivo de este práctico es que prepares y dictes una clase del curso XAI, siguiendo almenos el estilo y la calidad de las *lectures* ya presentadas.
+El objetivo de este práctico es que prepares y dictes una clase del curso XAI, siguiendo al menos el estilo y la calidad de las *lectures* ya presentadas.
 
-Haz seleccionado un par de papers académicos y un **prototipo de slides** generado a partir del material original del curso de Harvard. Tu tarea es **mejorar ese prototipo** hasta llevar las slides a un nivel comparable al de las lectures del curso (ver, por ejemplo, 
-https://github.com/leliel12/xai/tree/2026/slides/slides/lecture11/slides.md.
+Has seleccionado un par de papers académicos y un **prototipo de slides** generado a partir del material original del curso de Harvard. Tu tarea es **mejorar ese prototipo** hasta llevar las slides a un nivel comparable al de las lectures del curso (ver, por ejemplo, 
+https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md.
 
 ---
 
-## Entregables
+## 📦 Entregables
 
 - Slides finales en formato Markdown (archivo `slides.md`) junto con el PDF compilado.
-- Las slides son en ingles.
+- Las slides son en inglés.
 - Dictado de la clase frente al curso (duración: <= 2:30).
-- Se espera que el doctorando realice un fork del repositorio del curso y **antes** de la clase realice un  un [pull-request](https://github.blog/developer-skills/github/beginners-guide-to-github-creating-a-pull-request/) con los cambios de su *lecture*
+- Se espera que el doctorando realice un fork del repositorio del curso y **antes** de la clase realice un [pull-request](https://github.blog/developer-skills/github/beginners-guide-to-github-creating-a-pull-request/) con los cambios de su *lecture*
 
 
 
 ---
 
-## Que pasa si no puedo compilar o no se como hacer algo
+## 🆘 ¿Qué pasa si no puedo compilar o no sé cómo hacer algo?
 
 1. Tu responsable directo es el doctorando que dio la clase inmediatamente anterior.
 2. Canal de #XAi Zulip. 
+3. Recordar que son doctorandos y buscarle la vuelta.
 
 ---
 
-## Estructura esperada de las slides
+## 🗂️ Estructura esperada de las slides
 
 Cada lecture del curso sigue una estructura de carpeta como esta:
 
@@ -53,19 +54,19 @@ Consulta `slides/lecture11/slides.md` como referencia de una slide prototípica:
 
 ---
 
-## Cómo compilar las slides: tutorial de `make.py`
+## ⚙️ Cómo compilar las slides: tutorial de `make.py`
 
 Las slides se compilan con **Pandoc** usando el script `slides/make.py`. El script convierte el archivo `slides.md` en un PDF de presentación tipo Beamer.
 
-### Instalación de dependencias
+### 📥 Instalación de dependencias
 
 ```bash
 pip install watchdog sh
 ```
 
-También necesitás tener **Pandoc** instalado con soporte para `pandoc-citeproc` (En Debian/Ubuntu/Mint lo instale con `apt`).
+También necesitás tener **Pandoc** instalado con soporte para `pandoc-citeproc` (En Debian/Ubuntu/Mint lo instalé con `apt`).
 
-### Compilación única
+### ▶️ Compilación única
 
 Desde la carpeta `slides/`, ejecutá:
 
@@ -75,7 +76,7 @@ python make.py lectureXX/slides.md
 
 Esto genera `lectureXX/slides.pdf`.
 
-### Modo watch (recompilación automática)
+### 👁️ Modo watch (recompilación automática)
 
 Para que el PDF se recompile automáticamente cada vez que guardás cambios en las slides, imágenes o bibliografía:
 
@@ -87,39 +88,47 @@ El modo watch detecta cambios en:
 
 - `slides.md`
 - `references.bib`
-- la carpeta `imgs/`
-- los archivos compartidos `defaults.yaml` y `disclaimer.tex`
+- la carpeta `imgs/` (adentro tiene un archivo `images.md` que lista las imágenes a conseguir: nombre de archivo, página del PDF original y descripción del contenido)
+- los archivos compartidos `defaults.yaml` y `disclaimer.tex` (no tocar estos dos archivos)
 
 Podés detenerlo con `Ctrl+C`.
 
-### Caracteres especiales
+### 🔤 Caracteres especiales
 
 El script reemplaza automáticamente algunos caracteres Unicode por sus equivalentes LaTeX (por ejemplo, `λ` → `$\lambda$`), por lo que podés escribirlos directamente en el Markdown, pero recomiendo usar directamente latex `$\lambda$`
 
 ---
 
-## Herramienta de apoyo: prompt `slides_adapter.md`
+## 🧰 Herramientas de ayuda
+
+En el repositorio se encuentran:
+
+- Todos los slides de las clases anteriores: https://github.com/leliel12/xai/tree/2026/slides/ 
+- Las slides originales del curso de Harvard: https://github.com/leliel12/xai/tree/2026/slides/original_pptx ([y sus versiones en PDF](https://github.com/leliel12/xai/tree/2026/slides/original_pdf))
+
+
+### 🤖 Prompt `slides_adapter.md`
 
 Para ayudarte a entender los papers y mejorar las slides, tenés disponible el archivo `practicos/practico_clase/slides_adapter.md`. Este es un **prompt de sistema** diseñado para usar con un asistente de IA (como Claude).
 
 Cargando ese prompt en una conversación junto con los PDFs de los papers y el prototipo de slides, podés:
 
-- Hacer preguntas sobre conceptos, fórmulas e ideas de los papers.
-- Pedir explicaciones en lenguaje llano de resultados técnicos.
-- Generar o mejorar slides directamente a partir de la discusión.
-- Iterar sobre el contenido hasta alcanzar el nivel de calidad esperado.
+- 💬 Hacer preguntas sobre conceptos, fórmulas e ideas de los papers.
+- 📖 Pedir explicaciones en lenguaje llano de resultados técnicos.
+- ✏️ Generar o mejorar slides directamente a partir de la discusión.
+- 🔁 Iterar sobre el contenido hasta alcanzar el nivel de calidad esperado.
 
 El prompt incluye instrucciones de estilo y formato para que las slides generadas sean consistentes con el resto del curso.
 
 ---
 
-## Criterios de evaluación
+## 📊 Criterios de evaluación
 
-- **Fidelidad al paper:** las slides reflejan correctamente los aportes, métodos y resultados.
-- **Calidad didáctica:** las ideas complejas están explicadas de forma clara y progresiva.
-- **Calidad visual:** las slides son limpias, bien estructuradas y consistentes con el estilo del curso.
-- **Presentación oral:** el dictado es fluido, cubre los puntos clave y promueve la discusión.
+- 📄 **Fidelidad al paper:** las slides reflejan correctamente los aportes, métodos y resultados.
+- 🧠 **Calidad didáctica:** las ideas complejas están explicadas de forma clara y progresiva.
+- 🎨 **Calidad visual:** las slides son limpias, bien estructuradas y consistentes con el estilo del curso.
+- 🗣️ **Presentación oral:** el dictado es fluido, cubre los puntos clave y promueve la discusión.
 
-Se dará una devolución en formato escrito de la clase
+Se dará una devolución en formato escrito de la clase.
 
-En caso de no estar a la altura, el docente podrá dar por terminada la clase, y solicitar una practico extra al alumno al momento de rendir el final
+⚠️ En caso de no estar a la altura, el docente podrá dar por terminada la clase, y solicitar un práctico extra al alumno al momento de rendir el final.
