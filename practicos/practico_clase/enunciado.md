@@ -108,6 +108,8 @@ En el repositorio se encuentran:
 
 - Todos los slides de las clases anteriores: https://github.com/leliel12/xai/tree/2026/slides/
 - Las slides originales del curso de Harvard: https://github.com/leliel12/xai/tree/2026/slides/original_pptx ([y sus versiones en PDF](https://github.com/leliel12/xai/tree/2026/slides/original_pdf))
+- Las imágenes van a tener que sacarlas de las slides originales y probablemente
+  editarlas un poco. Todas las imágenes del draft del slide son placeholders.
 
 
 ### 🤖 Prompt `slides_adapter.md`
