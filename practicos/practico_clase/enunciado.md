@@ -4,8 +4,11 @@
 
 El objetivo de este práctico es que prepares y dictes una clase del curso XAI, siguiendo al menos el estilo y la calidad de las *lectures* ya presentadas.
 
-Has seleccionado un par de papers académicos y un **prototipo de slides** generado a partir del material original del curso de Harvard. Tu tarea es **mejorar ese prototipo** hasta llevar las slides a un nivel comparable al de las lectures del curso (ver, por ejemplo, 
-https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md.
+Has seleccionado un par de papers académicos y un **prototipo de slides** generado a partir del material original del curso de Harvard. Tu tarea es **mejorar ese prototipo** hasta llevar las slides a un nivel comparable al de las lectures del curso (ver, por ejemplo,
+https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md).
+
+[Podés ver aquí la asignación de temas](https://docs.google.com/spreadsheets/d/e/2PACX-1vSPAs_Tdn1nxw0LGIlhWDOMMj95nz6uqLFl4I6aSulpInwE0voiScitNpgOCSixz9MWDvK4lvZ9gh5m/pubhtml?gid=0&single=true).
+
 
 ---
 
@@ -23,7 +26,7 @@ https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md.
 ## 🆘 ¿Qué pasa si no puedo compilar o no sé cómo hacer algo?
 
 1. Tu responsable directo es el doctorando que dio la clase inmediatamente anterior.
-2. Canal de #XAi Zulip. 
+2. Canal de #XAi Zulip.
 3. Recordar que son doctorandos y buscarle la vuelta.
 
 ---
@@ -103,7 +106,7 @@ El script reemplaza automáticamente algunos caracteres Unicode por sus equivale
 
 En el repositorio se encuentran:
 
-- Todos los slides de las clases anteriores: https://github.com/leliel12/xai/tree/2026/slides/ 
+- Todos los slides de las clases anteriores: https://github.com/leliel12/xai/tree/2026/slides/
 - Las slides originales del curso de Harvard: https://github.com/leliel12/xai/tree/2026/slides/original_pptx ([y sus versiones en PDF](https://github.com/leliel12/xai/tree/2026/slides/original_pdf))
 
 
