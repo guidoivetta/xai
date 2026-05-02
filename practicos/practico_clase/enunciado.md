@@ -16,7 +16,9 @@ https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md).
 
 - Slides finales en formato Markdown (archivo `slides.md`) junto con el PDF compilado.
 - Las slides son en inglés.
+- Las slides de presentacion del paper tienen que tener una captura de su titulo.
 - Dictado de la clase frente al curso (duración: <= 2:30).
+- Exesiva proligidad.
 - Se espera que el doctorando realice un fork del repositorio del curso y **antes** de la clase realice un [pull-request](https://github.blog/developer-skills/github/beginners-guide-to-github-creating-a-pull-request/) con los cambios de su *lecture*
 
 
@@ -124,6 +126,95 @@ Cargando ese prompt en una conversación junto con los PDFs de los papers y el p
 - 🔁 Iterar sobre el contenido hasta alcanzar el nivel de calidad esperado.
 
 El prompt incluye instrucciones de estilo y formato para que las slides generadas sean consistentes con el resto del curso.
+
+Cuando terminas de adaptar el prom al final deberia verse algo de este estilo:
+
+```markdown
+## Course context
+
+- Doctoral course in XAI.
+- Audience has strong ML/AI background.
+- Slides are based on the Harvard course "Explainable Artificial Intelligence" (Spring 2023).
+
+## Papers to load
+- https://arxiv.org/pdf/2102.13620
+- https://arxiv.org/pdf/2203.06768
+
+## Prototype slides
+- https://jbcabral.quatrope.org/xai/slides/lecture12/slides.pdf
+```
+
+---
+
+## Tips
+
+- Los contextos latex no renderizan markdown, pero a la inversa si. Por ejemplo
+
+    **NO FUNCIONA**
+
+    ```latex
+    \begin{columns}
+    \begin{column}{0.48\textwidth}
+
+    **Algorithmic Recourse**
+
+    - ML models are deployed in high stakes scenarios
+    - If you receive an unfavorable outcome as a result of a prediction, how can you reverse it?
+    - Ex: A bank might tell you to increase your salary by \$10,000
+
+    \end{column}
+    \begin{column}{0.48\textwidth}
+
+    **Model Updates**
+
+    - In practice, data collectors are (hopefully) frequently updating their datasets
+    - Models are updated to reflect dataset changes
+    - Current algorithms to generate counterfactuals **assume models are static**
+
+    \end{column}
+    \end{columns}
+    ```
+
+    **FUNCIONA**
+
+    ```markdown
+    :::: columns
+    ::: {.column width="48%"}
+
+    $$ 1 + 1 $$
+
+    :::
+    ::: {.column width="48%"}
+
+    $$ 1 + 1 $$
+
+    :::
+    ::::
+    ```
+
+    **FUNCIONA**
+
+    ```markdown
+    :::: columns
+    ::: {.column width="48%"}
+
+    \begin{center}
+    \includegraphics[width=0.65\columnwidth]{imgs/motivation_example.png}
+    \end{center}
+
+    :::
+    ::: {.column width="48%"}
+
+    \begin{alertblock}{}
+    Original suggested recourse for the datapoint no longer crosses the decision boundary when the model is updated/retrained
+    \end{alertblock}
+
+    :::
+    :::
+    ```
+
+- MUCHO CUIDADO CON LAS ANIMACIONES!
+
 
 ---
 
