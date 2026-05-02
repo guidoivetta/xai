@@ -112,7 +112,7 @@ En el repositorio se encuentran:
 
 ### 🤖 Prompt `slides_adapter.md`
 
-Para ayudarte a entender los papers y mejorar las slides, tenés disponible el archivo `practicos/practico_clase/slides_adapter.md`. Este es un **prompt de sistema** diseñado para usar con un asistente de IA (como Claude).
+Para ayudarte a entender los papers y mejorar las slides, tenés disponible el archivo [slides_adapter.md](slides_adapter.md). Este es un **prompt de sistema** diseñado para usar con un asistente de IA (como Claude).
 
 Cargando ese prompt en una conversación junto con los PDFs de los papers y el prototipo de slides, podés:
 
