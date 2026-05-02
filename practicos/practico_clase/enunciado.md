@@ -220,6 +220,7 @@ Cuando terminas de adaptar el prom al final deberia verse algo de este estilo:
 
 ## 📊 Criterios de evaluación
 
+- 🎓 **Asistencias a las presentaciones:** Para los doctorandos es **OBLIGATORIO** asistir a las presentaciones de los demas
 - 📄 **Fidelidad al paper:** las slides reflejan correctamente los aportes, métodos y resultados.
 - 🧠 **Calidad didáctica:** las ideas complejas están explicadas de forma clara y progresiva.
 - 🎨 **Calidad visual:** las slides son limpias, bien estructuradas y consistentes con el estilo del curso.
