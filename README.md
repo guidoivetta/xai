@@ -150,7 +150,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Lecture 11](slides/lecture11/slides.pdf) | \[ [Lecture 10](slides/lecture12/slides.pdf) \]
+\[ [Lecture 11](slides/lecture11/slides.pdf) | \[ [Lecture 12](slides/lecture12/slides.pdf) \]
 
 
 ---
@@ -167,7 +167,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 ### Readings
 
 - Mullenbach et. al., 2018, [Explainable Prediction of Medical Codes from Clinical Text](https://www.aclweb.org/anthology/N18-1100.pdf)
-Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/1902.10186)
+- Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/1902.10186)
 - Bau and Zhou et. al., 2017, [Network Dissection: Quantifying Interpretability of Deep Visual Representations](http://netdissect.csail.mit.edu/final-network-dissection.pdf)
 - Kim et. al., 2018, [Interpretability Beyond Feature Attribution: Quantitative Testing with Concept Activation Vectors](https://arxiv.org/abs/1711.11279)
 
@@ -201,7 +201,7 @@ Jain and Wallace, 2019, [Attention is not Explanation](https://arxiv.org/abs/190
 - Covert et. al., 2021, [Explaining by Removing: A Unified Framework for Model Explanation](https://www.jmlr.org/papers/volume22/20-1316/20-1316.pdf)
 - Han et. al., 2022, [Which Explanation Should I Choose? A Function Approximation Perspective to Characterizing Post hoc Explanations](https://arxiv.org/abs/2206.01254)
 - Shen et. al., 2020, [Interpreting the Latent Space of GANs for Semantic Face Editing](https://arxiv.org/abs/1907.10786)
-Harkonen et. al., 2020, [GANSpace: Discovering Interpretable GAN Controls](https://arxiv.org/abs/2004.02546)
+- Harkonen et. al., 2020, [GANSpace: Discovering Interpretable GAN Controls](https://arxiv.org/abs/2004.02546)
 
 #### Additional Readings:
 
@@ -277,14 +277,6 @@ Harkonen et. al., 2020, [GANSpace: Discovering Interpretable GAN Controls](https
 ### Slides
 
 \[ [Slides 1](slides/Lecture_25_AlphaZero.pptx) | [Slides 2](slides/Lecture_25_DAAM.pptx) | [Slides 3](slides/Lecture_26_DALL_EVAL.pptx) \]
-
----
-
-## Week 14
-
----
-
-## Week 15
 
 ---
 ---
