@@ -20,6 +20,7 @@
 # Prácticos: 📝
 
 - [Preparación y Dictado de una Clase 🎓](practicos/practico_clase/enunciado.md)
+- [Práctico Final 🎓](practicos/practico_final/enunciado.md)
 
 # Overview: 🧉
 
