@@ -504,9 +504,6 @@ $$\arg\min_{x''} \max_{\delta} \max_{\lambda} \; \lambda\ell(M(x''), 1) + c(x, x
 \includegraphics[width=0.85\columnwidth]{imgs/paper2_title.png}
 \end{center}
 
-\vfill
-\footnotesize Martin Pawelczyk, Teresa Datta, Johannes van-den-Heuvel, Gjergji Kasneci, Himabindu Lakkaraju (2022)
-
 [@pawelczyk2022probabilistically]
 
 ---
@@ -520,7 +517,7 @@ $$\arg\min_{x''} \max_{\delta} \max_{\lambda} \; \lambda\ell(M(x''), 1) + c(x, x
   - Or, changing certain factors may cause others to change
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/motivation_robustness.png}
+\includegraphics[width=0.95\columnwidth]{imgs/motivation_robustness.png}
 \end{center}
 
 ---
@@ -545,12 +542,16 @@ $$\arg\min_{x''} \max_{\delta} \max_{\lambda} \; \lambda\ell(M(x''), 1) + c(x, x
 # Solution: PROBE
 
 :::: columns
-::: {.column width="48%"}
+::: {.column width="30%"}
 
-![](imgs/probe_diagram.png)
+\begin{center}
+\includegraphics[width=.8\columnwidth]{imgs/probe_diagram.png}
+\end{center}
 
 :::
-::: {.column width="48%"}
+::: {.column width="70%"}
+
+\vspace{2em}
 
 - **PROBE** — Probabilistically Robust Recourse
 - Allows users to manage the **recourse cost vs. robustness tradeoffs**
@@ -568,38 +569,23 @@ $$\arg\min_{x''} \max_{\delta} \max_{\lambda} \; \lambda\ell(M(x''), 1) + c(x, x
 
 # Notation
 
-:::: columns
-::: {.column width="48%"}
+\begin{center}
+\includegraphics[width=.65\columnwidth]{imgs/notation.png}
+\end{center}
 
-$\mathbf{x} \in \mathcal{X} \subseteq \mathbb{R}^d$ \quad input space
-
-$\mathcal{Y} = \{0, 1\}$ \quad output space
-- 0: unfavourable outcome
-- 1: favourable outcome
-
-$h : \mathcal{X} \rightarrow \mathcal{Y}$ \quad classifier
-
-$h(\mathbf{x}) = g(f(\mathbf{x}))$
-
-:::
-::: {.column width="48%"}
-
-$f : \mathcal{X} \rightarrow \mathbb{R}$ \quad inputs $\rightarrow$ logits
-
-$g : \mathbb{R} \rightarrow \mathcal{Y}$ \quad logits $\rightarrow$ binary labels
-
-:::
-::::
+## In plain English
+The classifier is split into $f$ (continuous score) and $g$ (decision threshold) because PROBE needs to reason about *how far* a noisy implementation lands from the boundary — not just which side it lands on.
 
 ---
 
 # General Formulation of Algorithmic Recourse
 
-$$\check{\mathbf{x}} = \underset{\mathbf{x}' \in \mathcal{A}}{\arg\min} \; \underbrace{\ell(h(\mathbf{x}'), 1)}_{\text{make CF have favourable outcome}} + \lambda \cdot \underbrace{d_c(\mathbf{x}, \mathbf{x}')}_{\text{low cost}}$$
+$$\check{\mathbf{x}} = \arg\min_{\mathbf{x}' \in \mathcal{A}} \underbrace{\ell(h(\mathbf{x}'), 1)}_{\text{valid outcome}} + \lambda \cdot \underbrace{d_c(\mathbf{x}, \mathbf{x}')}_{\text{low cost}}$$
 
-- Accounts for CF having favourable outcome and low cost
-- **Does not account** for potential noise in the implemented counterfactual
-  - Addressed by this paper
+This is the standard formulation — it optimizes for validity and cost, but assumes the individual implements the recourse **exactly as recommended**.
+
+**What's missing:** no term accounts for noise in the implemented counterfactual. PROBE addresses this by replacing the validity term with one that explicitly models implementation uncertainty.
+
 
 ---
 
@@ -611,30 +597,36 @@ where $\varepsilon \sim p_\varepsilon$ $\rightarrow$ probability distribution th
 
 e.g. $\varepsilon \sim \mathcal{N}(\mathbf{0}, \sigma^2 \mathbf{I})$
 
+\vspace{1em}
+
+## In plain English
+$\Delta(\check{x}_E)$ measures the average fraction of times the recourse fails due to implementation noise — zero means always valid, one means always fails.
+
 ---
 
 # Recourse Invalidation Rate Aware Objective
 
 $$\mathcal{L} = \underbrace{R(\mathbf{x}'; r, \sigma^2\mathbf{I})}_{\substack{\text{make IR of CF close} \\ \text{to target IR (new term)}}} + \underbrace{\ell(f(\mathbf{x}'), s)}_{\substack{\text{make CF have} \\ \text{favourable outcome}}} + \underbrace{\lambda d_c(\mathbf{x}', \mathbf{x})}_{\text{low cost}}$$
 
-where $R(\mathbf{x}'; r, \sigma^2\mathbf{I}) = \max(0, \underbrace{\Delta(\mathbf{x}'; \sigma^2\mathbf{I})}_{\text{CF's IR}} - \underbrace{r}_{\text{target IR}})$
+where
+
+$$R(\mathbf{x}'; r, \sigma^2\mathbf{I}) = \max(0, \underbrace{\Delta(\mathbf{x}'; \sigma^2\mathbf{I})}_{\text{CF's IR}} - \underbrace{r}_{\text{target IR}})$$
+
+
+- The three terms together read: find a resource that is valid, cheap, and whose invalidation rate does not exceed **R**
+- **PROBE** adds a single knob **R**: the user-specified maximum failure rate, and penalizes any recourse that exceeds it, leaving the standard cost/validity tradeoff untouched otherwise
 
 ---
 
 # Approximation of Recourse Invalidation Rate (Theorem 1)
 
-**Problem:** $\Delta(\mathbf{x}')$ is not differentiable (used in objective function)
+\begin{center}
+\includegraphics[width=.4\columnwidth]{imgs/probe_theorem.png}
+\end{center}
 
-**Solution:** use a first order approximation of $\Delta(\mathbf{x}')$
+## In plain English
 
-$$\tilde{\Delta}(\check{\mathbf{x}}_E; \sigma^2\mathbf{I}) = 1 - \Phi\!\left(\frac{f(\check{\mathbf{x}}_E)}{\sqrt{\nabla f(\check{\mathbf{x}}_E)^\top \sigma^2\mathbf{I}\, \nabla f(\check{\mathbf{x}}_E)}}\right)$$
-
-where $\check{x}_E$: counterfactual, $f(\check{x}_E)$: logit at counterfactual
-
-**Proof sketch:**
-1. Solve $\mathbb{P}(f(\check{x}_E + \varepsilon) > 0)$
-2. Use first order Taylor series to approximate logit
-3. Calculate probability that normal r.v. is less than a value $\rightarrow$ CDF
+$\Delta$ is not differentiable, so PROBE linearizes the model around $\check{x}_E$ and reduces the problem to a Gaussian CDF — cheap to compute and differentiable.
 
 ---
 
@@ -645,6 +637,11 @@ where $\check{x}_E$: counterfactual, $f(\check{x}_E)$: logit at counterfactual
   - Show how to make CF more robust
 - **Proposition 2** — PROBE recourse incurs an additional cost (linear regression)
 - **Proposition 3** — Upperbound on IR
+
+\vspace{1em}
+
+## In plain English
+These three results mirror ROAR's theorems: robustness is achievable, it costs more but not unboundedly so, and the failure rate is provably controlled.
 
 ---
 
@@ -658,15 +655,15 @@ where $\check{x}_E$: counterfactual, $f(\check{x}_E)$: logit at counterfactual
 
 # Experimental Evaluations: Baselines
 
-**Baseline Methods**
-- **Growing Spheres (GS):** Random search algorithm — generate observations until decision boundary is crossed then move greedily toward decision boundary
-- **AR (-LIME):** Actionable Recourse in Linear Models → use integer programming
-- **DICE:** Diverse Counterfactual Explanations — promote diversity of counterfactual explanations
-- **Gradient:** General formulation of algorithmic recourse
+- **Baseline Methods**
+    - **Growing Spheres (GS):** Random search algorithm — generate observations until decision boundary is crossed then move greedily toward decision boundary
+    - **AR (-LIME):** Actionable Recourse in Linear Models → use integer programming
+    - **DICE:** Diverse Counterfactual Explanations — promote diversity of counterfactual explanations
+    - **Gradient:** General formulation of algorithmic recourse
 
-**Adversarial Minmax Objectives Methods**
-- **ROAR:** Recourse robust to model changes by generating CFs that minimize worst-case loss over plausible model shifts
-- **ARAR:** Adversarial Robustness of Causal Algorithmic Recourse — recourse robust to features of individual
+- **Adversarial Minmax Objectives Methods**
+    - **ROAR:** Recourse robust to model changes by generating CFs that minimize worst-case loss over plausible model shifts
+    - **ARAR:** Adversarial Robustness of Causal Algorithmic Recourse — recourse robust to features of individual
 
 ---
 
