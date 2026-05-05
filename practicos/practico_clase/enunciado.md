@@ -10,6 +10,8 @@ https://github.com/leliel12/xai/tree/2026/slides/lecture11/slides.md).
 [Podés ver aquí la asignación de temas](https://docs.google.com/spreadsheets/d/e/2PACX-1vSPAs_Tdn1nxw0LGIlhWDOMMj95nz6uqLFl4I6aSulpInwE0voiScitNpgOCSixz9MWDvK4lvZ9gh5m/pubhtml?gid=0&single=true).
 
 
+[🎥 Aca hay una intro en formato video](https://drive.google.com/file/d/1V6FRKFtSIDswh4AboPpzax5Cnyf7t5Vr/view?usp=sharing)
+
 ---
 
 ## 📦 Entregables
