@@ -51,7 +51,8 @@ SYNTAX_HIGHLIGHT = [
 PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
     t="beamer",
     d="../defaults.yaml",
-    filter="pandoc-citeproc",
+    # filter="pandoc-citeproc",
+    citeproc=True,
     highlight_style="../sh_style.theme",
     verbose=True,
 )
