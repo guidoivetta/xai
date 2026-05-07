@@ -443,20 +443,10 @@ Works well when the document **literally repeats** words from the code descripti
 # Paper 2
 
 \begin{center}
-\Large \textbf{Attention is \textit{not} Explanation}
+\includegraphics[width=0.85\columnwidth]{imgs/paper2.png}
 \end{center}
 
-\vspace{0.5cm}
 
-\begin{center}
-\textbf{Authors}: Sarthak Jain, Byron C. Wallace
-
-\textbf{Presenters}: Nikhil Nayak, Sree Harsha Tanneru, Hongjin Lin
-
-2023/03/06
-\end{center}
-
-\vfill
 [@jain2019attention]
 
 ---
@@ -473,35 +463,67 @@ Works well when the document **literally repeats** words from the code descripti
 \includegraphics[width=0.8\columnwidth]{imgs/attention_example.png}
 \end{center}
 
+
 ---
 
 # Many Use Attention as an Explanation Mechanism
 
 \begin{center}
 \includegraphics[width=0.85\columnwidth]{imgs/attention_as_explanation.png}
+
+\vspace{2em}
+
+\textbf{Attention-based explanations are widespread across NLP and high-stakes domains like clinical prediction — making it critical to ask whether they are actually faithful.}
+
 \end{center}
+
 
 ---
 
 # But Does Attention Provide Faithful Explanations?
 
+:::: columns
+::: { .column width="50%" }
+
 \begin{center}
 \includegraphics[width=0.7\columnwidth]{imgs/adversarial_heatmap.png}
 \end{center}
 
-Despite very different attention weights, both yield effectively the same prediction (0.01).
+:::
+::: { .column width="50%" }
+
+The two heatmaps are **very different** — yet both yield the same prediction.
+
+| Original $\alpha$ | Adversarial $\tilde{\alpha}$ |
+|---|---|
+| Highlights **"waste"** | Highlights **"was"** |
+| $f(x \mid \alpha, \theta) = 0.01$ | $f(x \mid \tilde{\alpha}, \theta) = 0.01$ |
+
+:::
+::::
+
+## In Plain English
+
+If attending to completely different words produces the exact same prediction,
+then attention cannot be explaining *why* the model made that decision —
+it is just one of many equivalent weight configurations.
 
 ---
 
 # Research Questions
 
-**What is the degree to which attention weights provide meaningful "explanations" for predictions?**
+*To what degree do attention weights provide meaningful explanations for predictions?*
 
-\vspace{0.5cm}
+1. **Consistency:** Do attention weights **correlate with other feature** 
+   **feature importance measures**, specifically gradients and leave-one-out (LOO)?
+   
+   - If attention is a faithful explanation, it should agree with methods
+     that have clearer causal semantics.
 
-1. \textcolor{blue}{\textbf{Consistency}}: To what extent do induced attention weights **correlate with measures of feature importance** — specifically, those from gradients and leave-one-out (LOO) methods?
-
-2. \textcolor{red}{\textbf{Counterfactual attention weights}}: Would **alternative attention weights** (and hence distinct heatmaps/"explanations") necessarily yield different predictions?
+2. **Counterfactual attention:** Would **alternative attention distributions** necessarily yield different predictions?
+   
+   - If the model predicts the same thing regardless of which words are
+     attended to, attention cannot be the cause of the prediction.
 
 ---
 
@@ -515,79 +537,196 @@ Despite very different attention weights, both yield effectively the same predic
 
 ---
 
-# Experimental Setup
+# Experimental Setup: Datasets
 
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/experimental_setup.png}
+\includegraphics[width=0.7\columnwidth]{imgs/experimental_setup_datasets.png}
 \end{center}
+
+The two experiments run across **three NLP task types** and **11 datasets**,
+ensuring conclusions are not specific to any single domain.
+
+- **Binary Text Classification** (red): sentiment, medical records, news —
+  varying document lengths from 19 to 2,188 tokens
+- **Question Answering** (blue): CNN news articles and bAbI tasks
+- **Natural Language Inference** (green): SNLI — 570k sentence pairs
+
+All models use a **BiLSTM encoder** with standard additive attention.
+
+---
+
+
+# Experimental Setup: Tasks
+
+\vspace{1pt}
+
+\begin{center}
+\includegraphics[width=.75\columnwidth]{imgs/experimental_setup.png}
+\end{center}
+
+Each dataset is used to run both experiments:
+
+1. **Correlation:** do attention weights agree with gradient and LOO
+   importance scores across all task types?
+
+2. **Counterfactual:** can we find alternative attention distributions
+   that preserve the prediction — across classification, QA, and NLI?
+
+## Key Insight
+
+Testing across 3 task types and 11 datasets rules out task-specific artifacts
+— if attention fails as explanation everywhere, the finding is general.
 
 ---
 
 # Correlation Between Attention and Feature Importance
 
-To what extent do induced attention weights correlate with measures of feature importance?
+\begin{center}
+\textbf{To what extent do attention weights agree with other measures of feature importance?}
+\end{center}
 
-Specifically two methods are considered:
+Two reference methods are used as ground truth for comparison:
 
-1. Feature gradient methods
-2. Leave-One-Out (LOO) method
+1. **Feature gradients:** how much does the output change if we perturb each
+   input word? Measures sensitivity of the prediction to each feature.
 
----
+2. **Leave-One-Out (LOO):** remove one word at a time and measure the drop
+   in prediction. Directly tests the causal impact of each word.
 
-# Gradient-Based Feature Importance
+## Key Insight
 
-- Compute the gradient of the output with respect to each input feature
-- This tells us how much changing each feature would affect the output
-- Visualize by highlighting input features with highest absolute gradient values
-
----
-
-# Feature Erasure / LOO
-
-- Remove one input feature at a time and observe how the output changes
-- This allows us to measure the impact of each feature on the output
-- Visualize by highlighting the removed feature and showing the change in output
+If attention is a faithful explanation, it should **rank words similarly**
+to these methods, both of which have clearer causal semantics than attention.
 
 ---
 
-# Distribution Change Measure
+# Distribution Change Measure- Total Variation Distance (TVD)
 
-**Total Variation Distance (TVD), Kendall's $\tau$ coefficient**
+**TVD** measures how different two output distributions are after changing attention.
 
 $$\text{TVD}(\hat{y}_1, \hat{y}_2) = \frac{1}{2} \sum_{i=1}^{|\mathcal{Y}|} |\hat{y}_{1i} - \hat{y}_{2i}|$$
 
+## In Plain English
+
+TVD close to 0 means the prediction barely changed despite different attention.
+If we swap attention weights and TVD stays near 0, attention was not driving the output.
+
+---
+
+# Distribution Change Measure - Kendall's $\tau$ coefficient
+
+
+**Kendall's $\tau$** measures how well two importance rankings agree.
+
 $$\tau = \frac{\text{(concordant pairs)} - \text{(discordant pairs)}}{\text{(number of pairs)}} = 1 - \frac{2\,\text{(discordant pairs)}}{\binom{n}{2}}$$
+
+## In Plain English
+
+$\tau = 1$ means both methods rank words identically. $\tau = 0$ means no agreement.
+If attention and gradients disagree on word ranking, they are not measuring the same thing.
 
 ---
 
 # Algorithm for Feature Importance Computations
 
-$$\mathbf{h} \leftarrow \text{Enc}(\mathbf{x}),\quad \hat{\alpha} \leftarrow \text{softmax}(\phi(\mathbf{h}, \mathbf{Q}))$$
-$$\hat{y} \leftarrow \text{Dec}(\mathbf{h}, \alpha)$$
-$$g_t \leftarrow \left| \sum_{w=1}^{|V|} \mathbf{1}[\mathbf{x}_{tw}=1]\,\frac{\partial y}{\partial \mathbf{x}_{tw}} \right|, \quad \forall t \in [1,T]$$
-$$\tau_g \leftarrow \text{Kendall-}\tau(\alpha, g)$$
-$$\Delta\hat{y}_t \leftarrow \text{TVD}(\hat{y}(\mathbf{x}_{-t}), \hat{y}(\mathbf{x})),\quad \forall t \in [1,T]$$
-$$\tau_{\text{loo}} \leftarrow \text{Kendall-}\tau(\alpha, \Delta\hat{y})$$
+:::: columns
+::: column
+
+1. $\mathbf{h} \leftarrow \text{Enc}(\mathbf{x}),\quad \hat{\alpha} \leftarrow \text{softmax}(\phi(\mathbf{h}, \mathbf{Q}))$
+
+2. $\hat{y} \leftarrow \text{Dec}(\mathbf{h}, \alpha)$
+
+3. $g_t \leftarrow \left| \sum_{w=1}^{|V|} \mathbf{1}[\mathbf{x}_{tw}=1]\,\frac{\partial y}{\partial \mathbf{x}_{tw}} \right|, \quad \forall t \in [1,T]$
+
+4. $\tau_g \leftarrow \text{Kendall-}\tau(\alpha, g)$
+
+5. $\Delta\hat{y}_t \leftarrow \text{TVD}(\hat{y}(\mathbf{x}_{-t}), \hat{y}(\mathbf{x})),\quad \forall t \in [1,T]$
+
+6. $\tau_{\text{loo}} \leftarrow \text{Kendall-}\tau(\alpha, \Delta\hat{y})$
+
+:::
+::: column
+
+1. **Encode and attend**
+2. **Decode prediction**
+3. **Gradient importance:**  How much does the output change if we perturb word $t$?
+4. **Correlation with attention**
+5. **LOO importance** for each token $t$:
+   How much does the output change if we remove word $t$?
+6. **Correlation with attention
+
+:::
+::::
+
+## In Plain English
+
+Compute two independent word rankings (gradient, LOO) and measure
+how well attention agrees with each. Low $\tau$ means attention
+is ranking words differently from methods with clearer causal meaning.
 
 ---
 
 # Feature Gradients Results
 
-Histogram of Kendall correlation between attention and gradients.
+Histograms of $\tau_g$ (Kendall correlation between attention and gradients)
+across all test examples.
 
+
+:::: columns
+::: column
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/feature_gradients_results.png}
+\includegraphics[width=.75\columnwidth]{imgs/feature_gradients_results.png}
 \end{center}
+
+:::
+::: column
+
+\vspace{1em}
+
+- **BiLSTM:** centered around 0.2–0.4 with high variance — weak and inconsistent agreement.
+- **Average encoder:** shifts right and concentrates — attention does reflect importance.
+
+## Key Insight
+
+The problem is not attention itself — it is the combination with BiLSTM.
+Hidden states mix information from all words, so attention weights no longer
+correspond directly to the importance of individual input tokens.
+
+
+:::
+::::
+
 
 ---
 
 # Correlation Comparison: Attention, Gradients, LOO
 
+Both plots show the **mean difference in correlation** across datasets.
+Positive values mean gradients/LOO agree more with each other than with attention.
+
+:::: columns
+::: {.column width="40%"}
+
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/correlation_comparison.png}
+\includegraphics[width=.75\columnwidth]{imgs/correlation_comparison.png}
 \end{center}
 
-\footnotesize Fig 1: LOO, Gradients vs Attention, LOO. \quad Fig 2: LOO, Gradients vs Attention, Gradients.
+:::
+::: {.column width="60%"}
+
+- **Top:** LOO vs. Gradients minus Attention vs. LOO — gradients and LOO
+  agree with each other ~0.2 $\tau$ more than attention agrees with LOO.
+
+- **Bottom:** LOO vs. Gradients minus Attention vs. Gradients — same pattern,
+  ~0.25 $\tau$ gap on average.
+
+## Key Insight
+
+Gradients and LOO consistently agree with each other more than either agreeswith attention. **Attention is measuring something different from feature importance.**
+
+:::
+::::
+
 
 ---
 
@@ -601,21 +740,18 @@ Histogram of Kendall correlation between attention and gradients.
 
 # Counterfactual Attention Weights
 
-**Would the prediction be different if the model attended to different input features?**
+\begin{center}
+\textbf{If attention explains predictions, then changing attention should change the prediction.}
+\end{center}
 
-:::: {.columns}
-::: {.column width="55%"}
 
 1. \textcolor{blue}{\textbf{Consistency}}: correlation with other measures of feature importance
 2. \textcolor{red}{\textbf{Counterfactual attention distributions}} should yield corresponding changes in predictions
 
-:::
-::: {.column width="45%"}
 
-![](imgs/counterfactual_weights.png){width=\columnwidth}
-
-:::
-::::
+\begin{center}
+\includegraphics[width=.8\columnwidth]{imgs/counterfactual_weights.png}
+\end{center}
 
 ---
 
@@ -662,37 +798,63 @@ $\Delta\hat{y}^{med} \leftarrow \text{Median}_p(\Delta\hat{y}^p)$
 
 # Attention Permutation: Results
 
+Each violin shows the distribution of $\Delta\hat{y}^{med}$ (change in output) after **randomly permuting** attention weights, grouped by max attention value.
+
 \begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/attn_permutation_results.png}
+\includegraphics[width=0.6\columnwidth]{imgs/attn_permutation_results.png}
 \end{center}
 
-\footnotesize Median change in output $\Delta\hat{y}^{med}$ (x-axis) densities vs max attention (y-axis) by randomly permuting attention weights.
+## Key Insight
+
+Permuting attention barely changes predictions in most tasks, but does matter when the task requires identifying a specific token (Diabetes, CNN-QA, bAbI).
 
 ---
 
 # Adversarial Attention
 
-- Explicitly seek attention weights that differ as much as possible from observed weights, yet leaving prediction almost unchanged
-- **Why?** Alternative attention distributions for the same output may be viewed as equally plausible explanations:
-  - Cannot conclude the model made a specific prediction because it attended in a certain way
-  - Lack of specificity makes constructing counterfactual explanations hard
-  - Makes model less trustworthy
+\begin{center}
+Explicitly seek out attention weights that differ as much as possible from observed attention weights, yet leaving prediction almost unchanged.
+
+\vspace{1em}
+\textbf{Why?}
+\end{center}
+
+- Alternative attention distributions identified for the same output may be viewed as equally plausible explanations for the same output. **Is this undesirable ?**
+  - Cannot conclude that model made a specific prediction because it attended over inputs in a certain way.
+  - Lack of specificity makes constructing counterfactual explanations hard?
+  - Makes model less trustworthy?
 
 ---
 
 # Adversarial Attention: Optimisation
 
-$$JSD(\alpha_1, \alpha_2) = \frac{1}{2}\!\left(KL\!\left[\alpha_1 \,\Big|\, \frac{\alpha_1+\alpha_2}{2}\right] + KL\!\left[\alpha_2 \,\Big|\, \frac{\alpha_1+\alpha_2}{2}\right]\right)$$
+:::::::::::::: {.columns}
+::: {.column width="40%"}
 
-Seek $\alpha^{(1)}, \ldots, \alpha^{(k)}$ that maximize $f$ subject to small output change:
 
-$$\underset{\alpha^{(1)},\ldots,\alpha^{(k)}}{\text{maximize}} \; f\left(\{\alpha^{(i)}\}_{i=1}^k\right) \quad \text{s.t.} \quad \forall i\; \text{TVD}[\hat{y}(\mathbf{x}, \alpha^{(i)}), \hat{y}(\mathbf{x}, \hat{\alpha})] \leq \epsilon$$
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{imgs/opt.png}
+\end{center}
 
-$$f\!\left(\{\alpha^{(i)}\}_{i=1}^k\right) = \sum_{i=1}^k JSD[\alpha^{(i)}, \hat{\alpha}] + \frac{1}{k(k-1)} \sum_{i<j} JSD[\alpha^{(i)}, \alpha^{(j)}]$$
+:::
+::: {.column width="58%"}
+
+\vspace{2em}
+
+## In Plain English
+
+Find attention maps that are as different as possible from the original
+and from each other — while the model still predicts the same thing.
+
+:::
+::::::::::::::
 
 ---
 
 # Adversarial Attention: Algorithm
+
+:::::::::::::: {.columns}
+::: {.column width="40%"}
 
 $\mathbf{h} \leftarrow \text{Enc}(\mathbf{x}),\; \hat{\alpha} \leftarrow \text{softmax}(\phi(\mathbf{h}, \mathbf{Q}))$
 
@@ -712,32 +874,59 @@ $\quad \Delta\alpha^{(i)} \leftarrow JSD[\hat{\alpha}, \alpha^{(i)}]$
 
 $\epsilon\text{-max JSD} \leftarrow \max_i \mathbf{1}[\Delta\hat{y}^{(i)} \leq \epsilon]\,\Delta\alpha^{(i)}$
 
+:::
+::: {.column width="58%"}
+
+\vspace{1em}
+
+1. Encode input and compute original $\hat{\alpha}$ and $\hat{y}$.
+2. Find $k$ adversarial distributions by solving the optimisation problem.
+3. Decode each using the **same hidden states** $\mathbf{h}$ — only attention changes.
+4. Report $\epsilon$-max JSD: the largest attention divergence among distributions
+   that kept the prediction within $\epsilon$ of the original.
+
+:::
+::::::::::::::
+
+## In Plain English
+
+$\epsilon$-max JSD tells you how different attention can be while the model still predicts the same thing — the higher it is, the less faithful attention is.
+
 ---
 
 # Adversarial Attention: Results
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/adversarial_results1.png}
+\includegraphics[width=0.8\columnwidth]{imgs/adversarial_results1.png}
 \end{center}
 
-\footnotesize Histogram of max adversarial JS Divergence ($\epsilon$-max JSD) between original and adversarial attentions. In all cases $|\hat{y}^{adv} - \hat{y}| < \epsilon$.
+\begin{center}
+\textbf{All histograms are skewed to the right.}
+\end{center}
 
 ---
 
 # Adversarial Attention: Results
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/adversarial_results2.png}
+\includegraphics[width=0.75\columnwidth]{imgs/adversarial_results2.png}
 \end{center}
 
-\footnotesize Densities of max JS divergences ($\epsilon$-max JSD, x-axis) as a function of the max attention (y-axis) in each instance.
+\begin{center}
+\textbf{
+For most tasks, you can construct attention distributions that are maximally
+different from the original and still get the same prediction —
+attention is not uniquely determining the output.}
+\end{center}
 
 ---
 
 # Counterfactual Attention: Limitations
 
-- Adversarial weights may themselves be unlikely under model parameters
-- There are instances where a single explanation out of multiple plausible explanations is sufficient
+- Only standard additive and dot-product attention are tested — alternate
+  mechanisms may behave differently.
+- Evaluations are limited to classification, QA, and NLI tasks — conclusions
+  may not extend to seq2seq tasks like machine translation.
 
 ---
 
@@ -748,17 +937,33 @@ $\epsilon\text{-max JSD} \leftarrow \max_i \mathbf{1}[\Delta\hat{y}^{(i)} \leq \
 
 ---
 
-# Critique and Discussion
+# Critique and Discussion 1/2
 
-- Wiegreffe & Pinter (2019), *Attention is not not Explanation*, EMNLP-IJCNLP:
-  - Attention distribution is not a primitive
-  - Is attention necessary for prediction?
-  - Is the variance in attention distributions unusual? i.e., How adversarial are the adversaries?
+**Wiegreffe & Pinter (2019) — "Attention is not not Explanation"** directly respond
+to Jain & Wallace, raising three key objections:
 
-- Do you agree with the authors' conditions of a "faithful explanation"?
-- Do you think attention constitutes a "sufficient" explanation?
-- What other conditions should we consider as a good explanation?
-- How can experts be brought in to evaluate conditions of good explanations?
+- Attention distribution is not a primitive — the model can redistribute information
+  through hidden states before attention is applied.
+- Is attention *necessary* for prediction, or just one of many compatible configurations?
+- How adversarial are the adversaries? — the constructed distributions may not be
+  realistic alternatives.
+
+---
+
+# Critique and Discussion 2/2
+
+**Other relevant follow-ups:**
+
+- Serrano & Smith (2019): removing high-attention weights does not always change predictions.
+- Bastings & Filippova (2020): the core problem is the lack of consensus on what
+  "faithful explanation" even means.
+
+**Open questions for discussion:**
+
+- Do you agree with the authors' conditions for a faithful explanation?
+- Is attention a *sufficient* explanation, even if not a complete one?
+- What other conditions should a good explanation satisfy?
+- How can domain experts be brought in to evaluate explanation quality?
 
 ---
 
