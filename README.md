@@ -155,13 +155,6 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 
 ---
----
-
-# DE ACA EN ADELANTE NO ESTA LISTO EL MATERIAL
-
-
----
----
 
 ## Week 7: Attention and Concept Based Explanations
 
@@ -175,7 +168,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_13_Convolutional_Attention.pptx) | [Slides 2](slides/Lecture_13_Attention_Not_Explanation.pptx) | [Slides 3](slides/Lecture_14_Network_Dissection.pdf) | [Slides 4](slides/Lecture_14_TCAV.pptx) \]
+\[ [Lecture 13](slides/lecture13/slides.pdf) | [Lecture 14](slides/lecture14/slides.pdf) \]
 
 ---
 
