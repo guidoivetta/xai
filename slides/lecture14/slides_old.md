@@ -64,26 +64,6 @@ Question: Do deep neural networks learn similar structure?
 
 ---
 
-# How Is Semantic Visual Concept Represented in the Brain?
-
-
-:::: columns
-::: {.column width="50%"}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
-\end{center}
-:::
-::: {.column width="50%"}
-Neuroscientists have found that the brain uses sparse, localized representations: individual neurons (or small groups) respond selectively to specific concepts.
-\begin{block}{Key Observation}
-Some neurons fire strongly for one concept and weakly for almost everything else — a property called \textbf{selectivity}.
-\end{block}
-Question: Do deep neural networks learn similar structure?
-:::
-::::
-
----
-
 
 # A Neuron That Only Fires for Jennifer Aniston
 
