@@ -30,26 +30,6 @@ bibliography: references.bib
 
 ---
 
-# How Is Semantic Visual Concept Represented in the Brain?
-
-
-:::: columns
-::: {.column width="50%"}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
-\end{center}
-:::
-::: {.column width="50%"}
-Neuroscientists have found that the brain uses sparse, localized representations: individual neurons (or small groups) respond selectively to specific concepts.
-\begin{block}{Key Observation}
-Some neurons fire strongly for one concept and weakly for almost everything else — a property called \textbf{selectivity}.
-\end{block}
-Question: Do deep neural networks learn similar structure?
-:::
-::::
-
----
-
 
 # How Is Semantic Visual Concept Represented in the Brain?
 
@@ -64,9 +44,9 @@ Question: Do deep neural networks learn similar structure?
 Neuroscientists have found that individual neurons can respond 
 selectively to specific concepts — a property called **selectivity**.
 
-\begin{alertblock}{The debate}
+\begin{block}{The debate}
 Does the brain use \textbf{local} representations (one neuron = one concept) or \textbf{distributed} ones (concepts spread across many neurons)?
-\end{alertblock}
+\end{block}
 
 Question: Do deep neural networks learn similar structure?
 :::
@@ -77,55 +57,24 @@ Question: Do deep neural networks learn similar structure?
 
 # A Neuron That Only Fires for Jennifer Aniston
 :::: columns
-::: {.column width="55%"}
+::: {.column width="50%"}
 \begin{center}
 \includegraphics[width=\columnwidth]{imgs/jennifer_firing.png}
 \end{center}
 
 
 :::
-::: {.column width="45%"}
+::: {.column width="50%"}
 Quiroga et al. (2005) recorded neurons in the human medial temporal lobe and found neurons that fire exclusively for specific people or landmarks.
 
 - One neuron fired for Jennifer Aniston — photos, drawings, even her name written in text
 - Another neuron fired only for the Eiffel Tower
 
-\begin{alertblock}{Why this matters}
+\begin{block}{Why this matters}
 This is a \textbf{disentangled} representation: one neuron = one concept. The paper asks whether CNNs learn something analogous.
-\end{alertblock}
+\end{block}
 :::
 ::::
-
----
-
-# A Neuron That Only Fires for Jennifer Aniston
-
-:::: columns
-::: {.column width="55%"}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_firing.png}
-\end{center}
-:::
-::: {.column width="45%"}
-Quiroga et al. (2005) recorded single neurons in the human medial temporal lobe of epilepsy patients.
-
-- One neuron fired for Jennifer Aniston — photos, drawings, even her written name — but **not** for other people
-
-- Other neurons fired exclusively for the Eiffel Tower or Halle Berry
-
-\begin{alertblock}{Important nuance}
-This is \textbf{sparse coding}, not a strict "grandmother cell".  
-Each concept activates a \textit{small group} of neurons 
-($\sim$0.1--3\% of stimuli), not exactly one.
-\end{alertblock}
-
-\begin{exampleblock}{Bridge to CNNs}
-Network Dissection asks the same question: do individual CNN units 
-specialize in detecting one semantic concept?
-\end{exampleblock}
-:::
-::::
-
 
 ---
 
@@ -145,11 +94,9 @@ The visual cortex processes information in a **hierarchy** — the
 
 - **V2/V4**: textures, shapes, color patterns
 
-- **IT** (inferotemporal): objects, faces — where the "Jennifer 
-  Aniston neuron" lives
+- **IT** (inferotemporal): objects, faces — where the "Jennifer Aniston neuron" lives
 
-Along this hierarchy: **selectivity** increases and **invariance** 
-increases.
+Along this hierarchy: **selectivity** increases and **invariance** increases.
 
 \begin{block}{Bridge to CNNs}
 This layered specialization is the biological inspiration for deep CNNs. Network Dissection tests whether CNNs develop analogous detectors at each layer.
@@ -163,12 +110,42 @@ This layered specialization is the biological inspiration for deep CNNs. Do CNNs
 
 ---
 
+# Disentangled Representation in Visual Cortex
+
+:::: columns
+::: {.column width="60%"}
+The visual cortex processes information in a **hierarchy** — the **ventral stream** ("what pathway"):
+
+- **V1**: edges, orientations (small receptive fields)
+
+- **V2/V4**: textures, shapes, color patterns
+
+- **IT** (inferotemporal): objects, faces — where the "Jennifer Aniston neuron" lives
+
+Along this hierarchy: **selectivity** increases and **invariance** increases.
+
+\begin{block}{Bridge to CNNs}
+This layered specialization is the biological inspiration for deep CNNs. Network Dissection tests whether CNNs develop analogous detectors at each layer.
+\end{block}
+:::
+::: {.column width="30%"}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/visual_cortex.png}
+\end{center}
+
+
+:::
+::::
+
+
+---
+
 # Deep CNN for Computer Vision
 
 :::: columns
 ::: {.column width="50%"}
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_firing.png}
+\includegraphics[width=\columnwidth]{imgs/imagenet_error.png}
 \end{center}
 :::
 ::: {.column width="50%"}
@@ -178,13 +155,12 @@ CNNs revolutionized computer vision, reaching superhuman performance on ImageNet
 - Units in later layers seem to respond to objects and scenes (Zhou et al., 2015)
 - But this was observed qualitatively — no rigorous measurement existed
 
-\begin{block}{The gap}
-We know CNNs \textit{work} extremely well. We don't know 
-\textit{how}, or what each unit has learned. Network Dissection 
-provides the first quantitative answer.
-\end{block}
 :::
 ::::
+\begin{block}{The gap}
+We know CNNs \textit{work} extremely well. We don't know 
+\textit{how}, or what each unit has learned. Network Dissection provides the first quantitative answer.
+\end{block}
 
 ---
 
@@ -252,7 +228,7 @@ To measure interpretability we need a **ground truth** of human concepts. Broden
 ::: {.column width="50%"}
  
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
+\includegraphics[width=\columnwidth]{imgs/broden_dataset.png}
 \end{center}
  
 :::
@@ -266,17 +242,16 @@ To measure interpretability we need a **ground truth** of human concepts. Broden
 | Material | 32 |
 | Texture | 47 |
 | Color | 11 |
- 
-Multiple labels can apply to the **same pixel** (e.g., a black cat leg $\rightarrow$ "cat", "leg", "black")
-
-The range from colors to scenes allows testing interpretability 
-at \textbf{every level of abstraction}.
 
 :::
 ::::
 
+Multiple labels can apply to the **same pixel** (e.g., a black cat leg $\rightarrow$ "cat", "leg", "black")
 
----
+The range from colors to scenes allows testing nterpretability 
+at \textbf{every level of abstraction}.
+
+<!---
 
 # Scoring Unit Interpretability: The Process
 
@@ -299,22 +274,15 @@ task** for every conceptc c in Broden.
 This is a \textbf{direct probe}: the network is frozen, no 
 backpropagation or fine-tuning is involved.
 \end{exampleblock}
+--->
 
 ---
 
 # Scoring Unit Interpretability
 
-Each convolutional unit $k$ acts like a **filter** that fires on certain spatial regions of an image. The core idea: treat each unit as a candidate **segmentation model** for some concept.
-
 :::: columns
-::: {.column width="60%"}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
-\end{center}
-*scoring pipeline*
-:::
-::: {.column width="40%"}
-**Pipeline (no retraining needed):**
+::: {.column width="45%"}
+**Pipeline:**
 
 - Feed images from Broden through the frozen CNN
 
@@ -326,10 +294,18 @@ Each convolutional unit $k$ acts like a **filter** that fires on certain spatial
 
 - Compare against concept labels $L_c$
 
+:::
+::: {.column width="50%"}
+Each convolutional unit $k$ acts like a **filter** that fires on certain spatial regions of an image. The core idea: treat each unit as a candidate **segmentation model** for some concept.
 
 For each unit, the method evaluates its activation mask against all **1,197 segmentation tasks** in Broden (one per concept). The unit is assigned the concept with the highest score.
+
 :::
 ::::
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{imgs/scoring_pipeline.png}
+\end{center}
+*scoring pipeline*
 
 ---
 
@@ -338,7 +314,7 @@ For each unit, the method evaluates its activation mask against all **1,197 segm
 :::: columns
 ::: {.column width="60%"}
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
+\includegraphics[width=\columnwidth]{imgs/scoring_threshold.png}
 \end{center}
 *threshold*
 :::
@@ -364,7 +340,7 @@ would favor high-magnitude units. The quantile normalizes this.
 :::: columns
 ::: {.column width="60%"}
 \begin{center}
-\includegraphics[width=\columnwidth]{imgs/jennifer_neuron.png}
+\includegraphics[width=\columnwidth]{imgs/scoring_iou.png}
 \end{center}
 :::
 ::: {.column width="40%"}
@@ -444,32 +420,15 @@ Models trained on **Places** (scenes) generally develop more object detectors th
  
 -->
 
-
 ---
 
 # Experiment 1: Human Evaluation of Interpretations
 
-:::: columns
-::: {.column width="50%"}
-imagen
-:::
-::: {.column width="50%"}
-Does Network Dissection agree with **human judgment**?
-
-- Raters shown 15 images with highlighted patches for each unit in AlexNet (Places205)
-
-- Asked: "Does this phrase describe most of the patches?" (yes/no)
-
-- **Network Dissection accuracy**: portion of method's labels rated as descriptive
-
-- **Human consistency**: portion of ground-truth labels found descriptive by a second group of raters
-:::
-::::
-
----
- 
-
-# Experiment 1: Human Evaluation Results
+- Does Network Dissection agree with **human judgment**?
+  - Raters shown 15 images with highlighted patches for each unit in AlexNet (Places205)
+  - Asked: "Does this phrase describe most of the patches?" (yes/no)
+  - **Network Dissection accuracy**: portion of method's labels rated as descriptive
+  - **Human consistency**: portion of ground-truth labels found descriptive by a second group of raters
 
 | | conv1 | conv2 | conv3 | conv4 | conv5 |
 |---|---|---|---|---|---|
@@ -477,14 +436,13 @@ Does Network Dissection agree with **human judgment**?
 | Human consistency | 82% | 76% | 83% | 82% | 91% |
 | Network Dissection | 37% | 56% | 54% | 59% | 71% |
 
-\vspace{0.3cm}
-
 \begin{block}{Two takeaways}
 1. Network Dissection agreement \textbf{increases} in higher layers (37\% → 71\%)\\
 2. Human consistency remains high throughout (76--91\%), setting an upper bound
 \end{block}
 
 ---
+ 
 
 # Experiment 2: Axis-Aligned Interpretability
 
@@ -508,13 +466,17 @@ direction}}
 **Test**: Apply a random orthogonal rotation $R$ to the representation space. If H2 is correct, rotating the basis should **destroy** interpretability.
 
 ---
- 
+
+
 
 # Experiment 2: Rotation Results
 
 :::: columns
 ::: {.column width="55%"}
-imagen
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/exp2_rotation.png}
+\end{center}
+
 :::
 ::: {.column width="45%"}
 Number of unique detectors **decreases up to 80%** as the basis is rotated away from the natural one.
@@ -530,33 +492,28 @@ discriminative power. It is a \textbf{special alignment} learned by the network 
 
 # Experiment 3: Concepts by Layer
 
-:::: columns
-::: {.column width="60%"}
-imagen
-:::
-::: {.column width="40%"}
+\begin{center}
+\includegraphics[width=0.7\columnwidth]{imgs/exp3_concepts_layer.png}
+\end{center}
+
 The type of concept detected changes with **layer depth**:
+**Early layers**: colors, textures → **Middle layers**: materials, 
+parts → **Late layers**: objects, scenes.
 
-- **Early layers**: colors, textures
-
-- **Middle layers**: materials, parts
-
-- **Late layers**: objects, scenes
-
-\begin{block}{Mirror of biology}
-This mirrors the visual cortex hierarchy: V1 (edges) → V4 
-(textures) → IT (objects). The analogy holds quantitatively.
-\end{block}
-:::
-::::
+This mirrors the visual cortex hierarchy: V1 (edges) $\rightarrow$ 
+V4 (textures) $\rightarrow$ IT (objects). The analogy holds 
+quantitatively.
 
 ---
- 
+
+
 # Experiment 4: Network Architectures
 
 :::: columns
-::: {.column width="60%"}
-imagen
+::: {.column width="40%"}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/exp4_architectures.png}
+\end{center}
 :::
 ::: {.column width="40%"}
 Comparing the number of unique detectors across architectures 
@@ -571,7 +528,7 @@ More detectors does not always mean better accuracy — the relationship is arch
 \end{block}
 :::
 ::::
- 
+
 ---
  
 
@@ -587,20 +544,20 @@ What training choices affect interpretability?
 
 - \textcolor{red}{\textbf{Batch Normalization}}: **Significant  effect** — interpretability decreased substantially
 
-\begin{alertblock}{Surprising result}
+\begin{block}{Surprising result}
 Batch Normalization improves accuracy but \textbf{hurts} interpretability. There may be a trade-off between optimization 
 convenience and semantic disentanglement.
-\end{alertblock}
+\end{block}
 
 ---
 
 # Experiment 5: Training Conditions Results
 
-:::: columns
-::: {.column width="60%"}
-graf
-:::
-::: {.column width="40%"}
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/exp5_training.png}
+\end{center}
+
 The figure confirms:
 
 - Different random seeds → nearly identical interpretability
@@ -608,9 +565,7 @@ The figure confirms:
 - Dropout removal → shift from objects to textures
 
 - Batch Norm → large drop in unique detectors across all categories
-:::
-::::
- 
+
 ---
 
 
@@ -634,24 +589,23 @@ Does being more "interpretable" make a model **better at new tasks**?
 A linear classifier can only succeed if the features are already well-organized. If interpretable representations also produce linearly separable features, that's strong evidence they generalize.
 \end{exampleblock}
 
-
 ---
 
 # Experiment 6: Discrimination Results
 
-:::: columns
-::: {.column width="55%"}
-graf
-:::
-::: {.column width="45%"}
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/exp6_scatter.png}
+\end{center}
+
 \textcolor{red}{\textbf{Result:}} Positive correlation between 
 object detectors and classification accuracy.
 
 \begin{block}{Implication}
 Encouraging \textbf{concept detection} can improve \textbf{discrimination}. Interpretability and performance are \textbf{not} at odds — they can reinforce each other.
 \end{block}
-:::
-::::
+
+
 
 ---
  
@@ -675,13 +629,14 @@ for more categories.
 
 ---
  
+
 # Experiment 7: Width Results
 
-:::: columns
-::: {.column width="55%"}
-graf
-:::
-::: {.column width="45%"}
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/exp7_width.png}
+\end{center}
+
 Increased width:
 
 - More unique detectors both at the widened layer **and** in the network generally
@@ -690,13 +645,10 @@ Increased width:
 
 - Effect saturates beyond a threshold
 
-\begin{block}{Design implication}
 If interpretability is a goal, \textbf{wider layers} are a cheap way to get more disentangled representations without sacrificing accuracy.
-\end{block}
-:::
-::::
- 
+
 ---
+
  
 # Discussion Questions (Paper 1)
 
@@ -754,35 +706,6 @@ If interpretability is a goal, \textbf{wider layers} are a cheap way to get more
 Network Dissection asks: "what does this unit detect?" \\
 TCAV asks: "how important is this concept for this prediction?"
 \end{block}
-
----
-
-
-# Motivation + Problem Statement
-
-:::: columns
-::: {.column width="50%"}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/tcav_features_levels.png}
-\end{center}
-:::
-::: {.column width="50%"}
-- Interpreting deep learning models is crucial to understanding 
-  their behavior and ensuring accurate predictions
-
-- But remains a big challenge due to size, complexity, and opacity 
-  of ML models
-
-- Many systems operate on **low-level features** (e.g., pixel 
-  values) rather than \textcolor{red}{\textbf{high-level concepts}} 
-  (e.g., face) that are human-interpretable
-
-\begin{block}{The mismatch}
-Models explain in \textbf{pixels}. Humans understand in 
-\textbf{concepts}. TCAV bridges this gap.
-\end{block}
-:::
-::::
 
 ---
 
@@ -914,60 +837,46 @@ TCAV addresses all three.
 
 ---
 
-# Related Work: Interpretability Methods
 
-\textbf{Interpretability methods:}
+# Related Work: Limitations of Current Methods
 
-- *Inherently interpretable* models vs. *post-hoc* explanations (Kim et al., 2014; Doshi-Velez et al., 2015; Goodman \& Flaxman, 2016)
-- \textcolor{red}{\textbf{Perturbation-based methods:}} e.g., LIME/SHAP (Ribeiro et al., 2016; Lundberg \& Lee, 2017)
-  - *local* vs. *global*
+\textcolor{red}{\textbf{Perturbation-based}} (LIME, SHAP):
 
-\begin{center}
-\includegraphics[width=0.\columnwidth]{imgs/tcav_related_local_global.png}
-\end{center}
+- Explain individual predictions (**local**), not entire classes
+- Operate at the input feature level, not at the concept level
 
-\begin{block}{TCAV's position}
-TCAV is \textbf{post-hoc} (no model modification) and 
-\textbf{global} (explains entire classes) — filling the gap that 
-LIME/SHAP leave open.
+\vspace{0.2cm}
+
+\textcolor{red}{\textbf{Saliency methods}} (Gradient, CAM, etc.):
+
+- **Local**: one image at a time
+- **Lack customization**: cannot test user-defined concepts
+- **Vulnerable** to adversarial attacks (Ghorbani et al., 2017)
+- **Insensitive** to model randomization (Adebayo et al., 2018)
+
+\begin{block}{Core limitation shared by all}
+These methods explain in terms of \textbf{input features}. 
+Saliency maps tell you \textit{where} the model looks, not 
+\textit{what} it sees. TCAV explains in terms of 
+\textbf{human-defined concepts}.
 \end{block}
-
----
-
-
-
-# Related Work: Saliency Limitations
-
-**Limitations of saliency methods:**
-
-- **Local** explanation only — one image at a time (Erhan et al., 2009; Smilkov et al., 2017)
-- **Lack customization** — cannot test user-defined concepts
-- **Vulnerable to adversarial attacks** — small perturbations change the map without changing the prediction (Ghorbani et al., 2017)
-
-- **Insensitive to randomization** — some maps don't change even with random weights (Adebayo et al., 2018)
-
-\begin{block}{The fundamental problem}
-Saliency maps tell you \textbf{where} the model looks, not 
-\textbf{what} it sees.
-\end{block}
-
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/tcav_related_saliency.png}
-\end{center}
-
 
 ---
 
 # Related Work: Linearity + Latent Dimensions
 
-**Linearity in neural network + latent dimensions**
+A key observation across deep learning: **concepts tend to be 
+linear directions** in representation spaces.
 
-- Meaningful information can be learned from simple *linear* classifiers (Bau et al., 2017; Alain \& Bengio, 2016)
-- Mapping *latent* dimensions to human *concepts* (Mikolov et al., 2013; Zhu et al., 2017)
+- **word2vec** (Mikolov et al., 2013): 
+  $\vec{king} - \vec{man} + \vec{woman} \approx \vec{queen}$
+  → "gender" is a linear direction
 
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/tcav_related_linearity.png}
-\end{center}
+- **Probing classifiers** (Alain \& Bengio, 2016): linear 
+  classifiers on hidden layers extract semantic information
+
+- **Network Dissection** (Bau et al., 2017): individual units 
+  align with concepts — the axes themselves are meaningful
 
 \begin{block}{TCAV builds on this}
 If concepts are \textbf{linear directions} in activation space, we 
@@ -1193,21 +1102,34 @@ Both methods confirm the same hierarchy using completely different approaches: e
 \end{center}
 :::
 ::: {.column width="45%"}
-A model trained on images with **embedded captions** to create known ground truth:
+A model trained on images with **embedded captions** to create 
+known ground truth:
 
 - **"Cab"**: image concept dominates $\rightarrow$ TCAV correctly shows high image sensitivity, low caption sensitivity
 
-- **"Cucumber"**: caption concept dominates when present $\rightarrow$ TCAV correctly reflects this 
+- **"Cucumber"**: caption concept dominates when present $\rightarrow$ TCAV correctly reflects this
 
-\begin{alertblock}{Validation}
-TCAV scores faithfully reflect the \textbf{true} importance of each concept — confirmed against known ground truth.
-\end{alertblock}
+\begin{block}{Validation}
+TCAV scores faithfully reflect the \textbf{true} importance of 
+each concept — confirmed against known ground truth.
+\end{block}
 :::
 ::::
 
 ---
 
-# Results: Saliency Maps Are Misleading - CAPAZ AGREGAR UNA + CON IMAGENES
+# Results: Evaluation of Saliency Maps
+
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{imgs/tcav_saliency_eval.png}
+\end{center}
+
+We know that for "cab" the image concept is most important. But saliency maps highlight the caption text (high contrast) instead — across all four methods.
+
+
+---
+
+# Results: Saliency Maps Are Misleading
 
 :::: columns
 ::: {.column width="55%"}
@@ -1223,12 +1145,11 @@ Using the same controlled experiment:
 - Subjects thought the caption was more important than the image for "cab" — **wrong**
 
 - **TCAV scores** correctly identified the dominant concept in every case
-
-\begin{alertblock}{The lesson}
-Saliency maps are not just imprecise — they are actively \textbf{misleading}. They highlight visually salient pixels (high contrast text), not causally important ones.
-\end{alertblock}
 :::
 ::::
+
+Saliency maps are not just imprecise — they are actively \textbf{misleading}. They highlight visually salient pixels (high contrast text), not causally important ones.
+
 
 ---
 
