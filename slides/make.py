@@ -48,21 +48,11 @@ SYNTAX_HIGHLIGHT = [
     "haddock",
 ]
 
-pandoc = sh.Command("pandoc")
-
-
-def _pandoc_version():
-    version_output = pandoc(version=True)
-    version_line = version_output.splitlines()[0]
-    version_string = version_line.split()[-1]
-    version_tuple = tuple(version_string.split("."))
-    return version_tuple
-
-
-PANDOC_CMD_TEMPLATE = pandoc.bake(
+PANDOC_CMD_TEMPLATE = sh.Command("pandoc").bake(
     t="beamer",
     d="../defaults.yaml",
-    filter="pandoc-citeproc",
+    # filter="pandoc-citeproc",
+    citeproc=True,
     highlight_style="../sh_style.theme",
     verbose=True,
 )
