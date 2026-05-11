@@ -55,18 +55,28 @@ def _pandoc_version():
     version_output = pandoc(version=True)
     version_line = version_output.splitlines()[0]
     version_string = version_line.split()[-1]
-    version_tuple = tuple(version_string.split("."))
-    return version_tuple
+    version_list = []
+    for part in version_string.split("."):
+        if part.isdigit():
+            part = int(part)
+        version_list.append(part)
+    return tuple(version_list)
 
+
+PANDOC_VERSION = _pandoc_version()
 
 PANDOC_CMD_TEMPLATE = pandoc.bake(
     t="beamer",
     d="../defaults.yaml",
-    # filter="pandoc-citeproc",
-    citeproc=True,
     highlight_style="../sh_style.theme",
     verbose=True,
 )
+
+if PANDOC_VERSION < (2, 11):
+    PANDOC_CMD_TEMPLATE = PANDOC_CMD_TEMPLATE.bake(filter="pandoc-citeproc")
+else:
+    PANDOC_CMD_TEMPLATE = PANDOC_CMD_TEMPLATE.bake(citeproc=True)
+
 
 RX_INCLUDE_DIRECTIVE = re.compile(r"!!include\s+([a-zA-Z0-9+#-]+):\s*(.+)")
 
