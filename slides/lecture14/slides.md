@@ -419,17 +419,16 @@ discriminative power. It is a \textbf{special alignment} learned by the network 
 
 # Experiment 3: Concepts by Layer
 
+Do CNN layers progressively disentangle higher-level semantic concepts, and does this hierarchy depend on training data?
+
 \begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/exp3_concepts_layer.png}
+\includegraphics[width=0.75\columnwidth]{imgs/exp3_concepts_layer.png}
 \end{center}
 
 The type of concept detected changes with **layer depth**:
 **Early layers**: colors, textures → **Middle layers**: materials, 
 parts → **Late layers**: objects, scenes.
 
-This mirrors the visual cortex hierarchy: V1 (edges) $\rightarrow$ 
-V4 (textures) $\rightarrow$ IT (objects). The analogy holds 
-quantitatively.
 
 ---
 
@@ -443,6 +442,7 @@ quantitatively.
 \end{center}
 :::
 ::: {.column width="40%"}
+\vspace{0.3cm}
 Comparing the number of unique detectors across architectures 
 trained on the **same dataset**:
 
@@ -594,7 +594,7 @@ for more categories.
 
 ---
 
-# From Network Dissection to TCAV - ver si lo dejo
+# From Network Dissection to TCAV
 
 :::: columns
 ::: {.column width="50%"}
@@ -706,19 +706,6 @@ Models explain in \textbf{pixels}. Humans understand in
 :::
 ::::
 
-<!---
-
-# Summary of Contributions
-
-- Introduce \textcolor{orange}{\textbf{Concept Activation Vectors (CAVs)}}: way to interpret a neural network's internal state in terms of human-friendly concepts
-- Key idea is to use the high-dimensional internal state of a neural net as an aid, not an obstacle
-- Main contribution: \textcolor{orange}{\textbf{Testing with CAV (TCAV)}}, that quantifies model sensitivity to a high-level concept learned by a CAV for a particular class
-
-\begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/tcav_contributions.png}
-\end{center}
-
---->
 
 ---
 
@@ -804,8 +791,10 @@ influence via \textbf{directional derivatives}.
 # Approach: Defining the CAV
 
 :::: columns
-::: {.column width="55%"}
-<!---Consider the fully connected layer $f_l : \mathbb{R}^n \rightarrow \mathbb{R}^m$  --->
+::: {.column width="60%"}
+\vspace{0.3cm}
+Consider the fully connected layer $f_l : \mathbb{R}^n \rightarrow \mathbb{R}^m$.
+
 The user wants to test concept $C$ (e.g., "stripes"). How do we 
 represent it inside the network?
 
@@ -819,12 +808,12 @@ represent it inside the network?
 
 \begin{block}{Key insight}
 A CAV is a \textbf{direction} in activation space that represents 
-a human-defined concept. No retraining of the original model needed.
+a human-defined concept. 
 \end{block}
 :::
-::: {.column width="45%"}
+::: {.column width="40%"}
 \begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/tcav_cav_definition.png}
+\includegraphics[width=0.8\columnwidth]{imgs/tcav_cav_definition.png}
 \end{center}
 :::
 ::::
@@ -854,6 +843,23 @@ the representation.
 :::
 ::::
 
+
+---
+
+# Approach: Empirical Deep Dream (Validating a CAV)
+
+\vspace{0.3cm}
+This is a qualitative sanity check: does the learned CAV actually encode the intended human concept?
+
+- Apply activation maximization
+- Not to a single neuron, but to the **CAV direction** $\mathbf{v}_C^l$
+- Optimize the input image so that activations move **along** $\mathbf{v}_C^l$ in layer $l$
+
+**Interpretation**: If the CAV truly represents concept $C$, the generated pattern should visually reflect $C$.
+
+\begin{center}
+\includegraphics[width=0.7\columnwidth]{imgs/tcav_empirical_deepdream.png}
+\end{center}
 
 ---
 
@@ -1079,8 +1085,8 @@ Saliency maps are not just imprecise — they are actively \textbf{misleading}. 
 ::: {.column width="55%"}
 TCAV applied to a diabetic retinopathy diagnosis model:
 
-- \textcolor{green}{Green}: medically relevant concepts  
-- \textcolor{red}{Red}: irrelevant concepts  
+- Green: medically relevant concepts  
+- Red: irrelevant concepts  
 
 - **Level 4**: model relies on medically relevant concepts  
 - **Level 1**: model incorrectly relies on HMA  
