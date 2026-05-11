@@ -62,7 +62,8 @@ def _pandoc_version():
 PANDOC_CMD_TEMPLATE = pandoc.bake(
     t="beamer",
     d="../defaults.yaml",
-    filter="pandoc-citeproc",
+    # filter="pandoc-citeproc",
+    citeproc=True,
     highlight_style="../sh_style.theme",
     verbose=True,
 )
