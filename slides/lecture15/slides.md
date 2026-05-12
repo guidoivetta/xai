@@ -10,6 +10,204 @@ bibliography: references.bib
 
 ---
 
+\begin{center}
+\Large\textbf{What is Your Data Worth? Equitable Valuation of Data}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+Amirata Ghorbani, James Zou — ICML 2019
+\end{center}
+
+[@ghorbani2019data]
+
+---
+
+# The Data Valuation Problem
+
+If data is fuel, we need a principled way to measure its value. Stakeholders have different priorities:
+
+* **ML Engineers:** Assess heterogeneous sources and data quality.
+* **Data Vendors:** Determine fair pricing for buying and selling data.
+* **Individuals/Data Producers:** Understand compensation or credit for contributed data.
+
+
+---
+
+# Ingredients of Data Value
+
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{imgs/ingredients.png}
+\end{center}
+
+---
+
+# Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.4\columnwidth]{imgs/LOO1.png}
+\end{center}
+
+---
+
+# Desirable Properties of Valuation
+
+A fair valuation method must satisfy three fundamental axioms from cooperative game theory:
+
+1.  **Null Element:** If adding a point to *any* subset of training data never changes the model's performance, its value is exactly 0.
+2.  **Symmetry:** If adding point $A$ or point $B$ to any subset always results in the exact same performance change, they must receive the same value ($Value(A) = Value(B)$).
+3.  **Linearity:** If the performance metric is a sum of performances on individual tasks, the data value must reflect the sum of values for those individual tasks.
+
+---
+
+# The Data Shapley Value
+
+The only data value mathematically guaranteed to satisfy these three properties is based on marginal contributions across all possible subset sizes.
+
+$$Value(data~k) = \sum_{S \subseteq D \setminus \{k\}} \frac{performance(S \cup \{k\}) - performance(S)}{\binom{n-1}{|S|}}$$
+
+\begin{itemize}
+\item Evaluates the expected contribution to all possible sizes of train data samples.
+\item Directly applies Lloyd Shapley’s cooperative game theory to individual ML data points.
+\end{itemize}
+
+---
+
+# The Data Shapley Value Example
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/algorithm_example.png}
+\end{center}
+
+---
+
+# Efficient Approximation: TMC-Shapley
+
+Exact calculation is computationally infeasible for realistic datasets because it grows exponentially.
+
+**Truncated Monte-Carlo (TMC) Approximation:**
+\begin{enumerate}
+\item Sample a random permutation of the training data.
+\item Add one point at a time based on the sampled permutation.
+\item Re-train the model to capture the marginal increase in performance.
+\item \textbf{Truncate} the calculation when performance saturates to save computational resources.
+\end{enumerate}
+
+---
+
+# Application 1: Identifying Low-Quality Data
+
+**Result:** Ordering points from most negative Shapley value to positive allows for rapid dataset cleaning. Examining just ~30\% of the data uncovers nearly all mislabeled examples.
+
+\begin{center}
+\includegraphics[width=0.4\columnwidth]{imgs/bad_data.png}
+\end{center}
+
+---
+
+# Application 2: Identifying Essential Data
+
+**Case Study: UK Biobank**
+
+* Dataset spanning 500,000 individuals across 22 centers in the UK.
+
+* Centers were evaluated as singular "data sources" for predicting Breast and Colon Cancer.
+
+---
+
+# Application 2: Identifying Essential Data
+
+**Insights from Shapley:**
+
+* For Colon Cancer, a massive center received a *negative* Shapley value.
+
+* Investigation revealed the model heavily relied on *Age* as a predictive feature, but the specific anomalous center exhibited colon cancer rates entirely independent of age.
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/UK.png}
+\end{center}
+
+---
+
+# Application 2: Identifying Essential Data
+
+\begin{columns}
+\begin{column}{0.4\textwidth}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/good_data.png}
+\end{center}
+\end{column}
+\begin{column}{0.4\textwidth}
+\begin{center}
+\vspace{2em}
+\includegraphics[width=\columnwidth]{imgs/good_data_2.png}
+\end{center}
+\end{column}
+\end{columns}
+
+---
+
+# Application 3: Domain Adaptation
+
+What if the training data differs in quality, distribution, or class balance from the test environment?
+
+**Shapley Adaptation Strategy:**
+
+1.  Compute Shapley values relative to the target test distribution.
+
+2.  Remove data with negative values.
+
+3.  Reweight the remaining training data based on relative positive weights.
+
+---
+
+# Domain Adaptation Results (Skin Lesion)
+
+Training on noisy Google Image Search data to test on the clean, clinical HAM10000 dataset. Applying Shapley weights improved classification by $\approx 25\%$.
+
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{imgs/skin_data.png}
+\end{center}
+
+---
+
+# Domain Adaptation Results (Skin Lesion)
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/skin_training.png}
+\end{center}
+
+---
+
+# Domain Adaptation Results (Gender Detection)
+
+Models trained on LFW+A (heavily biased toward white males) fail on balanced datasets like PPB. Shapley values easily identify out-of-distribution elements; adaptation increases accuracy on underrepresented minorities by $\approx 7\%$.
+
+\begin{center}
+\includegraphics[width=0.6\columnwidth]{imgs/gender_data.png}
+\end{center}
+
+---
+
+# Domain Adaptation Results (Gender Detection)
+
+\begin{center}
+\includegraphics[width=0.5\columnwidth]{imgs/gender_training.png}
+\end{center}
+
+---
+
+# Summary
+
+\begin{itemize}
+\item Data Shapley provides an equitable, axiom-backed framework to quantify the value of individual ML data points.
+\item It moves beyond LOO limitations by measuring expected contributions over all possible subsets.
+\item Applications span data cleaning, debugging, valuation pricing, and addressing distributional shifts.
+\end{itemize}
+
+---
+
 # Understanding Models via Their Training Data
 
 \begin{center}
@@ -26,146 +224,76 @@ Pang Wei Koh, Percy Liang — ICML 2017
 
 ---
 
-# Prior Work: Focus on Test Data
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/prior_work_diagram.png}
+\includegraphics[width=0.9\columnwidth]{imgs/db1.png}
 \end{center}
 
 ---
 
-# Which Parts of the Test Input Matter?
-
-## Saliency methods
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/saliency_example.png}
+\includegraphics[width=0.8\columnwidth]{imgs/db2.png}
 \end{center}
 
 ---
 
-# Our Work: Link Model to Training Data
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/our_work_diagram.png}
+\includegraphics[width=0.8\columnwidth]{imgs/db3.png}
 \end{center}
 
 ---
 
-# Example: Dataset Debugging
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/dataset_debugging.png}
+\includegraphics[width=0.8\columnwidth]{imgs/db4.png}
 \end{center}
 
 ---
 
-# Finding Responsible Training Data
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/doctor_mislabeling.png}
+\includegraphics[width=0.8\columnwidth]{imgs/db5.png}
 \end{center}
 
 ---
 
-# Leave-One-Out Approach
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/loo_approach.png}
-\end{center}
-
-[Quenouille, 1956; Tukey, 1958]
-
----
-
-# LOO Results
-
-\begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/loo_results.png}
-\end{center}
-
-- Remove Tumor \#1 $\rightarrow$ \textcolor{red}{$-4\%$} (35\% $\to$ 31\% Normal)
-- Remove Tumor \#2 $\rightarrow$ \textcolor{red}{$-2\%$} (35\% $\to$ 33\% Normal)
-- Remove mislabeled Normal $\rightarrow$ \textcolor{primarygreen}{$+40\%$} (35\% $\to$ 75\% Normal) \emoji{fire}
-
----
-
-# Problem and Solution
-
-\begin{alertblock}{Problem}
-Repeatedly removing training points and retraining is \textbf{too slow}
-\end{alertblock}
-
-\vspace{1em}
-
-\begin{exampleblock}{Solution}
-First-order Taylor approximation via \textbf{influence functions}
-\end{exampleblock}
-
----
-
-# Upweighting a Training Point
-
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/upweighting_diagram.png}
-\end{center}
-
-\begin{center}
-Removing $z_\text{train}$ $\equiv$ upweighting by $\epsilon = -\frac{1}{n}$
+\includegraphics[width=0.8\columnwidth]{imgs/db6.png}
 \end{center}
 
 ---
 
-# Taylor Approximation
+# Dataset Debugging
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/taylor_approx.png}
+\includegraphics[width=0.8\columnwidth]{imgs/db7.png}
 \end{center}
 
-\begin{columns}
-\begin{column}{0.48\textwidth}
+---
+
+# Dataset Debugging
+
 \begin{center}
-\textbf{Slow:} actual change (retrain without the point)
+\includegraphics[width=0.8\columnwidth]{imgs/db8.png}
 \end{center}
-\end{column}
-\begin{column}{0.48\textwidth}
-\begin{center}
-\textbf{Fast:} estimated change (first-order Taylor)
-\end{center}
-\end{column}
-\end{columns}
 
 ---
 
 # The Influence Function Approximation
 
-Change in loss on $z_\text{test}$ after removing $z_\text{train}$:
-
-\vspace{0.5em}
-
-$$\ell(z_\text{test}, \hat\theta_{-z_\text{train}}) - \ell(z_\text{test}, \hat\theta) \approx \nabla_\theta \ell(z_\text{test}, \hat\theta)^T H_{\hat\theta}^{-1} \nabla_\theta \ell(z_\text{train}, \hat\theta)$$
-
-\vspace{0.5em}
-
-\begin{columns}
-\begin{column}{0.32\textwidth}
 \begin{center}
-{\small Gradient of loss on $z_\text{test}$}
+\includegraphics[width=0.8\columnwidth]{imgs/influence_function.png}
 \end{center}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{center}
-{\small Inverse Hessian}
-\end{center}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{center}
-{\small Gradient of loss on $z_\text{train}$}
-\end{center}
-\end{column}
-\end{columns}
 
-\vspace{1em}
 \begin{center}
 \textbf{Doesn't require retraining!}
 \end{center}
@@ -197,65 +325,13 @@ High influence $\Rightarrow$ test and train have **similar model representations
 
 ---
 
-# Technical Details
-
-$$\hat\theta_{\epsilon,z} \stackrel{\text{def}}{=} \arg\min_{\theta\in\Theta} \frac{1}{n}\sum_{i=1}^n L(z_i,\theta) + \epsilon L(z,\theta)$$
-
-\vspace{0.5em}
-
-Differentiating at $\epsilon = 0$ using the chain rule:
-
-$$\frac{dL(z_\text{test}, \hat\theta_{\epsilon,z})}{d\epsilon}\bigg|_{\epsilon=0} = \nabla_\theta L(z_\text{test}, \hat\theta)^\top \frac{d\hat\theta_{\epsilon,z}}{d\epsilon}\bigg|_{\epsilon=0}$$
-
-Applying the implicit function theorem gives:
-
-$$\frac{d\hat\theta_{\epsilon,z}}{d\epsilon}\bigg|_{\epsilon=0} = -H_{\hat\theta}^{-1} \nabla_\theta L(z, \hat\theta)$$
-
----
-
-# From Classical to Modern Settings
-
-\begin{columns}
-\begin{column}{0.48\textwidth}
-\textbf{Classical works (small \& low-dimensional):}
-\begin{itemize}
-\item Jaeckel, 1972 — The infinitesimal jackknife
-\item Hampel, 1974 — The influence curve and its role in robust estimation
-\item Cook, 1977 — Detection of influential observations in linear regression
-\end{itemize}
-\end{column}
-\begin{column}{0.48\textwidth}
-\textbf{Modern challenge (large \& high-dimensional):}
-
-\vspace{0.5em}
-
-$$\nabla_\theta \ell(z_\text{test}, \hat\theta)^T \underbrace{H_{\hat\theta}^{-1}}_{\text{difficult!}} \nabla_\theta \ell(z_\text{train}, \hat\theta)$$
-
-\vspace{0.5em}
-
-We use tools from 2nd-order optimization \& stochastic estimation
-
-{\footnotesize [Pearlmutter, 1994; Martens, 2010; Agarwal et al., 2017]}
-\end{column}
-\end{columns}
-
----
-
 # Removing Single Points: Validation
 
 \begin{center}
-\includegraphics[width=0.65\columnwidth]{imgs/removing_single_points.png}
+\includegraphics[width=0.65\columnwidth]{imgs/mnist.png}
 \end{center}
 
 Logistic regression (MNIST): each point = removing one training example. Influence function estimate tracks actual LOO change closely.
-
----
-
-# Where Can You Apply Influence Functions?
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/where_to_apply.png}
-\end{center}
 
 ---
 
