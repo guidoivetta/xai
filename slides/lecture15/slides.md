@@ -1,7 +1,6 @@
 ---
-title: "\\emoji{wtf} XAI: What is Your Data Worth? Equitable Valuation of Data"
+title: "\\emoji{wtf} XAI: Quantifying Data Value and Influence in Machine Learning"
 bibliography: references.bib
-
 ---
 
 # Disclaimer
@@ -11,26 +10,116 @@ bibliography: references.bib
 ---
 
 \begin{center}
-\Large\textbf{What is Your Data Worth? Equitable Valuation of Data}
+\Large\textbf{Quantifying Data Value and Influence in Machine Learning}
 \end{center}
 
 \vspace{1em}
 
 \begin{center}
-Amirata Ghorbani, James Zou — ICML 2019
+Combining insights from:\\
+\textit{What is Your Data Worth? Equitable Valuation of Data} (Ghorbani \& Zou, ICML 2019)\\
+\textit{Understanding black-box predictions via influence functions} (Koh \& Liang, ICML 2017)
 \end{center}
-
-[@ghorbani2019data]
 
 ---
 
-# The Data Valuation Problem
+# The Data Valuation & Influence Problem
 
-If data is fuel, we need a principled way to measure its value. Stakeholders have different priorities:
+If data is fuel, we need a principled way to measure its value and its effect on our models. Stakeholders have different priorities:
 
-* **ML Engineers:** Assess heterogeneous sources and data quality.
+* **ML Engineers:** Assess heterogeneous sources, debug model behavior, and ensure data quality.
 * **Data Vendors:** Determine fair pricing for buying and selling data.
 * **Individuals/Data Producers:** Understand compensation or credit for contributed data.
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.9\columnwidth]{imgs/db1.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db2.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db3.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db4.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db5.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db6.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db7.png}
+\end{center}
+
+---
+
+# The Baseline: Leave One Out Method
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/db8.png}
+\end{center}
+
+---
+
+# The Bottleneck
+
+Leave-One-Out (LOO) is conceptually simple but practically flawed:
+
+1. **Computationally intractable:** Retraining the model for every single data point is impossible for large datasets.
+
+2. **Ignores interactions:** It doesn't account for how data points interact with one another in subsets.
+
+Two frameworks address these issues: **Data Shapley** and **Influence Functions**.
+
+---
+
+\begin{center}
+\Large\textbf{Approach 1: Data Shapley}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+Equitable Valuation of Data
+\end{center}
+
+[@ghorbani2019data]
 
 
 ---
@@ -39,14 +128,6 @@ If data is fuel, we need a principled way to measure its value. Stakeholders hav
 
 \begin{center}
 \includegraphics[width=0.6\columnwidth]{imgs/ingredients.png}
-\end{center}
-
----
-
-# Leave One Out Method
-
-\begin{center}
-\includegraphics[width=0.4\columnwidth]{imgs/LOO1.png}
 \end{center}
 
 ---
@@ -198,139 +279,17 @@ Models trained on LFW+A (heavily biased toward white males) fail on balanced dat
 
 ---
 
-# Summary
-
-\begin{itemize}
-\item Data Shapley provides an equitable, axiom-backed framework to quantify the value of individual ML data points.
-\item It moves beyond LOO limitations by measuring expected contributions over all possible subsets.
-\item Applications span data cleaning, debugging, valuation pricing, and addressing distributional shifts.
-\end{itemize}
-
----
-
-# Extra! (Distributional Shapley)
-
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val1.png}
-\end{center}
-
----
-
-# Extra! (Distributional Shapley)
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val2.png}
-\end{center}
-
----
-
-# Extra! (Distributional Shapley)
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val3.png}
-\end{center}
-
----
-
-# Extra! (Distributional Shapley)
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val4.png}
-\end{center}
-
----
-
-# Extra! (Distributional Shapley)
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val5.png}
-\end{center}
-
----
-
-# Extra! (Distributional Shapley)
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/val6.png}
-\end{center}
-
----
-
-\begin{center}
-\Large\textbf{Understanding black-box predictions via influence functions}
+\Large\textbf{Approach 2: Influence Functions}
 \end{center}
 
 \vspace{1em}
 
 \begin{center}
-Pang Wei Koh, Percy Liang — ICML 2017
+Understanding black-box predictions via influence functions
 \end{center}
 
 [@koh2017understanding]
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.9\columnwidth]{imgs/db1.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db2.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db3.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db4.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db5.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db6.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db7.png}
-\end{center}
-
----
-
-# Dataset Debugging
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/db8.png}
-\end{center}
 
 ---
 
@@ -411,16 +370,83 @@ $$\hat\theta_{\epsilon,z} \stackrel{\text{def}}{=} \arg\min_{\theta\in\Theta} \f
 
 # Summary
 
+Both approaches aim to link model behavior back to the training data.
+
+\textbf{Data Shapley:}
 \begin{itemize}
-\item \textbf{Link} model behavior to training data
-\item \textbf{Efficient} to calculate — no retraining needed
-\item \textbf{Many applications:} debugging, fairness, security, privacy
-\item \textbf{Limitations} when applying to complex models
-  \begin{itemize}
-  \item Non-convexity
-  \item Non-convergence
-  \end{itemize}
+\item Axiom-backed framework moving beyond LOO by measuring expected contributions over all subsets.
+\item Excellent for data valuation, pricing, cleaning, and domain adaptation.
+\item Computationally intensive (requires TMC approximation).
 \end{itemize}
+
+\textbf{Influence Functions:}
+\begin{itemize}
+\item Efficient gradient-based calculation—no retraining needed.
+\item Excellent for fast debugging, fairness analysis, and understanding specific predictions.
+\item Limited by strict mathematical assumptions (convexity, convergence) in complex models.
+\end{itemize}
+
+---
+
+\begin{center}
+\Large\textbf{Extra: Distributional Shapley}
+\end{center}
+
+\vspace{1em}
+
+\begin{center}
+A More Intrinsic Measure of Value
+\end{center}
+
+[@ghorbani2020distributional]
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val1.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val2.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val3.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val4.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val5.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val6.png}
+\end{center}
 
 ---
 
