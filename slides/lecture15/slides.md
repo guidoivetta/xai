@@ -1,5 +1,5 @@
 ---
-title: "\\emoji{wtf} XAI: Understanding Black-Box Predictions via Influence Functions"
+title: "\\emoji{wtf} XAI: What is Your Data Worth? Equitable Valuation of Data"
 bibliography: references.bib
 
 ---
@@ -404,8 +404,6 @@ $$\hat\theta_{\epsilon,z} \stackrel{\text{def}}{=} \arg\min_{\theta\in\Theta} \f
 
 # Summary
 
-\begin{columns}
-\begin{column}{0.55\textwidth}
 \begin{itemize}
 \item \textbf{Link} model behavior to training data
 \item \textbf{Efficient} to calculate — no retraining needed
@@ -416,13 +414,6 @@ $$\hat\theta_{\epsilon,z} \stackrel{\text{def}}{=} \arg\min_{\theta\in\Theta} \f
   \item Non-convergence
   \end{itemize}
 \end{itemize}
-\end{column}
-\begin{column}{0.42\textwidth}
-\begin{center}
-\includegraphics[width=\columnwidth]{imgs/our_work_diagram.png}
-\end{center}
-\end{column}
-\end{columns}
 
 ---
 
