@@ -208,7 +208,53 @@ Models trained on LFW+A (heavily biased toward white males) fail on balanced dat
 
 ---
 
-# Understanding Models via Their Training Data
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val1.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val2.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val3.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val4.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val5.png}
+\end{center}
+
+---
+
+# Extra! (Distributional Shapley)
+
+\begin{center}
+\includegraphics[width=0.8\columnwidth]{imgs/val6.png}
+\end{center}
+
+---
 
 \begin{center}
 \Large\textbf{Understanding black-box predictions via influence functions}
@@ -321,7 +367,11 @@ Accounts for the curvature induced by the full training set
 
 \vspace{0.5em}
 
-High influence $\Rightarrow$ test and train have **similar model representations**
+\begin{itemize}
+\item High influence $\Rightarrow$ test and train have \textbf{similar model representations}
+\item If the resulting value is \textbf{positive} $\Rightarrow$ the training point was \textbf{harmful} to that prediction
+\item If the resulting value is \textbf{negative} $\Rightarrow$ it was \textbf{helpful}
+\end{itemize}
 
 ---
 
@@ -332,49 +382,6 @@ High influence $\Rightarrow$ test and train have **similar model representations
 \end{center}
 
 Logistic regression (MNIST): each point = removing one training example. Influence function estimate tracks actual LOO change closely.
-
----
-
-# Impact
-
-\begin{columns}
-\begin{column}{0.32\textwidth}
-\begin{block}{Robustness}
-{\small
-\begin{itemize}
-\item Training set biases [Ren et al., 2018]
-\item Inference reliability [Broderick et al., 2021]
-\item Cross-validation [Stephenson et al., 2020]
-\item Memorization [Feldman, 2019]
-\end{itemize}
-}
-\end{block}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{block}{Applications}
-{\small
-\begin{itemize}
-\item Data distillation [Wang et al., 2020]
-\item Data valuation [Jia et al., 2019]
-\item Active learning [Gudovskiy et al., 2020]
-\item Data debugging [Guo et al., 2021]
-\end{itemize}
-}
-\end{block}
-\end{column}
-\begin{column}{0.32\textwidth}
-\begin{block}{Fairness \& Security}
-{\small
-\begin{itemize}
-\item Algorithmic bias [Verma et al., 2021]
-\item Data labor [Arrieta-Ibarra, 2018]
-\item Privacy [Shokri et al., 2021]
-\item Data poisoning [Chen et al., 2017]
-\end{itemize}
-}
-\end{block}
-\end{column}
-\end{columns}
 
 ---
 
