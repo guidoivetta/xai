@@ -25,7 +25,7 @@ experimento razonable para responderla, y reportar los resultados con rigor cien
 
 ### Entrega 1 — Propuesta (borrador)
 
-**Fecha límite:** 19 de mayo de 2026
+**Fecha límite:** ~~19~~ 22 de mayo de 2026 (les doy la semana completa)
 
 Un documento de **una carilla A4** en español o inglés, en formato Markdown, subido al
 repositorio de la materia en la siguiente ruta:

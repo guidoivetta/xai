@@ -184,7 +184,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_15_Influence_Function.pptx) | [Slides 2](slides/Lecture_15_DataShapley.pdf) | [Slides 3](slides/Lecture_16_XAL.pptx) | [Slides 4](slides/Lecture_16_Talk_to_Model.pptx) \]
+\[ [Lecture 15](slides/lecture15/slides.pdf) | [Lecture 16](slides/lecture16/slides.pdf) \]
 
 ---
 
@@ -203,7 +203,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_17_Explaining_by_Removing.pptx) | [Slides 2](slides/Lecture_17_LFA.pdf) | [Slides 3](slides/Lecture_18_GANSpace.pdf) | [Slides 4](slides/Lecture_18_Latent_Space_GAN.pdf) \]
+\[ [Lecture 17](slides/lecture17/slides.pdf) | [Lecture 18](slides/lecture18/slides.pdf) \]
 
 ---
 
@@ -223,7 +223,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_19_DiffROAR.pptx) | [Slides 2](slides/Lecture_19_Privacy_Risk.pdf) | [Slides 3](slides/Lecture_20_Explainability_Fair_ML.pdf) | [Slides 4](slides/Lecture_20_ROCERF.pdf) \]
+\[ [Lecture 19](slides/lecture19/slides.pdf) | [Lecture 20](slides/lecture20/slides.pdf) \]
 
 ---
 
@@ -237,7 +237,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_21_Mechanistic_Interpretability.pptx) | [Slides 2](slides/Lecture_22_Tracr.pdf) \]
+\[ [Lecture 21](slides/lecture21/slides.pdf) | [Lecture 22](slides/lecture22/slides.pdf) \]
 
 ---
 
@@ -256,7 +256,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_23_CoT.pdf) | [Slides 2](slides/Lecture_23_Explanations_In_Context.pptx) | [Slides 3](slides/Lecture_24_Explain_Yourself.pptx) | [Slides 4](slides/Lecture_24_Contrastive_Explanation.pdf) \]
+\[ [Lecture 23](slides/lecture23/slides.pdf) | [Lecture 24](slides/lecture24/slides.pdf) \]
 
 ---
 
@@ -270,7 +270,7 @@ Hardcore Version: [Lecture 5](slides/lecture05/slides.pdf) ☠️
 
 ### Slides
 
-\[ [Slides 1](slides/Lecture_25_AlphaZero.pptx) | [Slides 2](slides/Lecture_25_DAAM.pptx) | [Slides 3](slides/Lecture_26_DALL_EVAL.pptx) \]
+\[ [Lecture 25](slides/lecture25/slides.pdf) | [Lecture 26](slides/lecture26/slides.pdf) \]
 
 ---
 ---
