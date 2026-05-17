@@ -441,202 +441,575 @@ What participants wanted to tell the model:
 # Paper 2: TalkToModel
 
 \begin{center}
-\Large\textbf{Explaining Machine Learning Models with Interactive Natural Language Conversations Using TalkToModel}
-\end{center}
-
-\vspace{1em}
-
-\begin{center}
-Slack, Krishna, Lakkaraju, Singh — Nature Machine Intelligence 2023
+\includegraphics[width=0.85\columnwidth]{imgs/ttm_paper.png}
 \end{center}
 
 [@slack2023talktomodel]
 
 ---
 
-# Motivation: The Explainability Bottleneck
+# Motivation: The XAI Landscape
 
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/ttm_system_overview.png}
-\end{center}
-
-- Post-hoc XAI methods (LIME, SHAP) are \textbf{hard for lay practitioners}
-- Each method requires separate understanding and tooling
-- Goal: \textbf{natural language dialogue} as a universal interface
-
----
-
-# System Overview
-
-\begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/ttm_system_overview.png}
-\end{center}
-
-TalkToModel: open-ended dialogue for understanding any \textbf{dataset + classifier} pair
-
----
-
-# Component 1: Dialogue Engine
-
-\begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/ttm_dialogue_engine.png}
+\includegraphics[width=\columnwidth]{imgs/ttm_background_methods.png}
 \end{center}
 
 \begin{columns}
-\begin{column}{0.48\textwidth}
-\textbf{Grammar-based} domain-specific language (DSL)
+\begin{column}{0.32\textwidth}
+\begin{center}
+\textbf{LIME}
+Local linear approximation around a point
+\end{center}
+\end{column}
+
+\begin{column}{0.32\textwidth}
+\begin{center}
+\textbf{Counterfactuals}
+Minimal changes to flip prediction
+\end{center}
+\end{column}
+
+\begin{column}{0.32\textwidth}
+\begin{center}
+\textbf{SHAP}
+Feature importance via Shapley values
+\end{center}
+\end{column}
+
+\end{columns}
+
+---
+
+# Motivation: The Practitioner's Dilemma
+
+A nurse or doctor (or someone who is not an AI specialist) trying to use XAI:
+
+1. Which method to choose for my application?
+2. Which one would you trust?
+3. How should they interpret the explanations?
+4. How would they use these methods?
+5. How would they \textbf{interact} with the method?
+6. What if they have follow-up questions?
+
+---
+
+# Motivation
+
+\begin{alertblock}{Root problem}
+Every XAI tool requires its own expertise — there is no \textbf{universal, conversational interface}.
+\end{alertblock}
+
+\vspace{1em}
+
+\begin{alertblock}{The XAI Bottleneck}
+\begin{itemize}
+\item Simple explanations are a \textbf{bottleneck to adoption}
+\item There are inherently interpretable models; however, black box models are more flexible and accurate.
+\item Post-hoc methods are hard to use empirically:
+\begin{itemize}
+\item Which method to pick?
+\item How to interpret results?
+\item How to ask follow-up questions?
+\end{itemize}
+\end{itemize}
+\end{alertblock}
+
+---
+
+# Related Work
+
+\begin{columns}
+\begin{column}{0.50\textwidth}
+\begin{itemize}
+\item \textbf{Language-Interpretability Tool (LiT)}: Open-source NLP model understanding. Uses LIME, aggregate stats, counterfactuals.
+\item \textbf{What-If Tool}: Helps users perform counterfactual analysis for models.
+\item \textbf{explainerdashboard}: Used as baseline. Tab-based dashboard with SHAP, CFE, feature dependence.
+\end{itemize}
+\end{column}
+\begin{column}{0.50\textwidth}
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_lit_tool.png}
+\end{center}
+
+\end{column}
+\end{columns}
+
+\vspace{1em}
+
+\begin{alertblock}{Common problem}
+Relatively \textbf{high barrier to entry} and \textbf{no follow-up questions} — users are passive consumers of explanations.
+\end{alertblock}
+
+---
+
+# Problem Statement
+
+\begin{definition}{}
+Design a system that makes it easy for \textbf{lay practitioners} to apply post-hoc interpretability methods to black-box models.
+\end{definition}
+
+\vspace{1em}
+
+\textbf{Desiderata:}
+
+- \textbf{Dialogue system} handling many conversation topics (data trends, specific predictions, etc.)
+- \textbf{Variety} of data types and model classes (treatment prediction, risk of relapse, etc.)
+- Does \textbf{not require} high ML expertise
+
+---
+
+# Summary of Contributions: TalkToModel
+
+\begin{exampleblock}{TalkToModel}
+Open-ended dialogue for understanding any \textbf{dataset + classifier} pair
+\end{exampleblock}
 
 \vspace{0.5em}
 
-Maps utterances $\rightarrow$ parse trees $\rightarrow$ operations
+\textbf{Capabilities:} why a prediction occurred, how it changes if data changes, how to flip predictions, general data statistics, etc.
+
+\vspace{1em}
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\textbf{Problem}
+\begin{enumerate}
+\item Which method to choose?
+\item Which would a practitioner trust?
+\item How to interpret?
+\item How to use?
+\item How to interact?
+\end{enumerate}
 \end{column}
 \begin{column}{0.48\textwidth}
-\textbf{LLM fine-tuning} (seq2seq)
-\begin{itemize}
-\item T5 fine-tuned on generated data
-\item GPT-J few-shot baseline
-\end{itemize}
+\textbf{TalkToModel}
+\begin{enumerate}
+\item Uses \textbf{many} post-hoc methods
+\item Picks the \textbf{"best"} explanation
+\item Answers in \textbf{natural language}
+\item Only needs \textbf{model + data}
+\item Communicate via \textbf{natural language}
+\end{enumerate}
 \end{column}
 \end{columns}
 
 ---
 
-# Fine-Tuning Data Generation
+# Talking to the Model: TalkToModel's Answers
 
-- Authors write \textbf{50 (utterance, parse) pairs} per domain
-  - Every operation appears $\geq$ 2 times
-- MTurk: paraphrase each utterance \textbf{8 ways} = 400 pairs
-- MTurk: rate fidelity of paraphrase (keep $\geq$ 3/4 averaged over 5 raters)
-- Manual filtering by authors
-- Enumerate wildcards $\rightarrow$ \textbf{20k--40k training pairs} per domain
+\begin{columns}
+\begin{column}{0.48\textwidth}
+
+\textbf{Three components:}
+\begin{enumerate}
+
+\item \textbf{Dialogue engine} — LLM backend translating utterances to operations
+\item \textbf{Execution engine} — runs many explanations and picks the best one
+\item \textbf{Text interface} — enables natural language conversations
+\end{enumerate}
+
+\end{column}
+\begin{column}{0.48\textwidth}
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_system_overview.png}
+\end{center}
+\end{column}
+\end{columns}
 
 ---
 
-# The Grammar: DSL Operations
+# Talking to the Model: TalkToModel's Answers
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/ttm_grammar_operations.png}
+\includegraphics[width=\columnwidth]{imgs/ttm_method_pipeline_1.png}
 \end{center}
 
 ---
 
-# Component 2: Execution Engine
+# Talking to the Model: TalkToModel's Answers
 
 \begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/ttm_execution_engine.png}
+\includegraphics[width=\columnwidth]{imgs/ttm_method_pipeline_2.png}
 \end{center}
 
+---
+
+# Talking to the Model: TalkToModel's Answers
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_method_pipeline_3.png}
+\end{center}
+
+---
+
+# Talking to the Model: TalkToModel's Answers
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_method_pipeline_4.png}
+\end{center}
+
+---
+
+# Talking to the Model: TalkToModel's Answers
+
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_method_pipeline_5.png}
+\end{center}
+
+---
+
+# Dialogue Engine: The Grammar
+
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\begin{block}{Domain-Specific Language (DSL)}
+To represent the intentions behind user utterances in a structured form, TalkToModel relies on a grammar defining a domain specific language for model understanding.
+\end{block}
+
+\vspace{0.5em}
+
+The grammar includes:
+\begin{enumerate}
+\item All \textbf{operations} TalkToModel can run
+\item The \textbf{arguments} for each operation
+\item The \textbf{relations} between operations
+\end{enumerate}
+\end{column}
+\begin{column}{0.42\textwidth}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_dialogue_engine.png}
+\end{center}
+\end{column}
+\end{columns}
+
+---
+
+# Dialogue Engine: Grammar Operations
+
+\begin{columns}
+\begin{column}{0.50\textwidth}
+\begin{center}
+\includegraphics[width=0.95\columnwidth]{imgs/ttm_grammar_operations.png}
+\end{center}
+\end{column}
+\begin{column}{0.42\textwidth}
+\footnotesize
+\textbf{Data:} Supports data exploration and filtering operations.
+
+\vspace{1em}
+\textbf{Explainability:} Supports interpretation and explanation of model behavior.
+
+\vspace{1em}
+\textbf{ML:} Supports prediction and evaluation tasks for machine learning models.
+
+\vspace{1em}
+\textbf{Conversational:} Supports contextual and follow-up interactions.
+
+\vspace{1em}
+\textbf{Description:} Provides general information about functions, data, and models.
+\end{column}
+\end{columns}
+
+---
+
+# Dialogue Engine: Dataset-Specific Grammar
+
+\begin{alertblock}{Challenge}
+It is challenging to use a \textbf{general grammar} that works for all datasets.
+\end{alertblock}
+
+\vspace{1em}
+
+TalkToModel uses a grammar that is \textbf{dependent on the dataset features}.
+
+\vspace{1em}
+
+\begin{exampleblock}{Example}
+The arguments for operations like \texttt{filter} or \texttt{topk} are automatically filled with the actual feature names from the user's provided dataset.
+\end{exampleblock}
+
+---
+
+# Dialogue Engine: Fine-Tuning LLM (seq2seq)
+
+\begin{center}
+\includegraphics[width=0.65\columnwidth]{imgs/ttm_dialogue_engine_seq_2_seg.png}
+\end{center}
+
+"To parse user utterances into the grammar, we fine-tune an LLM to translate utterances into the grammar in a \textbf{seq2seq fashion}."
+
+\vspace{1em}
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\textbf{Input:} User utterances
+
+\footnotesize "How likely is a 40-year-old woman to have diabetes?"
+\end{center}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{center}
+\textbf{Output:} Grammar parses
+
+\footnotesize \texttt{likelihood(filter(data, age, 40, =))}
+\end{center}
+\end{column}
+\end{columns}
+
+---
+
+# Dialogue Engine: Training Data Generation
+
+\begin{enumerate}
+\item Authors write \textbf{50 (utterance, parse) pairs} per domain — every operation appears $\geq$ 2×
+\item MTurk: paraphrase each utterance \textbf{8 ways} = 400 pairs
+\item MTurk: rate fidelity of paraphrase (keep $\geq$ 3/4 avg over 5 raters)
+\item Manual filtering by authors
+\item Enumerate wildcards with dataset features $\rightarrow$ \textbf{20k–40k training pairs}
+\end{enumerate}
+
+---
+
+# Dialogue Engine: Example Paraphrases
+
+\begin{block}{Original utterance}
+"What is your reasoning for determining if people older than 20 are likely to commit crimes?"
+\end{block}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{MTurk paraphrases}
 \begin{itemize}
-\item \textbf{Counterfactual}: DiCE
-\item \textbf{Post-hoc Feature Explanations}: LIME / KernelSHAP
-\item \textbf{Data/Prediction Exploration}
+\item "Why do you think people over the age of twenty are likely to commit a crime?"
+\item "How did you determine the likelihood of people over 20 committing crimes?"
+\item "Can you reason why people over twenty would likely commit crimes?"
 \end{itemize}
-
-Selects "best" explanation via \textbf{Faith score}
+\end{exampleblock}
 
 ---
 
-# Faith and Fudge Scores
+# Dialogue Engine: Responding Conversationally
+
+\begin{block}{Template-based responses}
+After TalkToModel executes a parse, it \textbf{composes the results} of the operations into a natural language response using \textbf{templates} associated with each operation.
+\end{block}
+
+\vspace{0.5em}
+
+- Each operation has an associated \textbf{response template}
+- TalkToModel can run \textbf{multiple operations simultaneously} — it joins response templates ensuring semantic coherence
+
+---
+
+# Dialogue Engine: Complete Pipeline
 
 \begin{center}
-\includegraphics[width=0.7\columnwidth]{imgs/ttm_faith_fudge.png}
+\begin{enumerate}
+\item \textbf{Constructing a grammar} — DSL with operations, arguments, relations
+\item \textbf{Generate fine-tuning data} — 50 pairs $\rightarrow$ wildcard enumeration $\rightarrow$ 20k–40k pairs
+\item \textbf{Fine-tuning LLM} (T5) — translate utterances to parses (seq2seq)
+\item \textbf{Respond conversationally} — templates composed into natural language
+\end{enumerate}
 \end{center}
 
-**Fudge score** (faithfulness of a mask $\mathbf{m}$ for instance $\mathbf{x}$):
+---
 
-$$\text{Fudge}(f,\mathbf{x},\mathbf{m}) = \frac{1}{N}\sum_{n=1}^N |f(\mathbf{x}) - f(\mathbf{x}+\epsilon_n \odot \mathbf{m})|$$
+# Execution Engine
 
-**Faith score** = sum of Fudge scores over top-$k$ features
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_execution_engine.png}
+\end{center}
 
-Computed for LIME (kernels 0.25/0.5/0.75/1.0) and KernelSHAP $\rightarrow$ report highest
+---
+
+# Execution Engine: Selecting the Best Explanation
+
+\begin{alertblock}{Key design choice}
+Instead of providing raw LIME or SHAP values, TalkToModel \textbf{tests multiple methods} and reports the \textbf{most faithful} one.
+\end{alertblock}
+
+\vspace{1em}
+
+\textbf{Setup:}
+
+- $f$: model outputting probability $y$ of a class
+- $\phi$: feature importances for model $f$ on instance $x$ (greater magnitude = higher importance)
+- Methods evaluated: LIME with kernels $\{0.25, 0.5, 0.75, 1.0\}$ + KernelSHAP
+
+---
+
+# Execution Engine: The Fudge Score
+
+\textbf{Intuition:} More important features should cause \textbf{larger perturbations} in the prediction when noise is added.
+
+$$\text{Fudge}(f, \mathbf{x}, \mathbf{m}) = \frac{1}{N}\sum_{n=1}^N |f(\mathbf{x}) - f(\mathbf{x} + \epsilon_n \odot \mathbf{m})|$$
+
+Average magnitude of prediction perturbation when adding Gaussian noise \textbf{masked by} $\mathbf{m}$.
+
+---
+
+# Execution Engine: Faith Score
+
+\textbf{Feature Importance Faithfulness} (Faith):
+
+$$\text{Faith}(\phi, f, x, K) = \sum_{k=1}^{K} \text{Fudge}(f, x, \mathbf{1}(k, \phi))$$
+
+$$\text{where } \mathbf{1}(k, \phi) \text{ is a binary mask that selects the top-}k\text{ most important features}$$
+
+- Computed for LIME (4 kernels) and KernelSHAP
+- \textbf{Report the one with highest Faith}
+
+\vspace{0.5em}
+
+\begin{exampleblock}{Outcome}
+TalkToModel automatically selects the most faithful explanation — the user never has to choose.
+\end{exampleblock}
+
+---
+
+# Experiments: Overview
+
+\begin{columns}
+\begin{column}{0.32\textwidth}
+\begin{block}{Experiment 1}
+\textbf{LLM Experiment} — Is the LLM accurately interpreting user questions?
+\end{block}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{block}{Experiment 2}
+\textbf{Grammar Experiment} — Is the grammar expressive enough for all XAI questions?
+\end{block}
+\end{column}
+\begin{column}{0.32\textwidth}
+\begin{block}{Experiment 3}
+\textbf{User Experiment} — Do users prefer TalkToModel over a standard dashboard?
+\end{block}
+\end{column}
+\end{columns}
 
 ---
 
 # Experiment 1: LLM Evaluation
 
+\textbf{Goal:} Is the LLM accurately interpreting user questions?
+
+\begin{block}{Method}
+\begin{itemize}
+\item Create a \textbf{"Gold Dataset"}: ground-truth (utterance, parse) pairs specific to each domain
+\item Evaluate \textbf{Exact Match Accuracy} of LLM translation
+\item Compare along \textbf{easy} (IID) and \textbf{hard} (compositional) splits
+\item Compare few-shot GPT-J vs. fine-tuned T5 at different sizes
+\end{itemize}
+\end{block}
+
+---
+
+# Experiment 1: Datasets and Gold Data
+
 \begin{columns}
 \begin{column}{0.48\textwidth}
-\textbf{Datasets:}
+\begin{block}{Domains}
 \begin{itemize}
-\item Diabetes (Pima Indian): 768 women, 8 features, 400→190 questions
-\item Credit (German): 1000 applicants, 20 features, 400→200 questions
-\item Recidivism (COMPAS): 11757 defendants, 43 features, 400→146 questions
+\item \textbf{Diabetes}: 768 women, 8 features, 400→190 questions
+\item \textbf{Credit}: 1000 applicants, 20 features, 400→200 questions
+\item \textbf{Recidivism (COMPAS)}: 11757 defendants, 43 features, 400→146 questions
 \end{itemize}
+\end{block}
 \end{column}
 \begin{column}{0.48\textwidth}
-\textbf{Splits:}
-\begin{itemize}
-\item \textbf{IID (Easy)}: operations seen in training, different arguments
-\item \textbf{Compositional (Hard)}: new operation combinations not seen in training
-\end{itemize}
+\begin{block}{Data Collection}
+\begin{enumerate}
+\item Authors: 50 (utterance, parse) pairs per domain
+\item MTurk: 8 paraphrases per utterance
+\item MTurk: fidelity rating (keep $\geq$ 3/4 avg)
+\item Manual filtering
+\end{enumerate}
+\end{block}
+\end{column}
+\end{columns}
+
+\vspace{0.5em}
+Splits:
+
+\begin{columns}
+\begin{column}{0.48\textwidth}
+\begin{exampleblock}{IID (Easy)}
+Order of operations \textbf{seen in training} — only arguments differ
+\end{exampleblock}
+\end{column}
+\begin{column}{0.48\textwidth}
+\begin{alertblock}{Compositional (Hard)}
+Order of operations \textbf{not seen before} in training data
+\end{alertblock}
 \end{column}
 \end{columns}
 
 ---
 
-# LLM Results: Exact Match Accuracy
+# Experiment 1: LLM Results
 
 \begin{center}
-\includegraphics[width=0.85\columnwidth]{imgs/ttm_llm_results.png}
+\includegraphics[width=0.88\columnwidth]{imgs/ttm_llm_results.png}
 \end{center}
-
-\begin{itemize}
-\item \textbf{T5-Large best}: German 63.5\%, Compas 66.4\%, Diabetes 76.8\% overall
-\item GPT-J (few-shot) $\ll$ T5 fine-tuning, especially on \textbf{compositional split}
-\item All models: low accuracy on hard (compositional) split
-\end{itemize}
 
 ---
 
 # Experiment 2: Grammar Coverage
 
-\textbf{Question:} Is the grammar expressive enough to capture all XAI questions?
+\textbf{Goal:} Is the grammar expressive enough to capture all XAI questions?
 
 \begin{exampleblock}{Method}
 \begin{itemize}
-\item Use a curated \textbf{XAI question bank} (31 questions, informed by expert interviews)
-\item Manually review if grammar operations can answer each
+\item Use a curated \textbf{XAI question bank} (31 questions, informed by design expert interviews)
+\item Manually review if grammar operations can answer each question
 \end{itemize}
 \end{exampleblock}
 
 \begin{block}{Result}
-\textbf{30/31} questions can be answered by the grammar
+\textbf{30/31} questions can be answered by the grammar.
 
-Example: \texttt{topk(test_data, all)}, \texttt{mistakes(test_data)}, \texttt{cfe(filter(test_data, id, A, =), 10, Q)}
+The remaining question was deemed out of scope.
 \end{block}
+
+[@questions_xia]
 
 ---
 
 # Experiment 3: User Study
 
-\begin{center}
-\includegraphics[width=0.75\columnwidth]{imgs/ttm_user_experiment.png}
-\end{center}
+- \textbf{45 healthcare workers} + 12 ML grad students
+- Diabetes dataset
+- Answer \textbf{10 XAI multiple-choice questions}, divided into 2 blocks of 5: One block was answered using TalkToModel, and the other using \textbf{explainerdashboard}
 
-- Diabetes dataset + gradient-boosted tree
-- 45 healthcare workers + 12 ML grad students
-- 10 XAI multiple-choice questions each
-- Compared vs. \textbf{explainerdashboard} (baseline)
+- Metrics
+  - Ease of use, confidence, speed, and likability (subjective)
+  - Completion rate, Accuracy (objective)
 
----
-
-# The Baseline: explainerdashboard
-
-\begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/ttm_explainerdashboard.png}
-\end{center}
+\footnotesize Example: "Is glucose more important than age for the model's predictions for data point 49?"
 
 ---
 
-# TalkToModel Interface
+# explainerdashboard vs TalkToModel Interface
 
+\begin{columns}
+\begin{column}{0.50\textwidth}
 \begin{center}
-\includegraphics[width=0.8\columnwidth]{imgs/ttm_interface_screenshot.png}
+\includegraphics[width=\columnwidth]{imgs/ttm_explainerdashboard.png}
 \end{center}
+\end{column}
+\begin{column}{0.50\textwidth}
+\begin{center}
+\includegraphics[width=\columnwidth]{imgs/ttm_interface_screenshot.png}
+\end{center}
+\end{column}
+\end{columns}
 
 ---
 
-# User Study Findings
+# Experiment 3: Results
 
 \begin{exampleblock}{TalkToModel vs. explainerdashboard}
 \begin{itemize}
@@ -671,34 +1044,33 @@ ML grads: 100\% vs. 62.5\%
 
 # TalkToModel Conclusions
 
-- \textbf{Elegant UI}: natural language makes model interpretation accessible to laypeople and ML practitioners
-- \textbf{Highly extensible}: handles a variety of XAI methods, problem domains
-- \textbf{Reasonably accurate}: fine-tuned T5 interprets user intent well
-- \textbf{Low barrier}: only need your own dataset to deploy
-
----
-
-# TalkToModel Limitations
-
+\begin{columns}
+\begin{column}{0.55\textwidth}
+\begin{exampleblock}{Strengths}
+\begin{itemize}
+\item \textbf{Elegant UI}: natural language makes model interpretation accessible
+\item \textbf{Highly extensible}: handles a variety of XAI methods and problem domains
+\item \textbf{Reasonably accurate}: fine-tuned T5 interprets user intent well
+\item \textbf{Low barrier}: only need your own dataset to deploy
+\end{itemize}
+\end{exampleblock}
+\end{column}
+\begin{column}{0.42\textwidth}
 \begin{alertblock}{Limitations}
 \begin{itemize}
 \item Not tested in \textbf{real-world settings}
-\item \textbf{No flexibility} in explanation method selection ("most feasible CFE", "most stable explanation")
-\item \textbf{No guarantees on data quality} for fine-tuning; some manual labor required
-\item \textbf{No domain knowledge} beyond the grammar
-\item Accuracy on \textbf{compositional (hard) split} still very low
+\item No user \textbf{flexibility} in explanation selection
+\item No guarantees on \textbf{data quality} for fine-tuning
+\item No \textbf{domain knowledge} beyond the grammar
+\item Low accuracy on \textbf{compositional split}
 \end{itemize}
 \end{alertblock}
+\end{column}
+\end{columns}
 
----
+\vspace{0.5em}
 
-# TalkToModel Discussion Questions
-
-1. Are ML practitioners most responsible for the accessibility of XAI?
-2. Is the TalkToModel LLM itself interpretable? When is it acceptable to improve XAI with more black-box AI?
-3. How much control over explanations should we give users while remaining accessible to laypeople?
-4. Does TalkToModel's existence excuse other XAI methods from being accessible?
-5. Dashboard vs. Dialogue — which is better and when?
+\textbf{Discussion Questions:} Is the TalkToModel LLM itself interpretable?
 
 ---
 
