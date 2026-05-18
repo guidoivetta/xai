@@ -48,15 +48,6 @@ Active Learning (AL): a paradigm in which the model \textbf{queries} a human ann
 
 ---
 
-# Related Work: Interactive ML
-
-- AL is sometimes considered within \textbf{interactive machine learning (iML)}
-- iML approaches \textbf{value transparency over performance}
-- Empirical studies demonstrate iML techniques lower need for data — but little else
-- iML approaches are esoteric; \textbf{explanations as interfaces} could help non-ML experts
-
----
-
 # Problem Statement
 
 \begin{alertblock}{Active Learning interfaces remain minimal and opaque}
@@ -761,36 +752,6 @@ The arguments for operations like \texttt{filter} or \texttt{topk} are automatic
 
 ---
 
-# Dialogue Engine: Training Data Generation
-
-\begin{enumerate}
-\item Authors write \textbf{50 (utterance, parse) pairs} per domain — every operation appears $\geq$ 2×
-\item MTurk: paraphrase each utterance \textbf{8 ways} = 400 pairs
-\item MTurk: rate fidelity of paraphrase (keep $\geq$ 3/4 avg over 5 raters)
-\item Manual filtering by authors
-\item Enumerate wildcards with dataset features $\rightarrow$ \textbf{20k–40k training pairs}
-\end{enumerate}
-
----
-
-# Dialogue Engine: Example Paraphrases
-
-\begin{block}{Original utterance}
-"What is your reasoning for determining if people older than 20 are likely to commit crimes?"
-\end{block}
-
-\vspace{0.5em}
-
-\begin{exampleblock}{MTurk paraphrases}
-\begin{itemize}
-\item "Why do you think people over the age of twenty are likely to commit a crime?"
-\item "How did you determine the likelihood of people over 20 committing crimes?"
-\item "Can you reason why people over twenty would likely commit crimes?"
-\end{itemize}
-\end{exampleblock}
-
----
-
 # Dialogue Engine: Responding Conversationally
 
 \begin{block}{Template-based responses}
@@ -801,19 +762,6 @@ After TalkToModel executes a parse, it \textbf{composes the results} of the oper
 
 - Each operation has an associated \textbf{response template}
 - TalkToModel can run \textbf{multiple operations simultaneously} — it joins response templates ensuring semantic coherence
-
----
-
-# Dialogue Engine: Complete Pipeline
-
-\begin{center}
-\begin{enumerate}
-\item \textbf{Constructing a grammar} — DSL with operations, arguments, relations
-\item \textbf{Generate fine-tuning data} — 50 pairs $\rightarrow$ wildcard enumeration $\rightarrow$ 20k–40k pairs
-\item \textbf{Fine-tuning LLM} (T5) — translate utterances to parses (seq2seq)
-\item \textbf{Respond conversationally} — templates composed into natural language
-\end{enumerate}
-\end{center}
 
 ---
 
