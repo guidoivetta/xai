@@ -34,7 +34,7 @@ La recolección de datos del corpus de regionalismos argentinos fue realizada a 
 
 Durante los meses de mayo, junio y julio de 2026, el dataset se amplía y enriquece con las contribuciones de más de **1.500 docentes de nivel secundario de la provincia de Córdoba**. Esta etapa de anotación masiva se desarrolla en el marco de un **curso de desarrollo profesional docente** oficialmente reconocido por el **Ministerio de Educación de la Provincia de Córdoba**, lo que garantiza cobertura geográfica y sociocultural amplia dentro de la provincia. Esta metodología de recolección comunitaria con docentes en ejercicio fue validada previamente en los proyectos HESEIA [5] y LACES [6], que comparten la misma plataforma e infraestructura de anotación.
 
-Esta escala de participación posiciona al corpus como un recurso de anotación colaborativa a gran escala, con representatividad regional genuina, lo que lo diferencia sustancialmente de datasets construidos de forma automática o con colaboradores homogéneos.
+Esta escala de participación posiciona al corpus como un recurso de anotación colaborativa a gran escala, con representatividad regional, lo que lo diferencia sustancialmente de datasets construidos de forma automática o con colaboradores homogéneos.
 
 ## Propuesta Experimental
 
@@ -61,7 +61,7 @@ Los modelos generan una definición libre para cada input.
 
 ### Evaluación de accuracy
 
-Las respuestas son evaluadas manualmente en un subconjunto del dataset, clasificándolas como *correcta*, *parcialmente correcta* o *incorrecta*. Este ground truth externo es factible de construir con alta confiabilidad gracias a las definiciones y ejemplos anotados colaborativamente por la gran cantidad de anotadores, lo que permite contar con múltiples validaciones por expresión. Se calculará la accuracy por condición (con/sin contexto) y por idioma (argentino/estadounidense), con el objetivo de verificar **H1** y **H2**: se espera observar alta accuracy para slang estadounidense en ambas condiciones, y baja accuracy para regionalismos argentinos en la condición sin contexto, con una recuperación notable al agregar el ejemplo de uso.
+Las respuestas son evaluadas manualmente en un subconjunto del dataset, clasificándolas como *correcta*, *parcialmente correcta* o *incorrecta*. Este ground truth externo es factible de construir gracias a las definiciones y ejemplos anotados colaborativamente por nuestra gran cantidad de anotadores, lo que permite contar con múltiples validaciones por expresión. Se calculará la accuracy por condición (con/sin contexto) y por idioma (argentino/estadounidense), con el objetivo de verificar **H1** y **H2**: se espera observar alta accuracy para slang estadounidense en ambas condiciones, y baja accuracy para regionalismos argentinos en la condición sin contexto, con una recuperación notable al agregar el ejemplo de uso.
 
 ### Explicaciones post-hoc con SHAP
 
@@ -78,7 +78,7 @@ La conjunción del análisis de accuracy y el análisis SHAP permite no solo med
 | Semana | Tarea |
 |---|---|
 | 1 | Preprocesamiento y filtrado de los datasets. Generación de respuestas de los modelos. Evaluación manual de respuestas. |
-| 2 |  Implementación del pipeline experimental para la obtención de explicaciones mediante SHAP. |
+| 2 | Implementación del pipeline experimental para la obtención de explicaciones mediante SHAP. |
 | 3 | Comparación entre modelos y contextos lingüísticos. Análisis preliminar de resultados. |
 | 4 | Análisis final y discusión de resultados. Escritura y revisión del paper final. |
 
