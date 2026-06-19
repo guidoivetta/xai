@@ -73,6 +73,8 @@ SHAP [2, 3] se aplica para cuantificar la contribución de cada segmento del inp
 
 La conjunción del análisis de accuracy y el análisis SHAP permite no solo medir *si* el modelo falla, sino también *por qué*: si la baja accuracy sin contexto en expresiones argentinas se corresponde con valores SHAP bajos en la expresión y altos en el ejemplo de uso cuando éste está disponible, la evidencia confirma una dependencia contextual estructural y no un error aleatorio.
 
+Dado que los modelos evaluados generan definiciones en texto libre, es necesario transformar sus respuestas en un valor numérico para poder aplicar SHAP. Para cada expresión, el modelo genera una definición y luego se calcula su similitud semántica (coseno) respecto de la definición de referencia provista por el dataset. Este valor refleja cuán cercana es la respuesta generada a la interpretación esperada. SHAP se aplica sobre esta medida de similitud para estimar la contribución de cada componente del input (la expresión y el ejemplo de uso) al aumento o disminución de la calidad de la interpretación producida por el modelo.
+
 ## Plan de actividades
 
 | Semana | Tarea |
@@ -81,6 +83,10 @@ La conjunción del análisis de accuracy y el análisis SHAP permite no solo med
 | 2 | Implementación del pipeline experimental para la obtención de explicaciones mediante SHAP. |
 | 3 | Comparación entre modelos y contextos lingüísticos. Análisis preliminar de resultados. |
 | 4 | Análisis final y discusión de resultados. Escritura y revisión del paper final. |
+
+## Limitaciones
+
+Como limitación, las diferencias observadas entre regionalismos argentinos y slang estadounidense podrían estar influenciadas no solo por factores lingüísticos, sino también por diferencias intrínsecas entre los datasets, tales como dificultad, ambigüedad o la calidad de las definiciones de referencia. Por lo tanto, los resultados deberán interpretarse teniendo en cuenta estas posibles diferencias entre datasets.
 
 ---
 
